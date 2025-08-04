@@ -43,9 +43,9 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
-    float IBlueprintEditor.Width => (float)ActualWidth;
+    float IBlueprintEditor.Width => (float)(ActualWidth * Dpi);
 
-    float IBlueprintEditor.Height => (float)ActualHeight;
+    float IBlueprintEditor.Height => (float)(ActualHeight * Dpi);
 
     float IBlueprintEditor.X => (float)X;
 
