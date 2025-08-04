@@ -2,9 +2,15 @@
 
 public interface IBlueprintEditor
 {
-    float OffsetX { get; }
+    float Width { get; }
 
-    float OffsetY { get; }
+    float Height { get; }
+
+    float X { get; }
+
+    float Y { get; }
 
     float Zoom { get; }
+
+    IBlueprintStyles Styles { get; }
 }
