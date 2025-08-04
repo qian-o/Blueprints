@@ -6,13 +6,13 @@ public interface IBlueprintStyles
 {
     SKColor BackgroundColor { get; }
 
-    float MinorLineWidth { get; }
-
-    float MajorLineWidth { get; }
-
     SKColor MinorLineColor { get; }
 
     SKColor MajorLineColor { get; }
+
+    float MinorLineWidth { get; }
+
+    float MajorLineWidth { get; }
 
     float MinorLineSpacing { get; }
 

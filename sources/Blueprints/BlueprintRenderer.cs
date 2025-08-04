@@ -6,49 +6,50 @@ public static class BlueprintRenderer
 {
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
-        IBlueprintStyles styles = editor.Styles;
-        styles.Flush();
+        editor.Styles.Flush();
 
-        canvas.Clear(styles.BackgroundColor);
+        canvas.Clear(editor.Styles.BackgroundColor);
 
-        canvas.Save();
-        canvas.SetMatrix(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
-        {
-            Grid(editor, canvas);
-        }
-        canvas.Restore();
+        Grid(editor, canvas);
     }
 
     private static void Grid(IBlueprintEditor editor, SKCanvas canvas)
     {
-        IBlueprintStyles styles = editor.Styles;
+        SKColor minorLineColor = editor.Styles.MinorLineColor;
+        SKColor majorLineColor = editor.Styles.MajorLineColor;
+
+        float minorLineWidth = editor.Styles.MinorLineWidth * editor.Zoom;
+        float majorLineWidth = editor.Styles.MajorLineWidth * editor.Zoom;
+
+        float minorLineSpacing = editor.Styles.MinorLineSpacing * editor.Zoom;
+        float majorLineSpacing = editor.Styles.MajorLineSpacing * editor.Zoom;
 
         using SKPaint paint = new() { IsAntialias = true, IsStroke = true };
 
         // Draw minor grid lines
-        paint.StrokeWidth = styles.MinorLineWidth;
-        paint.Color = styles.MinorLineColor;
+        paint.Color = minorLineColor;
+        paint.StrokeWidth = minorLineWidth;
 
-        for (float x = editor.X % styles.MinorLineSpacing; x < editor.Width; x += styles.MinorLineSpacing)
+        for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
         {
             canvas.DrawLine(x, 0, x, editor.Height, paint);
         }
 
-        for (float y = editor.Y % styles.MinorLineSpacing; y < editor.Height; y += styles.MinorLineSpacing)
+        for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
         {
             canvas.DrawLine(0, y, editor.Width, y, paint);
         }
 
         // Draw major grid lines
-        paint.StrokeWidth = styles.MajorLineWidth;
-        paint.Color = styles.MajorLineColor;
+        paint.Color = majorLineColor;
+        paint.StrokeWidth = majorLineWidth;
 
-        for (float x = editor.X % styles.MajorLineSpacing; x < editor.Width; x += styles.MajorLineSpacing)
+        for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
         {
             canvas.DrawLine(x, 0, x, editor.Height, paint);
         }
 
-        for (float y = editor.Y % styles.MajorLineSpacing; y < editor.Height; y += styles.MajorLineSpacing)
+        for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
         {
             canvas.DrawLine(0, y, editor.Width, y, paint);
         }

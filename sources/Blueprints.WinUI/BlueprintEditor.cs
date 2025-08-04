@@ -1,5 +1,8 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using SkiaSharp.Views.Windows;
+using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
@@ -20,8 +23,14 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0));
 
+    private Point lastPointerPosition;
+
     public BlueprintEditor()
     {
+        PointerPressed += OnPointerPressed;
+        PointerMoved += OnPointerMoved;
+        PointerWheelChanged += OnPointerWheelChanged;
+
         PaintSurface += OnPaintSurface;
     }
 
@@ -54,6 +63,47 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     float IBlueprintEditor.Zoom => (float)Zoom;
 
     IBlueprintStyles IBlueprintEditor.Styles { get; } = new BlueprintStyles();
+
+    private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+        if (pointerPoint.Properties.IsRightButtonPressed)
+        {
+            lastPointerPosition = pointerPoint.Position;
+        }
+    }
+
+    private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
+    {
+        PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+        if (pointerPoint.Properties.IsRightButtonPressed)
+        {
+            Point currentPosition = pointerPoint.Position;
+
+            double deltaX = currentPosition.X - lastPointerPosition.X;
+            double deltaY = currentPosition.Y - lastPointerPosition.Y;
+
+            X += deltaX / Dpi;
+            Y += deltaY / Dpi;
+
+            lastPointerPosition = currentPosition;
+
+            Invalidate();
+        }
+    }
+
+    private void OnPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+    {
+        PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+        double delta = pointerPoint.Properties.MouseWheelDelta > 0 ? 0.1 : -0.1;
+
+        Zoom = Math.Max(0.1, Zoom + delta);
+
+        Invalidate();
+    }
 
     private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
