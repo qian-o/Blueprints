@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Input;
+﻿using System.Numerics;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using SkiaSharp.Views.Windows;
@@ -85,8 +86,8 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
             double deltaX = currentPosition.X - lastPointerPosition.X;
             double deltaY = currentPosition.Y - lastPointerPosition.Y;
 
-            X += deltaX / Dpi;
-            Y += deltaY / Dpi;
+            X += deltaX;
+            Y += deltaY;
 
             lastPointerPosition = currentPosition;
 
@@ -98,9 +99,14 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     {
         PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-        double delta = pointerPoint.Properties.MouseWheelDelta > 0 ? 0.1 : -0.1;
+        float scale = pointerPoint.Properties.MouseWheelDelta > 0 ? 1.1f : 0.9f;
 
-        Zoom = Math.Max(0.1, Zoom + delta);
+        Zoom *= scale;
+
+        Matrix3x2 scaleMatrix = Matrix3x2.CreateScale(scale, pointerPoint.Position.ToVector2());
+
+        X = (X * scaleMatrix.M11) + (pointerPoint.Position.X * (1 - scaleMatrix.M11));
+        Y = (Y * scaleMatrix.M22) + (pointerPoint.Position.Y * (1 - scaleMatrix.M22));
 
         Invalidate();
     }
