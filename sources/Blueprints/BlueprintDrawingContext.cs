@@ -19,10 +19,43 @@ internal class BlueprintDrawingContext : IBlueprintDrawingContext
         }
 
         Canvas.Save();
-        Canvas.ClipRect(rect);
+        Canvas.ClipRect(rect, SKClipOperation.Intersect, true);
     }
 
-    public void PopClip()
+    public void PushClip(SKRoundRect roundRect)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.Save();
+        Canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect, true);
+    }
+
+    public void PushClip(SKPath path)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.Save();
+        Canvas.ClipPath(path, SKClipOperation.Intersect, true);
+    }
+
+    public void PushTransform(SKMatrix matrix)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.Save();
+        Canvas.SetMatrix(Canvas.TotalMatrix.PostConcat(matrix));
+    }
+
+    public void Pop()
     {
         if (Canvas is null)
         {

@@ -2,6 +2,8 @@
 
 public interface IBlueprintEditor
 {
+    float Dpi { get; }
+
     float Width { get; }
 
     float Height { get; }

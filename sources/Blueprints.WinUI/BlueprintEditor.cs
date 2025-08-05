@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
-using SkiaSharp;
 using SkiaSharp.Views.Windows;
 
 namespace Blueprints.WinUI;
@@ -94,6 +93,8 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
+    float IBlueprintEditor.Dpi => (float)Dpi;
+
     float IBlueprintEditor.Width => (float)ActualWidth;
 
     float IBlueprintEditor.Height => (float)ActualHeight;
@@ -108,10 +109,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
-        e.Surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)Dpi, (float)Dpi));
-
         BlueprintRenderer.Render(this, e.Surface.Canvas);
-
-        e.Surface.Canvas.ResetMatrix();
     }
 }

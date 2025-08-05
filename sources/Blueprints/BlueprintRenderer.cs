@@ -4,26 +4,30 @@ namespace Blueprints;
 
 public static class BlueprintRenderer
 {
-    private static readonly Dictionary<IBlueprintEditor, IBlueprintDrawingContext> drawingContexts = [];
+    private static readonly Dictionary<IBlueprintEditor, IBlueprintDrawingContext> contexts = [];
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
         editor.Styles.Update();
 
-        if (!drawingContexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
+        if (!contexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
         {
-            drawingContexts[editor] = dc = new BlueprintDrawingContext();
+            contexts[editor] = dc = new BlueprintDrawingContext();
         }
 
         ((BlueprintDrawingContext)dc).Canvas = canvas;
 
         dc.Clear(editor.Styles.BackgroundColor);
 
+        dc.PushTransform(SKMatrix.CreateScale(editor.Dpi, editor.Dpi));
+
         Grid(editor, dc);
 
 #if DEBUG
         Debug(editor, dc);
 #endif
+
+        dc.Pop();
     }
 
     private static void Grid(IBlueprintEditor editor, IBlueprintDrawingContext dc)
@@ -63,23 +67,27 @@ public static class BlueprintRenderer
         const float margin = 10.0f;
 
         string text = "Debug Info\n"
-                      + $"Zoom: {editor.Zoom:F4}\n"
-                      + $"X: {editor.X:F4}\n"
-                      + $"Y: {editor.Y:F4}\n"
-                      + $"Width: {editor.Width:F4}\n"
-                      + $"Height: {editor.Height:F4}";
+                      + $"Zoom: {editor.Zoom:F2}\n"
+                      + $"X: {editor.X:F2}\n"
+                      + $"Y: {editor.Y:F2}\n"
+                      + $"Width: {editor.Width:F2}\n"
+                      + $"Height: {editor.Height:F2}";
 
         SKSize rectSize = dc.MeasureText(text, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
 
-        dc.DrawRoundRectangle(new(new(2, 2, rectSize.Width, rectSize.Height), margin),
+        dc.PushTransform(SKMatrix.CreateTranslation(2, 2));
+
+        dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
                               SKColors.Transparent,
                               1.0f,
                               editor.Styles.ForegroundColor);
 
         dc.DrawText(text,
-                    new SKPoint(margin + 2, margin + 2),
+                    new SKPoint(margin, margin),
                     editor.Styles.FontFamily,
                     editor.Styles.TextSize,
                     editor.Styles.ForegroundColor);
+
+        dc.Pop();
     }
 }

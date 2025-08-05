@@ -6,7 +6,13 @@ public interface IBlueprintDrawingContext
 {
     void PushClip(SKRect rect);
 
-    void PopClip();
+    void PushClip(SKRoundRect roundRect);
+
+    void PushClip(SKPath path);
+
+    void PushTransform(SKMatrix matrix);
+
+    void Pop();
 
     void Clear(SKColor color);
 
