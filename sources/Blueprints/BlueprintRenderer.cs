@@ -9,11 +9,13 @@ public static class BlueprintRenderer
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
-        editor.Styles.Flush();
+        editor.Styles.Update();
 
         canvas.Clear(editor.Styles.BackgroundColor);
 
         Grid(editor, canvas);
+
+        Debug(editor, canvas);
     }
 
     private static void Grid(IBlueprintEditor editor, SKCanvas canvas)
@@ -52,5 +54,9 @@ public static class BlueprintRenderer
         {
             canvas.DrawLine(0, y, editor.Width, y, gridMajorLinePaint);
         }
+    }
+
+    private static void Debug(IBlueprintEditor editor, SKCanvas canvas)
+    {
     }
 }

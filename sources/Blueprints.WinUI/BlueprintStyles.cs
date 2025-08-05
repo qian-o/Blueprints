@@ -4,28 +4,29 @@ namespace Blueprints.WinUI;
 
 internal class BlueprintStyles : IBlueprintStyles
 {
-    public BlueprintStyles()
+    public string FontFamily { get; set; } = "Segoe UI";
+
+    public SKColor BackgroundColor { get; set; } = SKColors.White;
+
+    public SKColor ForegroundColor { get; set; } = SKColors.Black;
+
+    public SKColor MinorLineColor { get; set; } = SKColors.LightGray;
+
+    public SKColor MajorLineColor { get; set; } = SKColors.Gray;
+
+    public float MinorLineWidth { get; set; } = 0.5f;
+
+    public float MajorLineWidth { get; set; } = 1.0f;
+
+    public float MinorLineSpacing { get; set; } = 20.0f;
+
+    public float MajorLineSpacing { get; set; } = 120.0f;
+
+    public void Update()
     {
-        Flush();
-    }
-
-    public SKColor BackgroundColor { get; set; }
-
-    public SKColor MinorLineColor { get; set; }
-
-    public SKColor MajorLineColor { get; set; }
-
-    public float MinorLineWidth { get; set; }
-
-    public float MajorLineWidth { get; set; }
-
-    public float MinorLineSpacing { get; set; }
-
-    public float MajorLineSpacing { get; set; }
-
-    public void Flush()
-    {
+        FontFamily = "Segoe UI";
         BackgroundColor = SKColors.White;
+        ForegroundColor = SKColors.Black;
         MinorLineColor = SKColors.LightGray;
         MajorLineColor = SKColors.Gray;
         MinorLineWidth = 0.5f;
