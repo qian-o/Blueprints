@@ -52,7 +52,7 @@ internal class BlueprintDrawingContext : IBlueprintDrawingContext
         }
 
         Canvas.Save();
-        Canvas.SetMatrix(Canvas.TotalMatrix.PostConcat(matrix));
+        Canvas.Concat(matrix);
     }
 
     public void Pop()

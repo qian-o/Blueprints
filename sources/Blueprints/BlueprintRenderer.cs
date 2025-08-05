@@ -75,7 +75,7 @@ public static class BlueprintRenderer
 
         SKSize rectSize = dc.MeasureText(text, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
 
-        dc.PushTransform(SKMatrix.CreateTranslation(2, 2));
+        dc.PushTransform(SKMatrix.CreateTranslation(4, 4));
 
         dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
                               SKColors.Transparent,
