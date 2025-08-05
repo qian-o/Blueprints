@@ -4,11 +4,8 @@ namespace Blueprints;
 
 public static class BlueprintRenderer
 {
-    private static readonly SKPaint gridPaint = new()
-    {
-        IsAntialias = true,
-        IsStroke = true
-    };
+    private static readonly SKPaint gridMinorLinePaint = new() { IsAntialias = true, IsStroke = true };
+    private static readonly SKPaint gridMajorLinePaint = new() { IsAntialias = true, IsStroke = true };
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
@@ -30,32 +27,30 @@ public static class BlueprintRenderer
         float minorLineSpacing = editor.Styles.MinorLineSpacing * editor.Zoom;
         float majorLineSpacing = editor.Styles.MajorLineSpacing * editor.Zoom;
 
-        // Draw minor grid lines
-        gridPaint.Color = minorLineColor;
-        gridPaint.StrokeWidth = minorLineWidth;
+        gridMinorLinePaint.Color = minorLineColor;
+        gridMinorLinePaint.StrokeWidth = minorLineWidth;
 
         for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, gridPaint);
+            canvas.DrawLine(x, 0, x, editor.Height, gridMinorLinePaint);
         }
 
         for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, gridPaint);
+            canvas.DrawLine(0, y, editor.Width, y, gridMinorLinePaint);
         }
 
-        // Draw major grid lines
-        gridPaint.Color = majorLineColor;
-        gridPaint.StrokeWidth = majorLineWidth;
+        gridMajorLinePaint.Color = majorLineColor;
+        gridMajorLinePaint.StrokeWidth = majorLineWidth;
 
         for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, gridPaint);
+            canvas.DrawLine(x, 0, x, editor.Height, gridMajorLinePaint);
         }
 
         for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, gridPaint);
+            canvas.DrawLine(0, y, editor.Width, y, gridMajorLinePaint);
         }
     }
 }
