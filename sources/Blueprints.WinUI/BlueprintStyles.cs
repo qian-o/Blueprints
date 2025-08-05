@@ -22,6 +22,8 @@ internal class BlueprintStyles : IBlueprintStyles
 
     public float MajorLineSpacing { get; set; } = 120.0f;
 
+    public float TextSize { get; set; } = 16.0f;
+
     public void Update()
     {
         FontFamily = "Segoe UI";
@@ -33,5 +35,6 @@ internal class BlueprintStyles : IBlueprintStyles
         MajorLineWidth = 1.0f;
         MinorLineSpacing = 20.0f;
         MajorLineSpacing = 120.0f;
+        TextSize = 16.0f;
     }
 }

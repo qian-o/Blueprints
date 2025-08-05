@@ -22,5 +22,7 @@ public interface IBlueprintStyles
 
     float MajorLineSpacing { get; }
 
+    float TextSize { get; }
+
     void Update();
 }
