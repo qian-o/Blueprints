@@ -11,6 +11,27 @@ internal class BlueprintDrawingContext : IBlueprintDrawingContext
 
     public SKCanvas? Canvas { get; set; }
 
+    public void PushClip(SKRect rect)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.Save();
+        Canvas.ClipRect(rect);
+    }
+
+    public void PopClip()
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.Restore();
+    }
+
     public void Clear(SKColor color)
     {
         if (Canvas is null)

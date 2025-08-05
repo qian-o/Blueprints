@@ -4,6 +4,10 @@ namespace Blueprints;
 
 public interface IBlueprintDrawingContext
 {
+    void PushClip(SKRect rect);
+
+    void PopClip();
+
     void Clear(SKColor color);
 
     void DrawLine(SKPoint start, SKPoint end, float strokeWidth, SKColor strokeColor);
