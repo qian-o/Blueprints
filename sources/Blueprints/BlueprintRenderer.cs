@@ -4,6 +4,12 @@ namespace Blueprints;
 
 public static class BlueprintRenderer
 {
+    private static readonly SKPaint gridPaint = new()
+    {
+        IsAntialias = true,
+        IsStroke = true
+    };
+
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
         editor.Styles.Flush();
@@ -24,34 +30,32 @@ public static class BlueprintRenderer
         float minorLineSpacing = editor.Styles.MinorLineSpacing * editor.Zoom;
         float majorLineSpacing = editor.Styles.MajorLineSpacing * editor.Zoom;
 
-        using SKPaint paint = new() { IsAntialias = true, IsStroke = true };
-
         // Draw minor grid lines
-        paint.Color = minorLineColor;
-        paint.StrokeWidth = minorLineWidth;
+        gridPaint.Color = minorLineColor;
+        gridPaint.StrokeWidth = minorLineWidth;
 
         for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, paint);
+            canvas.DrawLine(x, 0, x, editor.Height, gridPaint);
         }
 
         for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, paint);
+            canvas.DrawLine(0, y, editor.Width, y, gridPaint);
         }
 
         // Draw major grid lines
-        paint.Color = majorLineColor;
-        paint.StrokeWidth = majorLineWidth;
+        gridPaint.Color = majorLineColor;
+        gridPaint.StrokeWidth = majorLineWidth;
 
         for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, paint);
+            canvas.DrawLine(x, 0, x, editor.Height, gridPaint);
         }
 
         for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, paint);
+            canvas.DrawLine(0, y, editor.Width, y, gridPaint);
         }
     }
 }

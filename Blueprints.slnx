@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Examples/">
+    <Project Path="sources/Examples/WinUI.Example/WinUI.Example.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Project Path="sources/Blueprints.WinUI/Blueprints.WinUI.csproj" />
+  <Project Path="sources/Blueprints/Blueprints.csproj" />
+</Solution>
