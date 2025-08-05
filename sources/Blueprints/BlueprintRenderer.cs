@@ -62,22 +62,22 @@ public static class BlueprintRenderer
     {
         const float margin = 10.0f;
 
-        string debug = "Debug Information:\n"
-                       + $"Zoom: {editor.Zoom}\n"
-                       + $"X: {editor.X}\n"
-                       + $"Y: {editor.Y}\n"
-                       + $"Width: {editor.Width}\n"
-                       + $"Height: {editor.Height}";
+        string text = "Debug Info\n"
+                      + $"Zoom: {editor.Zoom:F4}\n"
+                      + $"X: {editor.X:F4}\n"
+                      + $"Y: {editor.Y:F4}\n"
+                      + $"Width: {editor.Width:F4}\n"
+                      + $"Height: {editor.Height:F4}";
 
-        SKSize rectSize = dc.MeasureText(debug, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
+        SKSize rectSize = dc.MeasureText(text, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
 
-        dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
+        dc.DrawRoundRectangle(new(new(2, 2, rectSize.Width, rectSize.Height), margin),
                               SKColors.Transparent,
                               1.0f,
                               editor.Styles.ForegroundColor);
 
-        dc.DrawText(debug,
-                    new SKPoint(margin, margin),
+        dc.DrawText(text,
+                    new SKPoint(margin + 2, margin + 2),
                     editor.Styles.FontFamily,
                     editor.Styles.TextSize,
                     editor.Styles.ForegroundColor);

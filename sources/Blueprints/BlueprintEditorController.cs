@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Blueprints;
 
@@ -34,8 +33,6 @@ public class BlueprintEditorController(IBlueprintEditor editor) : IBlueprintCont
     public void PointerReleased(SKPoint position)
     {
         lastPointerPosition = null;
-
-        Debug.WriteLine(position);
     }
 
     public void PointerWheelChanged(SKPoint position, float delta)
