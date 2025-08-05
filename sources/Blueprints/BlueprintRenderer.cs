@@ -4,21 +4,29 @@ namespace Blueprints;
 
 public static class BlueprintRenderer
 {
-    private static readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
-    private static readonly Dictionary<PaintDescriptor, SKPaint> paintCache = [];
+    private static readonly Dictionary<IBlueprintEditor, IBlueprintDrawingContext> drawingContexts = [];
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
         editor.Styles.Update();
 
-        canvas.Clear(editor.Styles.BackgroundColor);
+        if (!drawingContexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
+        {
+            drawingContexts[editor] = dc = new BlueprintDrawingContext();
+        }
 
-        Grid(editor, canvas);
+        ((BlueprintDrawingContext)dc).Canvas = canvas;
 
-        Debug(editor, canvas);
+        dc.Clear(editor.Styles.BackgroundColor);
+
+        Grid(editor, dc);
+
+#if DEBUG
+        Debug(editor, dc);
+#endif
     }
 
-    private static void Grid(IBlueprintEditor editor, SKCanvas canvas)
+    private static void Grid(IBlueprintEditor editor, IBlueprintDrawingContext dc)
     {
         SKColor minorLineColor = editor.Styles.MinorLineColor;
         SKColor majorLineColor = editor.Styles.MajorLineColor;
@@ -31,26 +39,26 @@ public static class BlueprintRenderer
 
         for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, GetPaint(minorLineColor, minorLineWidth));
+            dc.DrawLine(new(x, 0), new(x, editor.Height), minorLineWidth, minorLineColor);
         }
 
         for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, GetPaint(minorLineColor, minorLineWidth));
+            dc.DrawLine(new(0, y), new(editor.Width, y), minorLineWidth, minorLineColor);
         }
 
         for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
         {
-            canvas.DrawLine(x, 0, x, editor.Height, GetPaint(majorLineColor, majorLineWidth));
+            dc.DrawLine(new(x, 0), new(x, editor.Height), majorLineWidth, majorLineColor);
         }
 
         for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
         {
-            canvas.DrawLine(0, y, editor.Width, y, GetPaint(majorLineColor, majorLineWidth));
+            dc.DrawLine(new(0, y), new(editor.Width, y), majorLineWidth, majorLineColor);
         }
     }
 
-    private static void Debug(IBlueprintEditor editor, SKCanvas canvas)
+    private static void Debug(IBlueprintEditor editor, IBlueprintDrawingContext dc)
     {
         const float margin = 10.0f;
 
@@ -61,66 +69,17 @@ public static class BlueprintRenderer
                        + $"Width: {editor.Width}\n"
                        + $"Height: {editor.Height}";
 
-        SKFont font = GetFont(editor.Styles.FontFamily, editor.Styles.TextSize);
+        SKSize rectSize = dc.MeasureText(debug, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
 
-        SKSize rectSize = MeasureText(debug, font) + new SKSize(margin * 2, margin * 2);
+        dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
+                              SKColors.Transparent,
+                              1.0f,
+                              editor.Styles.ForegroundColor);
 
-        canvas.DrawRoundRect(new(0, 0, rectSize.Width, rectSize.Height),
-                             new(margin, margin),
-                             GetPaint(editor.Styles.ForegroundColor, 1));
-
-        float y = -font.Metrics.Ascent + margin;
-        foreach (string text in debug.Split('\n'))
-        {
-            canvas.DrawText(text, margin, y, font, GetPaint(editor.Styles.ForegroundColor, 0));
-
-            y += font.GetFontMetrics(out _);
-        }
+        dc.DrawText(debug,
+                    new SKPoint(margin, margin),
+                    editor.Styles.FontFamily,
+                    editor.Styles.TextSize,
+                    editor.Styles.ForegroundColor);
     }
-
-    private static SKSize MeasureText(string text, SKFont font)
-    {
-        string[] lines = text.Split('\n');
-
-        float width = lines.Max(line => font.MeasureText(line, out _));
-        float height = lines.Length * font.GetFontMetrics(out _);
-
-        return new SKSize(width, height);
-    }
-
-    private static SKFont GetFont(string fontFamily, float fontSize)
-    {
-        FontDescriptor descriptor = new(fontFamily, fontSize);
-
-        if (!fontCache.TryGetValue(descriptor, out SKFont? font))
-        {
-            fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily), fontSize);
-        }
-
-        return font;
-    }
-
-    private static SKPaint GetPaint(SKColor color, float strokeWidth)
-    {
-        PaintDescriptor descriptor = new(color, strokeWidth);
-
-        if (!paintCache.TryGetValue(descriptor, out SKPaint? paint))
-        {
-            paintCache[descriptor] = paint = new()
-            {
-                IsAntialias = true,
-                IsDither = true,
-                Color = color,
-                IsStroke = strokeWidth is not 0,
-                StrokeWidth = strokeWidth,
-                BlendMode = SKBlendMode.SrcOver
-            };
-        }
-
-        return paint;
-    }
-
-    private record FontDescriptor(string FontFamily, float FontSize);
-
-    private record PaintDescriptor(SKColor Color, float StrokeWidth);
 }
