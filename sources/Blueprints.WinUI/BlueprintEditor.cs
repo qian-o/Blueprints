@@ -1,9 +1,6 @@
-﻿using System.Numerics;
-using Microsoft.UI.Input;
+﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using SkiaSharp.Views.Windows;
-using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
@@ -24,13 +21,56 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0));
 
-    private Point lastPointerPosition;
-
     public BlueprintEditor()
     {
-        PointerPressed += OnPointerPressed;
-        PointerMoved += OnPointerMoved;
-        PointerWheelChanged += OnPointerWheelChanged;
+        BlueprintEditorController controller = new(this);
+
+        PointerPressed += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            if (pointerPoint.Properties.IsLeftButtonPressed)
+            {
+                controller.PointerPressed(BlueprintPointer.LeftButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsRightButtonPressed)
+            {
+                controller.PointerPressed(BlueprintPointer.RightButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsMiddleButtonPressed)
+            {
+                controller.PointerPressed(BlueprintPointer.MiddleButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton1Pressed)
+            {
+                controller.PointerPressed(BlueprintPointer.XButton1, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton2Pressed)
+            {
+                controller.PointerPressed(BlueprintPointer.XButton2, pointerPoint.Position.ToSKPoint());
+            }
+        };
+
+        PointerMoved += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            controller.PointerMoved(pointerPoint.Position.ToSKPoint());
+        };
+
+        PointerReleased += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            controller.PointerReleased(pointerPoint.Position.ToSKPoint());
+        };
+
+        PointerWheelChanged += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            controller.PointerWheelChanged(pointerPoint.Position.ToSKPoint(), pointerPoint.Properties.MouseWheelDelta);
+        };
 
         PaintSurface += OnPaintSurface;
     }
@@ -57,59 +97,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     float IBlueprintEditor.Height => (float)(ActualHeight * Dpi);
 
-    float IBlueprintEditor.X => (float)X;
-
-    float IBlueprintEditor.Y => (float)Y;
-
-    float IBlueprintEditor.Zoom => (float)Zoom;
-
     IBlueprintStyles IBlueprintEditor.Styles { get; } = new BlueprintStyles();
 
-    private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
-    {
-        PointerPoint pointerPoint = e.GetCurrentPoint(this);
+    float IBlueprintEditor.X { get => (float)X; set => X = value; }
 
-        if (pointerPoint.Properties.IsRightButtonPressed)
-        {
-            lastPointerPosition = pointerPoint.Position;
-        }
-    }
+    float IBlueprintEditor.Y { get => (float)Y; set => Y = value; }
 
-    private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
-    {
-        PointerPoint pointerPoint = e.GetCurrentPoint(this);
-
-        if (pointerPoint.Properties.IsRightButtonPressed)
-        {
-            Point currentPosition = pointerPoint.Position;
-
-            double deltaX = currentPosition.X - lastPointerPosition.X;
-            double deltaY = currentPosition.Y - lastPointerPosition.Y;
-
-            X += deltaX;
-            Y += deltaY;
-
-            lastPointerPosition = currentPosition;
-
-            Invalidate();
-        }
-    }
-
-    private void OnPointerWheelChanged(object sender, PointerRoutedEventArgs e)
-    {
-        PointerPoint pointerPoint = e.GetCurrentPoint(this);
-
-        double scale = pointerPoint.Properties.MouseWheelDelta > 0 ? 1.1 : 0.9;
-
-        Zoom *= scale;
-
-        Matrix3x2 scaleMatrix = Matrix3x2.CreateScale((float)scale, pointerPoint.Position.ToVector2());
-
-        X = (X * scaleMatrix.M11) + (pointerPoint.Position.X * (1.0 - scaleMatrix.M11));
-        Y = (Y * scaleMatrix.M22) + (pointerPoint.Position.Y * (1.0 - scaleMatrix.M22));
-
-        Invalidate();
-    }
+    float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
 
     private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {

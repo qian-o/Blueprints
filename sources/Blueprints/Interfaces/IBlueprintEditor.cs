@@ -6,11 +6,13 @@ public interface IBlueprintEditor
 
     float Height { get; }
 
-    float X { get; }
-
-    float Y { get; }
-
-    float Zoom { get; }
-
     IBlueprintStyles Styles { get; }
+
+    float X { get; set; }
+
+    float Y { get; set; }
+
+    float Zoom { get; set; }
+
+    void Invalidate();
 }
