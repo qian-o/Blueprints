@@ -2,7 +2,7 @@
 
 namespace Blueprints.WinUI;
 
-internal class BlueprintStyles : IBlueprintStyles
+internal class BlueprintStyle : IBlueprintStyle
 {
     public string FontFamily { get; set; } = "Segoe UI";
 

@@ -115,6 +115,36 @@ internal class BlueprintDrawingContext : IBlueprintDrawingContext
         }
     }
 
+    public void DrawEllipse(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawOval(rect, GetFillPaint(fillColor));
+
+        if (strokeWidth > 0)
+        {
+            Canvas.DrawOval(rect, GetStrokePaint(strokeColor, strokeWidth));
+        }
+    }
+
+    public void DrawPath(SKPath path, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawPath(path, GetFillPaint(fillColor));
+
+        if (strokeWidth > 0)
+        {
+            Canvas.DrawPath(path, GetStrokePaint(strokeColor, strokeWidth));
+        }
+    }
+
     public void DrawText(string text, SKPoint position, string fontFamily, float fontSize, SKColor color)
     {
         if (Canvas is null)

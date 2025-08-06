@@ -99,7 +99,9 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     float IBlueprintEditor.Height => (float)ActualHeight;
 
-    IBlueprintStyles IBlueprintEditor.Styles { get; } = new BlueprintStyles();
+    IBlueprintOverlay IBlueprintEditor.Overlay { get; } = new BlueprintOverlay();
+
+    IBlueprintStyle IBlueprintEditor.Style { get; } = new BlueprintStyle();
 
     float IBlueprintEditor.X { get => (float)X; set => X = value; }
 

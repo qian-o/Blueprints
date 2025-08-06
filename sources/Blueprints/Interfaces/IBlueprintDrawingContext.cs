@@ -22,6 +22,10 @@ public interface IBlueprintDrawingContext
 
     void DrawRoundRectangle(SKRoundRect roundRect, SKColor fillColor, float strokeWidth, SKColor strokeColor);
 
+    void DrawEllipse(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+
+    void DrawPath(SKPath path, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+
     void DrawText(string text, SKPoint position, string fontFamily, float fontSize, SKColor color);
 
     SKSize MeasureText(string text, string fontFamily, float fontSize);

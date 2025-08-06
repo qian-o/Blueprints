@@ -8,7 +8,7 @@ public static class BlueprintRenderer
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas)
     {
-        editor.Styles.Update();
+        editor.Style.Update();
 
         if (!contexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
         {
@@ -17,7 +17,7 @@ public static class BlueprintRenderer
 
         ((BlueprintDrawingContext)dc).Canvas = canvas;
 
-        dc.Clear(editor.Styles.BackgroundColor);
+        dc.Clear(editor.Style.BackgroundColor);
 
         dc.PushTransform(SKMatrix.CreateScale(editor.Dpi, editor.Dpi));
 
@@ -32,14 +32,14 @@ public static class BlueprintRenderer
 
     private static void Grid(IBlueprintEditor editor, IBlueprintDrawingContext dc)
     {
-        SKColor minorLineColor = editor.Styles.MinorLineColor;
-        SKColor majorLineColor = editor.Styles.MajorLineColor;
+        SKColor minorLineColor = editor.Style.MinorLineColor;
+        SKColor majorLineColor = editor.Style.MajorLineColor;
 
-        float minorLineWidth = editor.Styles.MinorLineWidth * editor.Zoom;
-        float majorLineWidth = editor.Styles.MajorLineWidth * editor.Zoom;
+        float minorLineWidth = editor.Style.MinorLineWidth * editor.Zoom;
+        float majorLineWidth = editor.Style.MajorLineWidth * editor.Zoom;
 
-        float minorLineSpacing = editor.Styles.MinorLineSpacing * editor.Zoom;
-        float majorLineSpacing = editor.Styles.MajorLineSpacing * editor.Zoom;
+        float minorLineSpacing = editor.Style.MinorLineSpacing * editor.Zoom;
+        float majorLineSpacing = editor.Style.MajorLineSpacing * editor.Zoom;
 
         for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
         {
@@ -73,20 +73,20 @@ public static class BlueprintRenderer
                       + $"Width: {editor.Width:F2}\n"
                       + $"Height: {editor.Height:F2}";
 
-        SKSize rectSize = dc.MeasureText(text, editor.Styles.FontFamily, editor.Styles.TextSize) + new SKSize(margin * 2, margin * 2);
+        SKSize rectSize = dc.MeasureText(text, editor.Style.FontFamily, editor.Style.TextSize) + new SKSize(margin * 2, margin * 2);
 
         dc.PushTransform(SKMatrix.CreateTranslation(4, 4));
 
         dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
                               SKColors.Transparent,
                               1.0f,
-                              editor.Styles.ForegroundColor);
+                              editor.Style.ForegroundColor);
 
         dc.DrawText(text,
                     new SKPoint(margin, margin),
-                    editor.Styles.FontFamily,
-                    editor.Styles.TextSize,
-                    editor.Styles.ForegroundColor);
+                    editor.Style.FontFamily,
+                    editor.Style.TextSize,
+                    editor.Style.ForegroundColor);
 
         dc.Pop();
     }

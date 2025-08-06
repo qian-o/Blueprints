@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public interface IBlueprintStyles
+public interface IBlueprintStyle
 {
     string FontFamily { get; }
 
