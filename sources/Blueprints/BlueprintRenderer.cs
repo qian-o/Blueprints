@@ -6,7 +6,7 @@ public static class BlueprintRenderer
 {
     private static readonly Dictionary<IBlueprintEditor, IBlueprintDrawingContext> contexts = [];
 
-    public static void Render(IBlueprintEditor editor, SKCanvas canvas)
+    public static void Render(IBlueprintEditor editor, SKCanvas canvas, float dpi)
     {
         editor.Style.Update();
 
@@ -17,15 +17,13 @@ public static class BlueprintRenderer
 
         ((BlueprintDrawingContext)dc).Canvas = canvas;
 
-        dc.Clear(editor.Style.BackgroundColor);
+        dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
 
-        dc.PushTransform(SKMatrix.CreateScale(editor.Dpi, editor.Dpi));
+        dc.Clear(editor.Style.BackgroundColor);
 
         Grid(editor, dc);
 
-#if DEBUG
         Debug(editor, dc);
-#endif
 
         dc.Pop();
     }

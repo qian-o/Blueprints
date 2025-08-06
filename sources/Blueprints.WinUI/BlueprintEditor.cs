@@ -103,8 +103,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
-    float IBlueprintEditor.Dpi => (float)Dpi;
-
     float IBlueprintEditor.Width => (float)ActualWidth;
 
     float IBlueprintEditor.Height => (float)ActualHeight;
@@ -121,6 +119,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
-        BlueprintRenderer.Render(this, e.Surface.Canvas);
+        BlueprintRenderer.Render(this, e.Surface.Canvas, (float)Dpi);
     }
 }
