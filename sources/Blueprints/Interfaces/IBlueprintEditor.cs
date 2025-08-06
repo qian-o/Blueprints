@@ -8,9 +8,9 @@ public interface IBlueprintEditor
 
     float Height { get; }
 
-    IBlueprintOverlay Overlay { get; }
-
     IBlueprintStyle Style { get; }
+
+    IBlueprintOverlay Overlay { get; }
 
     float X { get; set; }
 
