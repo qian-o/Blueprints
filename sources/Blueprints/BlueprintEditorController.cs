@@ -6,6 +6,14 @@ public class BlueprintEditorController(IBlueprintEditor editor) : IBlueprintCont
 {
     private SKPoint? lastPointerPosition;
 
+    public void PointerEntered(BlueprintPointer pointer, SKPoint position)
+    {
+    }
+
+    public void PointerExited(BlueprintPointer pointer, SKPoint position)
+    {
+    }
+
     public void PointerPressed(BlueprintPointer pointer, SKPoint position)
     {
         if (pointer is BlueprintPointer.RightButton)

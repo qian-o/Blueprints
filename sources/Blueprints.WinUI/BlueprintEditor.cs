@@ -35,6 +35,58 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         BlueprintEditorController controller = new(this);
 
+        PointerEntered += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            if (pointerPoint.Properties.IsLeftButtonPressed)
+            {
+                controller.PointerEntered(BlueprintPointer.LeftButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsRightButtonPressed)
+            {
+                controller.PointerEntered(BlueprintPointer.RightButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsMiddleButtonPressed)
+            {
+                controller.PointerEntered(BlueprintPointer.MiddleButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton1Pressed)
+            {
+                controller.PointerEntered(BlueprintPointer.XButton1, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton2Pressed)
+            {
+                controller.PointerEntered(BlueprintPointer.XButton2, pointerPoint.Position.ToSKPoint());
+            }
+        };
+
+        PointerExited += (_, e) =>
+        {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
+            if (pointerPoint.Properties.IsLeftButtonPressed)
+            {
+                controller.PointerExited(BlueprintPointer.LeftButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsRightButtonPressed)
+            {
+                controller.PointerExited(BlueprintPointer.RightButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsMiddleButtonPressed)
+            {
+                controller.PointerExited(BlueprintPointer.MiddleButton, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton1Pressed)
+            {
+                controller.PointerExited(BlueprintPointer.XButton1, pointerPoint.Position.ToSKPoint());
+            }
+            else if (pointerPoint.Properties.IsXButton2Pressed)
+            {
+                controller.PointerExited(BlueprintPointer.XButton2, pointerPoint.Position.ToSKPoint());
+            }
+        };
+
         PointerPressed += (_, e) =>
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
