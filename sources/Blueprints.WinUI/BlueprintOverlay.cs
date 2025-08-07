@@ -10,18 +10,6 @@ internal partial class BlueprintOverlay : Canvas, IBlueprintOverlay
 {
     private readonly Dictionary<object, ContentPresenter> overlays = [];
 
-    public SKSize Measure(object overlay)
-    {
-        if (overlay is FrameworkElement element)
-        {
-            element.Measure(Size.Empty);
-
-            return element.DesiredSize.ToSKSize();
-        }
-
-        return new(0, 0);
-    }
-
     public void Render(object overlay, float x, float y)
     {
         if (!overlays.TryGetValue(overlay, out ContentPresenter? contentPresenter))
@@ -44,5 +32,17 @@ internal partial class BlueprintOverlay : Canvas, IBlueprintOverlay
             overlays.Remove(overlay);
             Children.Remove(contentPresenter);
         }
+    }
+
+    public SKSize Measure(object overlay)
+    {
+        if (overlay is FrameworkElement element)
+        {
+            element.Measure(Size.Empty);
+
+            return element.DesiredSize.ToSKSize();
+        }
+
+        return new(0, 0);
     }
 }

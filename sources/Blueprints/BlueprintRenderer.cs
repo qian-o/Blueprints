@@ -23,6 +23,14 @@ public static class BlueprintRenderer
 
         Grid(editor, dc);
 
+        dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y));
+        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
+
+        // TODO: Render nodes.
+
+        dc.Pop();
+        dc.Pop();
+
         Debug(editor, dc);
 
         dc.Pop();
