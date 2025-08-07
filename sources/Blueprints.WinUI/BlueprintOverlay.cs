@@ -18,4 +18,15 @@ internal partial class BlueprintOverlay : Canvas, IBlueprintOverlay
         SetLeft(contentPresenter, x);
         SetTop(contentPresenter, y);
     }
+
+    public void Destroy(object overlay)
+    {
+        if (overlays.TryGetValue(overlay, out ContentPresenter? contentPresenter))
+        {
+            contentPresenter.Content = null;
+
+            overlays.Remove(overlay);
+            Children.Remove(contentPresenter);
+        }
+    }
 }
