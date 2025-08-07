@@ -1,8 +1,5 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
-using SkiaSharp.Views.Windows;
-using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
@@ -12,37 +9,37 @@ internal partial class BlueprintOverlay : Canvas, IBlueprintOverlay
 
     public void Render(object overlay, float x, float y)
     {
-        if (!overlays.TryGetValue(overlay, out ContentPresenter? contentPresenter))
+        if (!overlays.TryGetValue(overlay, out ContentPresenter? presenter))
         {
-            overlays[overlay] = contentPresenter = new() { Content = overlay };
+            overlays[overlay] = presenter = new() { Content = overlay };
 
-            Children.Add(contentPresenter);
+            Children.Add(presenter);
         }
 
-        SetLeft(contentPresenter, x);
-        SetTop(contentPresenter, y);
+        SetLeft(presenter, x);
+        SetTop(presenter, y);
     }
 
     public void Destroy(object overlay)
     {
-        if (overlays.TryGetValue(overlay, out ContentPresenter? contentPresenter))
+        if (overlays.TryGetValue(overlay, out ContentPresenter? presenter))
         {
-            contentPresenter.Content = null;
+            presenter.Content = null;
 
             overlays.Remove(overlay);
-            Children.Remove(contentPresenter);
+            Children.Remove(presenter);
         }
     }
 
     public SKSize Measure(object overlay)
     {
-        if (overlay is FrameworkElement element)
+        if (overlays.TryGetValue(overlay, out ContentPresenter? presenter))
         {
-            element.Measure(Size.Empty);
-
-            return element.DesiredSize.ToSKSize();
+            return new((float)presenter.ActualWidth, (float)presenter.ActualHeight);
         }
-
-        return new(0, 0);
+        else
+        {
+            return SKSize.Empty;
+        }
     }
 }
