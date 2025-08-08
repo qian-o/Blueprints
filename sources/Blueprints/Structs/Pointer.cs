@@ -1,6 +1,6 @@
 ﻿namespace Blueprints;
 
-public enum BlueprintPointer
+public enum Pointer
 {
     LeftButton,
 

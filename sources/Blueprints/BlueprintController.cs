@@ -2,21 +2,21 @@
 
 namespace Blueprints;
 
-public class BlueprintEditorController(IBlueprintEditor editor) : IBlueprintController
+public class BlueprintController(IBlueprintEditor editor) : IController
 {
     private SKPoint? lastPointerPosition;
 
-    public void PointerEntered(BlueprintPointer pointer, SKPoint position)
+    public void PointerEntered(Pointer pointer, SKPoint position)
     {
     }
 
-    public void PointerExited(BlueprintPointer pointer, SKPoint position)
+    public void PointerExited(Pointer pointer, SKPoint position)
     {
     }
 
-    public void PointerPressed(BlueprintPointer pointer, SKPoint position)
+    public void PointerPressed(Pointer pointer, SKPoint position)
     {
-        if (pointer is BlueprintPointer.RightButton)
+        if (pointer is Pointer.RightButton)
         {
             lastPointerPosition = position;
         }

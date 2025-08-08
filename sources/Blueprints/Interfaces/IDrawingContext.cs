@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public interface IBlueprintDrawingContext
+public interface IDrawingContext
 {
     void PushClip(SKRect rect);
 

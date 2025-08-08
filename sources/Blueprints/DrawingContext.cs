@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-internal class BlueprintDrawingContext : IBlueprintDrawingContext
+internal class DrawingContext : IDrawingContext
 {
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
     private readonly Dictionary<FillPaintDescriptor, SKPaint> fillPaintCache = [];

@@ -2,64 +2,49 @@
 
 namespace Blueprints;
 
-public static class BlueprintRenderer
+public class BlueprintRenderer(IBlueprintEditor editor)
 {
-    private static readonly Dictionary<IBlueprintEditor, IBlueprintDrawingContext> contexts = [];
+    private readonly DrawingContext dc = new();
 
-    public static void Render(IBlueprintEditor editor, SKCanvas canvas, float dpi)
+    public void Render(SKCanvas canvas, float dpi)
     {
-        if (!contexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
-        {
-            contexts[editor] = dc = new BlueprintDrawingContext();
-        }
-
-        ((BlueprintDrawingContext)dc).Canvas = canvas;
+        dc.Canvas = canvas;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
             dc.Clear(editor.Style.Background);
 
-            Grid(editor, dc);
+            float minorLineWidth = editor.Style.MinorLineWidth * editor.Zoom;
+            float majorLineWidth = editor.Style.MajorLineWidth * editor.Zoom;
 
-            dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y));
-            dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
+            float minorLineSpacing = editor.Style.MinorLineSpacing * editor.Zoom;
+            float majorLineSpacing = editor.Style.MajorLineSpacing * editor.Zoom;
+
+            for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
+            {
+                dc.DrawLine(new(x, 0), new(x, editor.Height), minorLineWidth, editor.Style.MinorLineColor);
+            }
+
+            for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
+            {
+                dc.DrawLine(new(0, y), new(editor.Width, y), minorLineWidth, editor.Style.MinorLineColor);
+            }
+
+            for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
+            {
+                dc.DrawLine(new(x, 0), new(x, editor.Height), majorLineWidth, editor.Style.MajorLineColor);
+            }
+
+            for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
+            {
+                dc.DrawLine(new(0, y), new(editor.Width, y), majorLineWidth, editor.Style.MajorLineColor);
+            }
+
+            dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y).PostConcat(SKMatrix.CreateScale(editor.Zoom, editor.Zoom)));
             {
             }
             dc.Pop();
-            dc.Pop();
         }
         dc.Pop();
-    }
-
-    private static void Grid(IBlueprintEditor editor, IBlueprintDrawingContext dc)
-    {
-        SKColor minorLineColor = editor.Style.MinorLineColor;
-        SKColor majorLineColor = editor.Style.MajorLineColor;
-
-        float minorLineWidth = editor.Style.MinorLineWidth * editor.Zoom;
-        float majorLineWidth = editor.Style.MajorLineWidth * editor.Zoom;
-
-        float minorLineSpacing = editor.Style.MinorLineSpacing * editor.Zoom;
-        float majorLineSpacing = editor.Style.MajorLineSpacing * editor.Zoom;
-
-        for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
-        {
-            dc.DrawLine(new(x, 0), new(x, editor.Height), minorLineWidth, minorLineColor);
-        }
-
-        for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
-        {
-            dc.DrawLine(new(0, y), new(editor.Width, y), minorLineWidth, minorLineColor);
-        }
-
-        for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
-        {
-            dc.DrawLine(new(x, 0), new(x, editor.Height), majorLineWidth, majorLineColor);
-        }
-
-        for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
-        {
-            dc.DrawLine(new(0, y), new(editor.Width, y), majorLineWidth, majorLineColor);
-        }
     }
 }
