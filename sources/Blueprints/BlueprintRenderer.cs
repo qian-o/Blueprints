@@ -31,7 +31,9 @@ public static class BlueprintRenderer
         dc.Pop();
         dc.Pop();
 
+#if DEBUG
         Debug(editor, dc);
+#endif
 
         dc.Pop();
     }

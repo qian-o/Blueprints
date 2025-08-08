@@ -9,7 +9,8 @@
       "compatibleTargetFramework": "desktop"
     },
     "WinUI.Example (Desktop WSL2)": {
-      "commandName": "WSL2"
+      "commandName": "WSL2",
+      "compatibleTargetFramework": "desktop"
     }
   }
 }
