@@ -14,7 +14,7 @@ public interface IBlueprintEditor
 
     float Zoom { get; set; }
 
-    IEnumerable<IBlueprintNode> Nodes { get; set; }
+    IEnumerable<BlueprintNode> Nodes { get; set; }
 
     void Invalidate();
 }

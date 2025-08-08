@@ -11,40 +11,44 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         dc.Canvas = canvas;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
+
+        dc.Clear(editor.Style.Background);
+
+        GridLines(editor.Style.MinorLineSpacing * editor.Zoom,
+                  editor.Style.MinorLineWidth * editor.Zoom,
+                  editor.Style.MinorLineColor);
+
+        GridLines(editor.Style.MajorLineSpacing * editor.Zoom,
+                  editor.Style.MajorLineWidth * editor.Zoom,
+                  editor.Style.MajorLineColor);
+
+        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
+
+        foreach (BlueprintNode node in editor.Nodes)
         {
-            dc.Clear(editor.Style.Background);
-
-            float minorLineWidth = editor.Style.MinorLineWidth * editor.Zoom;
-            float majorLineWidth = editor.Style.MajorLineWidth * editor.Zoom;
-
-            float minorLineSpacing = editor.Style.MinorLineSpacing * editor.Zoom;
-            float majorLineSpacing = editor.Style.MajorLineSpacing * editor.Zoom;
-
-            for (float x = editor.X % minorLineSpacing; x < editor.Width; x += minorLineSpacing)
-            {
-                dc.DrawLine(new(x, 0), new(x, editor.Height), minorLineWidth, editor.Style.MinorLineColor);
-            }
-
-            for (float y = editor.Y % minorLineSpacing; y < editor.Height; y += minorLineSpacing)
-            {
-                dc.DrawLine(new(0, y), new(editor.Width, y), minorLineWidth, editor.Style.MinorLineColor);
-            }
-
-            for (float x = editor.X % majorLineSpacing; x < editor.Width; x += majorLineSpacing)
-            {
-                dc.DrawLine(new(x, 0), new(x, editor.Height), majorLineWidth, editor.Style.MajorLineColor);
-            }
-
-            for (float y = editor.Y % majorLineSpacing; y < editor.Height; y += majorLineSpacing)
-            {
-                dc.DrawLine(new(0, y), new(editor.Width, y), majorLineWidth, editor.Style.MajorLineColor);
-            }
-
-            dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y).PostConcat(SKMatrix.CreateScale(editor.Zoom, editor.Zoom)));
-            {
-            }
-            dc.Pop();
+            Node(node);
         }
+
         dc.Pop();
+
+        dc.Pop();
+    }
+
+    private void GridLines(float spacing, float lineWidth, SKColor color)
+    {
+        for (float x = editor.X % spacing; x < editor.Width; x += spacing)
+        {
+            dc.DrawLine(new(x, 0), new(x, editor.Height), lineWidth, color);
+        }
+
+        for (float y = editor.Y % spacing; y < editor.Height; y += spacing)
+        {
+            dc.DrawLine(new(0, y), new(editor.Width, y), lineWidth, color);
+        }
+    }
+
+    private void Node(BlueprintNode node)
+    {
+        throw new NotImplementedException("Node rendering is not implemented yet.");
     }
 }

@@ -21,6 +21,11 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0));
 
+    public static readonly DependencyProperty NodesProperty = DependencyProperty.Register(nameof(Nodes),
+                                                                                          typeof(IEnumerable<BlueprintNode>),
+                                                                                          typeof(BlueprintEditor),
+                                                                                          new PropertyMetadata(null));
+
     public BlueprintEditor()
     {
         BlueprintRenderer renderer = new(this);
@@ -146,6 +151,12 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
+    public IEnumerable<BlueprintNode>? Nodes
+    {
+        get => (IEnumerable<BlueprintNode>)GetValue(NodesProperty);
+        set => SetValue(NodesProperty, value);
+    }
+
     float IBlueprintEditor.Width => (float)ActualWidth;
 
     float IBlueprintEditor.Height => (float)ActualHeight;
@@ -158,5 +169,5 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
 
-    IEnumerable<IBlueprintNode> IBlueprintEditor.Nodes { get; set; }
+    IEnumerable<BlueprintNode> IBlueprintEditor.Nodes { get => Nodes ?? []; set => Nodes = value; }
 }
