@@ -18,23 +18,18 @@ public static class BlueprintRenderer
         ((BlueprintDrawingContext)dc).Canvas = canvas;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
+        {
+            dc.Clear(editor.Style.Background);
 
-        dc.Clear(editor.Style.BackgroundColor);
+            Grid(editor, dc);
 
-        Grid(editor, dc);
-
-        dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y));
-        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
-
-        // TODO: Render nodes.
-
-        dc.Pop();
-        dc.Pop();
-
-#if DEBUG
-        Debug(editor, dc);
-#endif
-
+            dc.PushTransform(SKMatrix.CreateTranslation(editor.X, editor.Y));
+            dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
+            {
+            }
+            dc.Pop();
+            dc.Pop();
+        }
         dc.Pop();
     }
 
@@ -68,34 +63,5 @@ public static class BlueprintRenderer
         {
             dc.DrawLine(new(0, y), new(editor.Width, y), majorLineWidth, majorLineColor);
         }
-    }
-
-    private static void Debug(IBlueprintEditor editor, IBlueprintDrawingContext dc)
-    {
-        const float margin = 10.0f;
-
-        string text = "Debug Info\n"
-                      + $"Zoom: {editor.Zoom:F2}\n"
-                      + $"X: {editor.X:F2}\n"
-                      + $"Y: {editor.Y:F2}\n"
-                      + $"Width: {editor.Width:F2}\n"
-                      + $"Height: {editor.Height:F2}";
-
-        SKSize rectSize = dc.MeasureText(text, editor.Style.FontFamily, editor.Style.TextSize) + new SKSize(margin * 2, margin * 2);
-
-        dc.PushTransform(SKMatrix.CreateTranslation(4, 4));
-
-        dc.DrawRoundRectangle(new(new(0, 0, rectSize.Width, rectSize.Height), margin),
-                              SKColors.Transparent,
-                              1.0f,
-                              editor.Style.ForegroundColor);
-
-        dc.DrawText(text,
-                    new SKPoint(margin, margin),
-                    editor.Style.FontFamily,
-                    editor.Style.TextSize,
-                    editor.Style.ForegroundColor);
-
-        dc.Pop();
     }
 }

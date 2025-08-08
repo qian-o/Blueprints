@@ -4,11 +4,7 @@ namespace Blueprints;
 
 public interface IBlueprintStyle
 {
-    string FontFamily { get; }
-
-    SKColor BackgroundColor { get; }
-
-    SKColor ForegroundColor { get; }
+    SKColor Background { get; }
 
     SKColor MinorLineColor { get; }
 
@@ -21,8 +17,6 @@ public interface IBlueprintStyle
     float MinorLineSpacing { get; }
 
     float MajorLineSpacing { get; }
-
-    float TextSize { get; }
 
     void Update();
 }
