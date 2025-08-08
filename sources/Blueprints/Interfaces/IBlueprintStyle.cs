@@ -17,6 +17,4 @@ public interface IBlueprintStyle
     float MinorLineSpacing { get; }
 
     float MajorLineSpacing { get; }
-
-    void Update();
 }

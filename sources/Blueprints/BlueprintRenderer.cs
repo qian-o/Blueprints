@@ -8,8 +8,6 @@ public static class BlueprintRenderer
 
     public static void Render(IBlueprintEditor editor, SKCanvas canvas, float dpi)
     {
-        editor.Style.Update();
-
         if (!contexts.TryGetValue(editor, out IBlueprintDrawingContext? dc))
         {
             contexts[editor] = dc = new BlueprintDrawingContext();

@@ -8,8 +8,6 @@ public interface IBlueprintEditor
 
     IBlueprintStyle Style { get; }
 
-    IBlueprintOverlay Overlay { get; }
-
     float X { get; set; }
 
     float Y { get; set; }

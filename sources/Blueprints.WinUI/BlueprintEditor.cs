@@ -23,16 +23,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     public BlueprintEditor()
     {
-        Children.Add((BlueprintOverlay)((IBlueprintEditor)this).Overlay);
-
-        SizeChanged += (_, e) =>
-        {
-            BlueprintOverlay overlay = (BlueprintOverlay)((IBlueprintEditor)this).Overlay;
-
-            overlay.Width = e.NewSize.Width;
-            overlay.Height = e.NewSize.Height;
-        };
-
         BlueprintEditorController controller = new(this);
 
         PointerEntered += (_, e) =>
@@ -160,8 +150,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     float IBlueprintEditor.Height => (float)ActualHeight;
 
     IBlueprintStyle IBlueprintEditor.Style { get; } = new BlueprintStyle();
-
-    IBlueprintOverlay IBlueprintEditor.Overlay { get; } = new BlueprintOverlay();
 
     float IBlueprintEditor.X { get => (float)X; set => X = value; }
 
