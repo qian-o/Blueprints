@@ -157,4 +157,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     float IBlueprintEditor.Y { get => (float)Y; set => Y = value; }
 
     float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
+
+    IEnumerable<IBlueprintNode> IBlueprintEditor.Nodes { get; set; }
 }
