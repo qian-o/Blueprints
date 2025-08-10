@@ -22,7 +22,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                   editor.Style.MajorLineWidth * editor.Zoom,
                   editor.Style.MajorLineColor);
 
-        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
+        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
 
         foreach (Node node in editor.Nodes)
         {

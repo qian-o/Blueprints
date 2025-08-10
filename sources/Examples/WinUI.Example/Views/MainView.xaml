@@ -27,6 +27,7 @@
         </MenuBar>
 
         <bp:BlueprintEditor Grid.Row="1"
-                            Margin="10" />
+                            Margin="10"
+                            Nodes="{Binding Nodes}" />
     </Grid>
 </Page>
