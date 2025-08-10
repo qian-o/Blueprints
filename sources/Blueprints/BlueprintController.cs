@@ -6,23 +6,23 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 {
     private SKPoint? lastPointerPosition;
 
-    public void PointerEntered(Pointer pointer, SKPoint position)
+    public void PointerEntered(PointerFlags pointers, SKPoint position)
     {
     }
 
-    public void PointerExited(Pointer pointer, SKPoint position)
+    public void PointerExited(PointerFlags pointers, SKPoint position)
     {
     }
 
-    public void PointerPressed(Pointer pointer, SKPoint position)
+    public void PointerPressed(PointerFlags pointers, SKPoint position)
     {
-        if (pointer is Pointer.RightButton)
+        if (pointers.HasFlag(PointerFlags.RightButton))
         {
             lastPointerPosition = position;
         }
     }
 
-    public void PointerMoved(SKPoint position)
+    public void PointerMoved(PointerFlags pointers, SKPoint position)
     {
         if (lastPointerPosition is not null)
         {
@@ -38,7 +38,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
         }
     }
 
-    public void PointerReleased(SKPoint position)
+    public void PointerReleased(PointerFlags pointers, SKPoint position)
     {
         lastPointerPosition = null;
     }

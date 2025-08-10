@@ -24,7 +24,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
         dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom));
 
-        foreach (BlueprintNode node in editor.Nodes)
+        foreach (Node node in editor.Nodes)
         {
             Node(node);
         }
@@ -47,7 +47,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         }
     }
 
-    private void Node(BlueprintNode node)
+    private void Node(Node node)
     {
         throw new NotImplementedException("Node rendering is not implemented yet.");
     }

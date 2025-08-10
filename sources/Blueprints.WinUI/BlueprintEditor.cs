@@ -22,7 +22,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                          new PropertyMetadata(1.0));
 
     public static readonly DependencyProperty NodesProperty = DependencyProperty.Register(nameof(Nodes),
-                                                                                          typeof(IEnumerable<BlueprintNode>),
+                                                                                          typeof(IEnumerable<Node>),
                                                                                           typeof(BlueprintEditor),
                                                                                           new PropertyMetadata(null));
 
@@ -37,92 +37,35 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            if (pointerPoint.Properties.IsLeftButtonPressed)
-            {
-                controller.PointerEntered(Pointer.LeftButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsRightButtonPressed)
-            {
-                controller.PointerEntered(Pointer.RightButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsMiddleButtonPressed)
-            {
-                controller.PointerEntered(Pointer.MiddleButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton1Pressed)
-            {
-                controller.PointerEntered(Pointer.XButton1, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton2Pressed)
-            {
-                controller.PointerEntered(Pointer.XButton2, pointerPoint.Position.ToSKPoint());
-            }
+            controller.PointerEntered(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
         };
 
         PointerExited += (_, e) =>
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            if (pointerPoint.Properties.IsLeftButtonPressed)
-            {
-                controller.PointerExited(Pointer.LeftButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsRightButtonPressed)
-            {
-                controller.PointerExited(Pointer.RightButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsMiddleButtonPressed)
-            {
-                controller.PointerExited(Pointer.MiddleButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton1Pressed)
-            {
-                controller.PointerExited(Pointer.XButton1, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton2Pressed)
-            {
-                controller.PointerExited(Pointer.XButton2, pointerPoint.Position.ToSKPoint());
-            }
+            controller.PointerExited(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
         };
 
         PointerPressed += (_, e) =>
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            if (pointerPoint.Properties.IsLeftButtonPressed)
-            {
-                controller.PointerPressed(Pointer.LeftButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsRightButtonPressed)
-            {
-                controller.PointerPressed(Pointer.RightButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsMiddleButtonPressed)
-            {
-                controller.PointerPressed(Pointer.MiddleButton, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton1Pressed)
-            {
-                controller.PointerPressed(Pointer.XButton1, pointerPoint.Position.ToSKPoint());
-            }
-            else if (pointerPoint.Properties.IsXButton2Pressed)
-            {
-                controller.PointerPressed(Pointer.XButton2, pointerPoint.Position.ToSKPoint());
-            }
+            controller.PointerPressed(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
         };
 
         PointerMoved += (_, e) =>
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            controller.PointerMoved(pointerPoint.Position.ToSKPoint());
+            controller.PointerMoved(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
         };
 
         PointerReleased += (_, e) =>
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            controller.PointerReleased(pointerPoint.Position.ToSKPoint());
+            controller.PointerReleased(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
         };
 
         PointerWheelChanged += (_, e) =>
@@ -131,6 +74,38 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
             controller.PointerWheelChanged(pointerPoint.Position.ToSKPoint(), pointerPoint.Properties.MouseWheelDelta);
         };
+
+        static PointerFlags Pointers(PointerPoint pointerPoint)
+        {
+            PointerFlags pointers = PointerFlags.None;
+
+            if (pointerPoint.Properties.IsLeftButtonPressed)
+            {
+                pointers |= PointerFlags.LeftButton;
+            }
+
+            if (pointerPoint.Properties.IsRightButtonPressed)
+            {
+                pointers |= PointerFlags.RightButton;
+            }
+
+            if (pointerPoint.Properties.IsMiddleButtonPressed)
+            {
+                pointers |= PointerFlags.MiddleButton;
+            }
+
+            if (pointerPoint.Properties.IsXButton1Pressed)
+            {
+                pointers |= PointerFlags.XButton1;
+            }
+
+            if (pointerPoint.Properties.IsXButton2Pressed)
+            {
+                pointers |= PointerFlags.XButton2;
+            }
+
+            return pointers;
+        }
     }
 
     public double X
@@ -151,9 +126,9 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
-    public IEnumerable<BlueprintNode>? Nodes
+    public IEnumerable<Node>? Nodes
     {
-        get => (IEnumerable<BlueprintNode>)GetValue(NodesProperty);
+        get => (IEnumerable<Node>)GetValue(NodesProperty);
         set => SetValue(NodesProperty, value);
     }
 
@@ -169,5 +144,5 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
 
-    IEnumerable<BlueprintNode> IBlueprintEditor.Nodes { get => Nodes ?? []; set => Nodes = value; }
+    IEnumerable<Node> IBlueprintEditor.Nodes { get => Nodes ?? []; set => Nodes = value; }
 }

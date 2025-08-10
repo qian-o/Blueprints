@@ -4,15 +4,15 @@ namespace Blueprints;
 
 public interface IController
 {
-    void PointerEntered(Pointer pointer, SKPoint position);
+    void PointerEntered(PointerFlags pointers, SKPoint position);
 
-    void PointerExited(Pointer pointer, SKPoint position);
+    void PointerExited(PointerFlags pointers, SKPoint position);
 
-    void PointerPressed(Pointer pointer, SKPoint position);
+    void PointerPressed(PointerFlags pointers, SKPoint position);
 
-    void PointerMoved(SKPoint position);
+    void PointerMoved(PointerFlags pointers, SKPoint position);
 
-    void PointerReleased(SKPoint position);
+    void PointerReleased(PointerFlags pointers, SKPoint position);
 
     void PointerWheelChanged(SKPoint position, float delta);
 }
