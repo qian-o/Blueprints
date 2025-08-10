@@ -1,8 +1,8 @@
 ﻿namespace Blueprints;
 
-public abstract class Pin
+public abstract class Pin : Element
 {
     public PinShape Shape { get; set; } = PinShape.Circle;
 
-    public object? Content { get; set; }
+    public Element? Content { get; set; }
 }

@@ -26,7 +26,8 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
         foreach (Node node in editor.Nodes)
         {
-            Node(node);
+            node.Measure(dc);
+            node.Render(dc);
         }
 
         dc.Pop();
@@ -45,10 +46,5 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         {
             dc.DrawLine(new(0, y), new(editor.Width, y), lineWidth, color);
         }
-    }
-
-    private void Node(Node node)
-    {
-        throw new NotImplementedException("Node rendering is not implemented yet.");
     }
 }

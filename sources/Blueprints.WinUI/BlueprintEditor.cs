@@ -72,7 +72,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            controller.PointerWheelChanged(pointerPoint.Position.ToSKPoint(), pointerPoint.Properties.MouseWheelDelta);
+            controller.PointerWheelChanged(pointerPoint.Properties.MouseWheelDelta, pointerPoint.Position.ToSKPoint());
         };
 
         static PointerFlags Pointers(PointerPoint pointerPoint)

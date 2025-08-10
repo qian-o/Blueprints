@@ -14,5 +14,5 @@ public interface IController
 
     void PointerReleased(PointerFlags pointers, SKPoint position);
 
-    void PointerWheelChanged(SKPoint position, float delta);
+    void PointerWheelChanged(float delta, SKPoint position);
 }

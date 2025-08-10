@@ -1,10 +1,10 @@
 ﻿namespace Blueprints;
 
-public abstract class Node
+public abstract class Node : Element
 {
-    public object? Title { get; set; }
+    public Element? Title { get; set; }
 
-    public object? Content { get; set; }
+    public Element? Content { get; set; }
 
     public Pin[] Inputs { get; set; } = [];
 

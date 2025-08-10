@@ -8,10 +8,24 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 
     public void PointerEntered(PointerFlags pointers, SKPoint position)
     {
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerEntered(pointers, position);
+            }
+        }
     }
 
     public void PointerExited(PointerFlags pointers, SKPoint position)
     {
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerExited(pointers, position);
+            }
+        }
     }
 
     public void PointerPressed(PointerFlags pointers, SKPoint position)
@@ -19,6 +33,14 @@ public class BlueprintController(IBlueprintEditor editor) : IController
         if (pointers.HasFlag(PointerFlags.RightButton))
         {
             lastPointerPosition = position;
+        }
+
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerPressed(pointers, position);
+            }
         }
     }
 
@@ -36,14 +58,30 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 
             editor.Invalidate();
         }
+
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerMoved(pointers, position);
+            }
+        }
     }
 
     public void PointerReleased(PointerFlags pointers, SKPoint position)
     {
         lastPointerPosition = null;
+
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerReleased(pointers, position);
+            }
+        }
     }
 
-    public void PointerWheelChanged(SKPoint position, float delta)
+    public void PointerWheelChanged(float delta, SKPoint position)
     {
         float scale = delta > 0.0f ? 1.1f : 0.9f;
 
@@ -55,5 +93,13 @@ public class BlueprintController(IBlueprintEditor editor) : IController
         editor.Y = (editor.Y * scaleMatrix.ScaleY) + (position.Y * (1.0f - scaleMatrix.ScaleY));
 
         editor.Invalidate();
+
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(position))
+            {
+                node.PointerWheelChanged(delta, position);
+            }
+        }
     }
 }
