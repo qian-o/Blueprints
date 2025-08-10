@@ -25,9 +25,4 @@ public class Node : Element
     {
         dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red, 0, SKColors.Transparent);
     }
-
-    public override void PointerPressed(PointerEventArgs args)
-    {
-        args.Handled = true;
-    }
 }

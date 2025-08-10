@@ -10,7 +10,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerEntered(args);
             }
@@ -21,7 +21,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerExited(args);
             }
@@ -32,7 +32,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerPressed(args);
             }
@@ -53,7 +53,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerMoved(args);
             }
@@ -82,7 +82,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerReleased(args);
             }
@@ -100,7 +100,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(args.Position))
+            if (node.ScreenBounds.Contains(args.Position))
             {
                 node.PointerWheelChanged(args);
             }

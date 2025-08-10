@@ -2,11 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
         <IsTrimmable>true</IsTrimmable>
         <NoWarn>IDE0130</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
         <PackageReference Include="SkiaSharp" />
     </ItemGroup>
 
