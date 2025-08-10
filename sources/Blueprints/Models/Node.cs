@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public abstract class Node : Element
+public class Node : Element
 {
     public float X { get; set; }
 
@@ -18,7 +18,7 @@ public abstract class Node : Element
 
     public override void Layout(IDrawingContext dc, float offsetX, float offsetY)
     {
-        Bounds = new SKRect(offsetX + X, offsetY + Y, 100, 100);
+        Bounds = SKRect.Create(offsetX + X, offsetY + Y, 100, 100);
     }
 
     public override void Render(IDrawingContext dc)
