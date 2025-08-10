@@ -42,15 +42,128 @@ public abstract partial class Element : ObservableObject, IController
 
     public abstract void Render(IDrawingContext dc);
 
-    public virtual void PointerEntered(PointerEventArgs args) { }
+    public void PointerEntered(PointerEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerEntered(args);
+            }
+        }
 
-    public virtual void PointerExited(PointerEventArgs args) { }
+        if (args.Handled)
+        {
+            return;
+        }
 
-    public virtual void PointerPressed(PointerEventArgs args) { }
+        OnPointerEntered(args);
+    }
 
-    public virtual void PointerMoved(PointerEventArgs args) { }
+    public void PointerExited(PointerEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerExited(args);
+            }
+        }
 
-    public virtual void PointerReleased(PointerEventArgs args) { }
+        if (args.Handled)
+        {
+            return;
+        }
 
-    public virtual void PointerWheelChanged(PointerWheelEventArgs args) { }
+        OnPointerExited(args);
+    }
+
+    public void PointerPressed(PointerEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerPressed(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerPressed(args);
+    }
+
+    public void PointerMoved(PointerEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerMoved(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerMoved(args);
+    }
+
+    public void PointerReleased(PointerEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerReleased(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerReleased(args);
+    }
+
+    public void PointerWheelChanged(PointerWheelEventArgs args)
+    {
+        foreach (var item in Children())
+        {
+            if (item.ScreenBounds.Contains(args.Position))
+            {
+                item.PointerWheelChanged(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerWheelChanged(args);
+    }
+
+    protected virtual Element[] Children()
+    {
+        return [];
+    }
+
+    protected virtual void OnPointerEntered(PointerEventArgs args) { }
+
+    protected virtual void OnPointerExited(PointerEventArgs args) { }
+
+    protected virtual void OnPointerPressed(PointerEventArgs args) { }
+
+    protected virtual void OnPointerMoved(PointerEventArgs args) { }
+
+    protected virtual void OnPointerReleased(PointerEventArgs args) { }
+
+    protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
 }

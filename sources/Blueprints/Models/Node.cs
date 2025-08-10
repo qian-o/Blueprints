@@ -25,4 +25,24 @@ public class Node : Element
     {
         dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red, 0, SKColors.Transparent);
     }
+
+    protected override Element[] Children()
+    {
+        List<Element> children = [];
+
+        if (Title is not null)
+        {
+            children.Add(Title);
+        }
+
+        if (Content is not null)
+        {
+            children.Add(Content);
+        }
+
+        children.AddRange(Inputs);
+        children.AddRange(Outputs);
+
+        return [.. children];
+    }
 }

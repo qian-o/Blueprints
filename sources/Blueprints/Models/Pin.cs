@@ -17,4 +17,9 @@ public class Pin : Element
     {
         dc.DrawEllipse(Bounds, SKColors.Red, 0, SKColors.Transparent);
     }
+
+    protected override Element[] Children()
+    {
+        return Content is not null ? [Content] : [];
+    }
 }
