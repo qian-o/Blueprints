@@ -14,27 +14,27 @@ public abstract class Element : IController
 
     public abstract void Render(IDrawingContext dc);
 
-    public virtual void PointerEntered(PointerFlags pointers, SKPoint position)
+    public virtual void PointerEntered(PointerEventArgs args)
     {
     }
 
-    public virtual void PointerExited(PointerFlags pointers, SKPoint position)
+    public virtual void PointerExited(PointerEventArgs args)
     {
     }
 
-    public virtual void PointerPressed(PointerFlags pointers, SKPoint position)
+    public virtual void PointerPressed(PointerEventArgs args)
     {
     }
 
-    public virtual void PointerMoved(PointerFlags pointers, SKPoint position)
+    public virtual void PointerMoved(PointerEventArgs args)
     {
     }
 
-    public virtual void PointerReleased(PointerFlags pointers, SKPoint position)
+    public virtual void PointerReleased(PointerEventArgs args)
     {
     }
 
-    public virtual void PointerWheelChanged(float delta, SKPoint position)
+    public virtual void PointerWheelChanged(PointerWheelEventArgs args)
     {
     }
 }

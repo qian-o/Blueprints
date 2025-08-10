@@ -1,18 +1,16 @@
-﻿using SkiaSharp;
-
-namespace Blueprints;
+﻿namespace Blueprints;
 
 public interface IController
 {
-    void PointerEntered(PointerFlags pointers, SKPoint position);
+    void PointerEntered(PointerEventArgs args);
 
-    void PointerExited(PointerFlags pointers, SKPoint position);
+    void PointerExited(PointerEventArgs args);
 
-    void PointerPressed(PointerFlags pointers, SKPoint position);
+    void PointerPressed(PointerEventArgs args);
 
-    void PointerMoved(PointerFlags pointers, SKPoint position);
+    void PointerMoved(PointerEventArgs args);
 
-    void PointerReleased(PointerFlags pointers, SKPoint position);
+    void PointerReleased(PointerEventArgs args);
 
-    void PointerWheelChanged(float delta, SKPoint position);
+    void PointerWheelChanged(PointerWheelEventArgs args);
 }

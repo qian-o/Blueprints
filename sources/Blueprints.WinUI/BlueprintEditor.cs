@@ -33,49 +33,19 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
 
-        PointerEntered += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+        PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
 
-            controller.PointerEntered(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
-        };
+        PointerExited += (_, e) => controller.PointerExited(PointerEventArgs(e.GetCurrentPoint(this)));
 
-        PointerExited += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+        PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e.GetCurrentPoint(this)));
 
-            controller.PointerExited(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
-        };
+        PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e.GetCurrentPoint(this)));
 
-        PointerPressed += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+        PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e.GetCurrentPoint(this)));
 
-            controller.PointerPressed(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
-        };
+        PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e.GetCurrentPoint(this)));
 
-        PointerMoved += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
-
-            controller.PointerMoved(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
-        };
-
-        PointerReleased += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
-
-            controller.PointerReleased(Pointers(pointerPoint), pointerPoint.Position.ToSKPoint());
-        };
-
-        PointerWheelChanged += (_, e) =>
-        {
-            PointerPoint pointerPoint = e.GetCurrentPoint(this);
-
-            controller.PointerWheelChanged(pointerPoint.Properties.MouseWheelDelta, pointerPoint.Position.ToSKPoint());
-        };
-
-        static PointerFlags Pointers(PointerPoint pointerPoint)
+        static PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
         {
             PointerFlags pointers = PointerFlags.None;
 
@@ -104,7 +74,12 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                 pointers |= PointerFlags.XButton2;
             }
 
-            return pointers;
+            return new(pointerPoint.Position.ToSKPoint(), pointers);
+        }
+
+        static PointerWheelEventArgs PointerWheelEventArgs(PointerPoint pointerPoint)
+        {
+            return new(pointerPoint.Position.ToSKPoint(), pointerPoint.Properties.MouseWheelDelta);
         }
     }
 

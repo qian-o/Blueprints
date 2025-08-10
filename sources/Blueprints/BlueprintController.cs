@@ -6,100 +6,120 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 {
     private SKPoint? lastPointerPosition;
 
-    public void PointerEntered(PointerFlags pointers, SKPoint position)
+    public void PointerEntered(PointerEventArgs args)
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(position))
+            if (node.Bounds.Contains(args.Position))
             {
-                node.PointerEntered(pointers, position);
+                node.PointerEntered(args);
             }
         }
     }
 
-    public void PointerExited(PointerFlags pointers, SKPoint position)
+    public void PointerExited(PointerEventArgs args)
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(position))
+            if (node.Bounds.Contains(args.Position))
             {
-                node.PointerExited(pointers, position);
+                node.PointerExited(args);
             }
         }
     }
 
-    public void PointerPressed(PointerFlags pointers, SKPoint position)
+    public void PointerPressed(PointerEventArgs args)
     {
-        if (pointers.HasFlag(PointerFlags.RightButton))
-        {
-            lastPointerPosition = position;
-        }
-
         foreach (Node node in editor.Nodes)
         {
-            if (node.Bounds.Contains(position))
+            if (node.Bounds.Contains(args.Position))
             {
-                node.PointerPressed(pointers, position);
+                node.PointerPressed(args);
             }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        if (args.Pointers.HasFlag(PointerFlags.RightButton))
+        {
+            lastPointerPosition = args.Position;
         }
     }
 
-    public void PointerMoved(PointerFlags pointers, SKPoint position)
+    public void PointerMoved(PointerEventArgs args)
     {
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(args.Position))
+            {
+                node.PointerMoved(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         if (lastPointerPosition is not null)
         {
-            float deltaX = position.X - lastPointerPosition.Value.X;
-            float deltaY = position.Y - lastPointerPosition.Value.Y;
+            float deltaX = args.Position.X - lastPointerPosition.Value.X;
+            float deltaY = args.Position.Y - lastPointerPosition.Value.Y;
 
             editor.X += deltaX;
             editor.Y += deltaY;
 
-            lastPointerPosition = position;
+            lastPointerPosition = args.Position;
 
             editor.Invalidate();
         }
-
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.Bounds.Contains(position))
-            {
-                node.PointerMoved(pointers, position);
-            }
-        }
     }
 
-    public void PointerReleased(PointerFlags pointers, SKPoint position)
+    public void PointerReleased(PointerEventArgs args)
     {
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(args.Position))
+            {
+                node.PointerReleased(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         lastPointerPosition = null;
-
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.Bounds.Contains(position))
-            {
-                node.PointerReleased(pointers, position);
-            }
-        }
     }
 
-    public void PointerWheelChanged(float delta, SKPoint position)
+    public void PointerWheelChanged(PointerWheelEventArgs args)
     {
-        float scale = delta > 0.0f ? 1.1f : 0.9f;
+        foreach (Node node in editor.Nodes)
+        {
+            if (node.Bounds.Contains(args.Position))
+            {
+                node.PointerWheelChanged(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        float scale = args.Delta > 0.0f ? 1.1f : 0.9f;
 
         editor.Zoom *= scale;
 
-        SKMatrix scaleMatrix = SKMatrix.CreateScale(scale, scale, position.X, position.Y);
+        SKMatrix scaleMatrix = SKMatrix.CreateScale(scale, scale, args.Position.X, args.Position.Y);
 
-        editor.X = (editor.X * scaleMatrix.ScaleX) + (position.X * (1.0f - scaleMatrix.ScaleX));
-        editor.Y = (editor.Y * scaleMatrix.ScaleY) + (position.Y * (1.0f - scaleMatrix.ScaleY));
+        editor.X = (editor.X * scaleMatrix.ScaleX) + (args.Position.X * (1.0f - scaleMatrix.ScaleX));
+        editor.Y = (editor.Y * scaleMatrix.ScaleY) + (args.Position.Y * (1.0f - scaleMatrix.ScaleY));
 
         editor.Invalidate();
-
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.Bounds.Contains(position))
-            {
-                node.PointerWheelChanged(delta, position);
-            }
-        }
     }
 }
