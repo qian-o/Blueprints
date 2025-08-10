@@ -16,9 +16,9 @@ public abstract class Node : Element
 
     public float Y { get; set; }
 
-    public override void Measure(IDrawingContext dc)
+    public override void Layout(IDrawingContext dc, float offsetX, float offsetY)
     {
-        Bounds = new SKRect(X, Y, 100, 100);
+        Bounds = new SKRect(offsetX + X, offsetY + Y, 100, 100);
     }
 
     public override void Render(IDrawingContext dc)

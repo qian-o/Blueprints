@@ -8,9 +8,9 @@ public abstract class Element : IController
 
     public float Height { get; set; } = float.NaN;
 
-    public SKRect Bounds { get; set; }
+    public SKRect Bounds { get; protected set; }
 
-    public abstract void Measure(IDrawingContext dc);
+    public abstract void Layout(IDrawingContext dc, float offsetX, float offsetY);
 
     public abstract void Render(IDrawingContext dc);
 
@@ -37,5 +37,4 @@ public abstract class Element : IController
     public virtual void PointerWheelChanged(float delta, SKPoint position)
     {
     }
-
 }
