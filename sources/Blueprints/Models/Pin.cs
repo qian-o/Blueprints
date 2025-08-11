@@ -8,18 +8,22 @@ public class Pin : Element
 
     public Element? Content { get; set; }
 
-    public override void Layout(IDrawingContext dc, float offsetX, float offsetY)
-    {
-        Bounds = SKRect.Create(offsetX, offsetX, 8, 8);
-    }
-
-    public override void Render(IDrawingContext dc)
-    {
-        dc.DrawEllipse(Bounds, SKColors.Red, 0, SKColors.Transparent);
-    }
-
-    protected override Element[] Children()
+    protected override Element[] GetSubElements()
     {
         return Content is not null ? [Content] : [];
+    }
+
+    protected override SKSize OnMeasure(IDrawingContext dc)
+    {
+        return new SKSize(20, 20);
+    }
+
+    protected override void OnArrange(SKSize finalSize)
+    {
+    }
+
+    protected override void OnRender(IDrawingContext dc)
+    {
+        dc.DrawEllipse(Bounds, SKColors.Red, 0, SKColors.Transparent);
     }
 }

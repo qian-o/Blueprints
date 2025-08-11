@@ -16,17 +16,7 @@ public class Node : Element
 
     public Pin[] Outputs { get; set; } = [];
 
-    public override void Layout(IDrawingContext dc, float offsetX, float offsetY)
-    {
-        Bounds = SKRect.Create(offsetX + X, offsetY + Y, 100, 100);
-    }
-
-    public override void Render(IDrawingContext dc)
-    {
-        dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red, 0, SKColors.Transparent);
-    }
-
-    protected override Element[] Children()
+    protected override Element[] GetSubElements()
     {
         List<Element> children = [];
 
@@ -44,5 +34,19 @@ public class Node : Element
         children.AddRange(Outputs);
 
         return [.. children];
+    }
+
+    protected override SKSize OnMeasure(IDrawingContext dc)
+    {
+        return new(100, 100);
+    }
+
+    protected override void OnArrange(SKSize finalSize)
+    {
+    }
+
+    protected override void OnRender(IDrawingContext dc)
+    {
+        dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red, 0, SKColors.Transparent);
     }
 }

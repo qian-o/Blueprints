@@ -10,9 +10,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerEntered(args);
+                ((IController)node).PointerEntered(args);
             }
         }
     }
@@ -21,9 +23,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerExited(args);
+                ((IController)node).PointerExited(args);
             }
         }
     }
@@ -32,9 +36,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerPressed(args);
+                ((IController)node).PointerPressed(args);
             }
         }
 
@@ -53,9 +59,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerMoved(args);
+                ((IController)node).PointerMoved(args);
             }
         }
 
@@ -82,9 +90,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerReleased(args);
+                ((IController)node).PointerReleased(args);
             }
         }
 
@@ -100,9 +110,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
+            node.Bind(editor);
+
             if (node.ScreenBounds.Contains(args.Position))
             {
-                node.PointerWheelChanged(args);
+                ((IController)node).PointerWheelChanged(args);
             }
         }
 

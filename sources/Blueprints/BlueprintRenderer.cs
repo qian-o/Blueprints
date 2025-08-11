@@ -27,8 +27,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         foreach (Node node in editor.Nodes)
         {
             node.Bind(editor);
-            node.Layout(dc, 0, 0);
-            node.Render(dc);
+            node.Render(dc, node.X, node.Y);
         }
 
         dc.Pop();

@@ -1,21 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Blueprints;
 
-public abstract partial class Element : ObservableObject, IController
+public abstract class Element : IController
 {
-    [ObservableProperty]
-    public partial float Width { get; set; } = float.NaN;
+    public IBlueprintEditor? Editor { get; private set; }
 
-    [ObservableProperty]
-    public partial float Height { get; set; } = float.NaN;
+    public float Width { get; set; } = float.NaN;
 
-    [ObservableProperty]
-    public partial SKRect Bounds { get; protected set; }
+    public float Height { get; set; } = float.NaN;
 
-    [ObservableProperty]
-    public partial IBlueprintEditor? Editor { get; private set; }
+    public SKSize DesiredSize { get; private set; } = SKSize.Empty;
+
+    public SKRect Bounds { get; private set; }
 
     public SKRect ScreenBounds
     {
@@ -23,137 +20,86 @@ public abstract partial class Element : ObservableObject, IController
         {
             if (Editor is null)
             {
-                return SKRect.Empty;
+                throw new InvalidOperationException("Editor is not bound to this element.");
             }
 
-            return new SKRect(Editor.X + (Bounds.Left * Editor.Zoom),
-                              Editor.Y + (Bounds.Top * Editor.Zoom),
-                              Editor.X + (Bounds.Right * Editor.Zoom),
-                              Editor.Y + (Bounds.Bottom * Editor.Zoom));
+            return new(Editor.X + (Bounds.Left * Editor.Zoom),
+                       Editor.Y + (Bounds.Top * Editor.Zoom),
+                       Editor.X + (Bounds.Right * Editor.Zoom),
+                       Editor.Y + (Bounds.Bottom * Editor.Zoom));
         }
     }
 
-    public void Bind(IBlueprintEditor? editor)
+    public IBlueprintStyle Style
+    {
+        get
+        {
+            if (Editor is null)
+            {
+                throw new InvalidOperationException("Editor is not bound to this element.");
+            }
+
+            return Editor.Style;
+        }
+    }
+
+    public void Invalidate()
+    {
+        Editor?.Invalidate();
+    }
+
+    internal void Bind(IBlueprintEditor editor)
     {
         Editor = editor;
+
+        foreach (Element element in GetSubElements())
+        {
+            element.Bind(editor);
+        }
     }
 
-    public abstract void Layout(IDrawingContext dc, float offsetX, float offsetY);
-
-    public abstract void Render(IDrawingContext dc);
-
-    public void PointerEntered(PointerEventArgs args)
+    internal void Render(IDrawingContext dc, float offsetX, float offsetY)
     {
-        foreach (var item in Children())
+        if (Editor is null)
         {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerEntered(args);
-            }
+            throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        if (args.Handled)
-        {
-            return;
-        }
+        Measure(dc);
+        Arrange(SKRect.Create(offsetX, offsetY, DesiredSize.Width, DesiredSize.Height));
 
-        OnPointerEntered(args);
+        OnRender(dc);
+
+        foreach (Element element in GetSubElements())
+        {
+            element.OnRender(dc);
+        }
     }
 
-    public void PointerExited(PointerEventArgs args)
+    private void Measure(IDrawingContext dc)
     {
-        foreach (var item in Children())
-        {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerExited(args);
-            }
-        }
+        DesiredSize = OnMeasure(dc);
 
-        if (args.Handled)
+        foreach (Element element in GetSubElements())
         {
-            return;
+            element.Measure(dc);
         }
-
-        OnPointerExited(args);
     }
 
-    public void PointerPressed(PointerEventArgs args)
+    private void Arrange(SKRect finalBounds)
     {
-        foreach (var item in Children())
-        {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerPressed(args);
-            }
-        }
+        Bounds = finalBounds;
 
-        if (args.Handled)
-        {
-            return;
-        }
-
-        OnPointerPressed(args);
+        OnArrange(finalBounds.Size);
     }
 
-    public void PointerMoved(PointerEventArgs args)
-    {
-        foreach (var item in Children())
-        {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerMoved(args);
-            }
-        }
+    protected abstract Element[] GetSubElements();
 
-        if (args.Handled)
-        {
-            return;
-        }
+    protected abstract SKSize OnMeasure(IDrawingContext dc);
 
-        OnPointerMoved(args);
-    }
+    protected abstract void OnArrange(SKSize finalSize);
 
-    public void PointerReleased(PointerEventArgs args)
-    {
-        foreach (var item in Children())
-        {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerReleased(args);
-            }
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
-        OnPointerReleased(args);
-    }
-
-    public void PointerWheelChanged(PointerWheelEventArgs args)
-    {
-        foreach (var item in Children())
-        {
-            if (item.ScreenBounds.Contains(args.Position))
-            {
-                item.PointerWheelChanged(args);
-            }
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
-        OnPointerWheelChanged(args);
-    }
-
-    protected virtual Element[] Children()
-    {
-        return [];
-    }
+    protected abstract void OnRender(IDrawingContext dc);
 
     protected virtual void OnPointerEntered(PointerEventArgs args) { }
 
@@ -166,4 +112,112 @@ public abstract partial class Element : ObservableObject, IController
     protected virtual void OnPointerReleased(PointerEventArgs args) { }
 
     protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
+
+    void IController.PointerEntered(PointerEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerEntered(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerEntered(args);
+    }
+
+    void IController.PointerExited(PointerEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerExited(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerExited(args);
+    }
+
+    void IController.PointerPressed(PointerEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerPressed(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerPressed(args);
+    }
+
+    void IController.PointerMoved(PointerEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerMoved(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerMoved(args);
+    }
+
+    void IController.PointerReleased(PointerEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerReleased(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerReleased(args);
+    }
+
+    void IController.PointerWheelChanged(PointerWheelEventArgs args)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            if (element.ScreenBounds.Contains(args.Position))
+            {
+                ((IController)element).PointerWheelChanged(args);
+            }
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        OnPointerWheelChanged(args);
+    }
 }
