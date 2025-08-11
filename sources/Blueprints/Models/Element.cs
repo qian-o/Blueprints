@@ -12,7 +12,7 @@ public abstract class Element : IController
 
     public SKSize DesiredSize { get; private set; } = SKSize.Empty;
 
-    public SKRect Bounds { get; private set; }
+    public SKRect Bounds { get; private set; } = SKRect.Empty;
 
     public SKRect ScreenBounds
     {
