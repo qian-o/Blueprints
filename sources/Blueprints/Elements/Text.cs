@@ -32,6 +32,6 @@ public class Text : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawText(Content, new(0, 0), FontFamily, FontWeight, FontSize, Foreground);
+        dc.DrawText(Content, ContentBounds.Location, FontFamily, FontWeight, FontSize, Foreground);
     }
 }

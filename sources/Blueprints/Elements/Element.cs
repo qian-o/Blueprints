@@ -109,25 +109,19 @@ public abstract partial class Element : IController
 
     private void Render(IDrawingContext dc)
     {
-        SKRect contentBounds = ContentBounds;
-
         dc.PushClip(Bounds, CornerRadius);
         {
             dc.DrawRectangle(Bounds, CornerRadius, Background);
             dc.DrawRectangle(Bounds, CornerRadius, Stroke, StrokeWidth * 2);
 
-            dc.PushClip(contentBounds, CornerRadius);
+            dc.PushClip(ContentBounds, CornerRadius);
             {
+                OnRender(dc);
+
                 foreach (Element element in GetSubElements())
                 {
                     element.Render(dc);
                 }
-
-                dc.PushTransform(SKMatrix.CreateTranslation(contentBounds.Left, contentBounds.Top));
-                {
-                    OnRender(dc);
-                }
-                dc.Pop();
             }
             dc.Pop();
         }
