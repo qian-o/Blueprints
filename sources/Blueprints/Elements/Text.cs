@@ -23,8 +23,7 @@ public class Text : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        throw new NotImplementedException("OnMeasure is not implemented yet.");
-        // return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
+        return dc.MeasureText(Content, FontFamily, FontWeight, FontSize) + Padding.Size;
     }
 
     protected override void OnArrange(SKSize finalSize)
@@ -33,6 +32,6 @@ public class Text : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        // dc.DrawText(Content, Bounds.Location, FontFamily, FontWeight, FontSize, Style.Foreground);
+        dc.DrawText(Content, Bounds.Location + Padding.LeftTop, FontFamily, FontWeight, FontSize, Foreground);
     }
 }

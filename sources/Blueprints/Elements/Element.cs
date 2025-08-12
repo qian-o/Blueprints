@@ -6,9 +6,17 @@ public abstract partial class Element : IController
 {
     public IBlueprintEditor? Editor { get; private set; }
 
+    public float MinWidth { get; set; }
+
+    public float MinHeight { get; set; }
+
     public float Width { get; set; } = float.NaN;
 
     public float Height { get; set; } = float.NaN;
+
+    public float MaxWidth { get; set; } = float.PositiveInfinity;
+
+    public float MaxHeight { get; set; } = float.PositiveInfinity;
 
     public SKSize DesiredSize { get; private set; } = SKSize.Empty;
 
@@ -70,7 +78,29 @@ public abstract partial class Element : IController
             element.Measure(dc);
         }
 
-        DesiredSize = OnMeasure(dc);
+        float width = 0;
+        float height = 0;
+        if (float.IsNaN(Width) || float.IsNaN(Height))
+        {
+            SKSize size = OnMeasure(dc);
+
+            if (float.IsNaN(Width))
+            {
+                width = Math.Clamp(size.Width, MinWidth, MaxWidth);
+            }
+
+            if (float.IsNaN(Height))
+            {
+                height = Math.Clamp(size.Height, MinHeight, MaxHeight);
+            }
+        }
+        else
+        {
+            width = Math.Clamp(Width, MinWidth, MaxWidth);
+            height = Math.Clamp(Height, MinHeight, MaxHeight);
+        }
+
+        DesiredSize = new(width, height);
     }
 
     private void Arrange(SKRect finalBounds)

@@ -1,4 +1,6 @@
-﻿namespace Blueprints;
+﻿using SkiaSharp;
+
+namespace Blueprints;
 
 public readonly struct Thickness(float left, float top, float right, float bottom)
 {
@@ -9,6 +11,12 @@ public readonly struct Thickness(float left, float top, float right, float botto
     public float Right { get; } = right;
 
     public float Bottom { get; } = bottom;
+
+    public SKSize LeftTop => new(Left, Top);
+
+    public SKSize RightBottom => new(Right, Bottom);
+
+    public SKSize Size => LeftTop + RightBottom;
 
     public static implicit operator Thickness(float uniform)
     {
