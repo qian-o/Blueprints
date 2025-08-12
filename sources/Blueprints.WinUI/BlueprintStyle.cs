@@ -6,11 +6,11 @@ public class BlueprintStyle : IBlueprintStyle
 {
     public string FontFamily { get; } = "Segoe UI";
 
-    public float FontSize { get; } = 16.0f;
-
     public SKColor Background { get; } = SKColors.White;
 
     public SKColor Foreground { get; } = SKColors.Black;
+
+    public SKColor Stroke { get; } = SKColors.Black;
 
     public GridLine MinorGridLine { get; } = new(SKColors.LightGray, 1.0f, 20.0f);
 

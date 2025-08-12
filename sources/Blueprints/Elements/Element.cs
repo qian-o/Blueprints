@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public abstract class Element : IController
+public abstract partial class Element : IController
 {
     public IBlueprintEditor? Editor { get; private set; }
 
@@ -27,19 +27,6 @@ public abstract class Element : IController
                        Editor.Y + (Bounds.Top * Editor.Zoom),
                        Editor.X + (Bounds.Right * Editor.Zoom),
                        Editor.Y + (Bounds.Bottom * Editor.Zoom));
-        }
-    }
-
-    public IBlueprintStyle Style
-    {
-        get
-        {
-            if (Editor is null)
-            {
-                throw new InvalidOperationException("Editor is not bound to this element.");
-            }
-
-            return Editor.Style;
         }
     }
 
