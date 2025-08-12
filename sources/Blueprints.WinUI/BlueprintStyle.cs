@@ -12,9 +12,9 @@ public class BlueprintStyle : IBlueprintStyle
 
     public SKColor Foreground { get; } = SKColors.Black;
 
-    public GridLine MinorGridLine { get; } = new(SKColors.LightGray, 1.0f, 20.0f);
+    public GridLine MinorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["DividerStrokeColorDefaultBrush"]).Color.ToSKColor(), 1.0f, 20.0f);
 
-    public GridLine MajorGridLine { get; } = new(SKColors.Gray, 2.0f, 120.0f);
+    public GridLine MajorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["ControlStrongStrokeColorDefaultBrush"]).Color.ToSKColor(), 2.0f, 120.0f);
 
     public SKColor NodeStroke { get; } = ((Color)Application.Current.Resources["CardStrokeColorDefault"]).ToSKColor();
 
