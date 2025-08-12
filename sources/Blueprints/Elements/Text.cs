@@ -23,7 +23,7 @@ public class Text : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return dc.MeasureText(Content, FontFamily, FontWeight, FontSize) + Padding.Size;
+        return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
     }
 
     protected override void OnArrange(SKSize finalSize)
@@ -32,6 +32,5 @@ public class Text : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawText(Content, Bounds.Location + Padding.LeftTop, FontFamily, FontWeight, FontSize, Foreground);
     }
 }

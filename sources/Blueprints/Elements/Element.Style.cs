@@ -24,9 +24,9 @@ public partial class Element
 
     public SKColor Foreground { get => foreground ?? Style.Foreground; set => foreground = value; }
 
-    public SKColor Background { get; set; } = SKColors.Transparent;
-
     public SKColor Stroke { get; set; } = SKColors.Transparent;
+
+    public SKColor Background { get; set; } = SKColors.Transparent;
 
     public Thickness Margin { get; set; } = 0.0f;
 

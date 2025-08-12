@@ -63,12 +63,7 @@ public abstract partial class Element : IController
         Measure(dc);
         Arrange(SKRect.Create(offsetX, offsetY, DesiredSize.Width, DesiredSize.Height));
 
-        OnRender(dc);
-
-        foreach (Element element in GetSubElements())
-        {
-            element.OnRender(dc);
-        }
+        Render(dc);
     }
 
     private void Measure(IDrawingContext dc)
@@ -108,6 +103,20 @@ public abstract partial class Element : IController
         Bounds = finalBounds;
 
         OnArrange(finalBounds.Size);
+    }
+
+    private void Render(IDrawingContext dc)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            element.Render(dc);
+        }
+
+        dc.PushTransform(SKMatrix.CreateTranslation(Bounds.Left, Bounds.Top));
+
+        OnRender(dc);
+
+        dc.Pop();
     }
 
     protected abstract Element[] GetSubElements();
