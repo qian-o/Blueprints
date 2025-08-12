@@ -7,18 +7,7 @@ public partial class Element
     private string? fontFamily;
     private SKColor? foreground;
 
-    public IBlueprintStyle Style
-    {
-        get
-        {
-            if (Editor is null)
-            {
-                throw new InvalidOperationException("Editor is not bound to this element.");
-            }
-
-            return Editor.Style;
-        }
-    }
+    public IBlueprintStyle Style => Editor is null ? throw new InvalidOperationException("Editor is not bound to this element.") : Editor.Style;
 
     public string FontFamily { get => fontFamily ?? Style.FontFamily; set => fontFamily = value; }
 

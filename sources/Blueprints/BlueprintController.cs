@@ -10,8 +10,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerEntered(args);
@@ -23,8 +21,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerExited(args);
@@ -36,8 +32,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerPressed(args);
@@ -59,8 +53,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerMoved(args);
@@ -90,8 +82,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerReleased(args);
@@ -110,8 +100,6 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-
             if (node.ScreenBounds.Contains(args.Position))
             {
                 ((IController)node).PointerWheelChanged(args);

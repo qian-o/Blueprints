@@ -24,21 +24,7 @@ public abstract partial class Element : IController
 
     public SKRect ContentBounds { get; private set; } = SKRect.Empty;
 
-    public SKRect ScreenBounds
-    {
-        get
-        {
-            if (Editor is null)
-            {
-                throw new InvalidOperationException("Editor is not bound to this element.");
-            }
-
-            return new(Editor.X + (Bounds.Left * Editor.Zoom),
-                       Editor.Y + (Bounds.Top * Editor.Zoom),
-                       Editor.X + (Bounds.Right * Editor.Zoom),
-                       Editor.Y + (Bounds.Bottom * Editor.Zoom));
-        }
-    }
+    public SKRect ScreenBounds { get; private set; } = SKRect.Empty;
 
     public void Invalidate()
     {
@@ -78,6 +64,10 @@ public abstract partial class Element : IController
     {
         Bounds = finalBounds;
         ContentBounds = SKRect.Inflate(finalBounds, -StrokeWidth, -StrokeWidth);
+        ScreenBounds = new(Editor?.X ?? 0 + (finalBounds.Left * Editor?.Zoom ?? 1),
+                           Editor?.Y ?? 0 + (finalBounds.Top * Editor?.Zoom ?? 1),
+                           Editor?.X ?? 0 + (finalBounds.Right * Editor?.Zoom ?? 1),
+                           Editor?.Y ?? 0 + (finalBounds.Bottom * Editor?.Zoom ?? 1));
 
         OnArrange();
     }
