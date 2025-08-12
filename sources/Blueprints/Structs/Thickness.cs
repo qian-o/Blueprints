@@ -10,9 +10,9 @@ public readonly struct Thickness(float left, float top, float right, float botto
 
     public float Bottom { get; } = bottom;
 
-    public bool IsZero { get; } = left == 0.0f && top == 0.0f && right == 0.0f && bottom == 0.0f;
+    public float Horizontal { get; } = left + right;
 
-    public bool IsUniform { get; } = left == right && top == bottom && left == top;
+    public float Vertical { get; } = top + bottom;
 
     public static implicit operator Thickness(float uniform)
     {

@@ -24,17 +24,17 @@ public partial class Element
 
     public SKColor Foreground { get => foreground ?? Style.Foreground; set => foreground = value; }
 
-    public SKColor Stroke { get; set; } = SKColors.Transparent;
+    public SKColor Stroke { get; set; }
 
-    public SKColor Background { get; set; } = SKColors.Transparent;
+    public SKColor Background { get; set; }
 
-    public Thickness Margin { get; set; } = 0.0f;
+    public Thickness Margin { get; set; }
 
-    public Thickness Padding { get; set; } = 0.0f;
+    public Thickness Padding { get; set; }
 
-    public Thickness StrokeThickness { get; set; } = 0.0f;
+    public float StrokeWidth { get; set; }
 
-    public CornerRadius CornerRadius { get; set; } = 0.0f;
+    public float CornerRadius { get; set; }
 
     public float FontWeight { get; set; } = 400.0f;
 

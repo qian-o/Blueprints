@@ -73,36 +73,38 @@ public abstract partial class Element : IController
             element.Measure(dc);
         }
 
-        float width = 0;
-        float height = 0;
-        if (float.IsNaN(Width) || float.IsNaN(Height))
+        float width = Width;
+        float height = Height;
+
+        if (float.IsNaN(width) || float.IsNaN(height))
         {
             SKSize size = OnMeasure(dc);
 
-            if (float.IsNaN(Width))
+            if (float.IsNaN(width))
             {
-                width = Math.Clamp(size.Width, MinWidth, MaxWidth);
+                width = size.Width;
             }
 
-            if (float.IsNaN(Height))
+            if (float.IsNaN(height))
             {
-                height = Math.Clamp(size.Height, MinHeight, MaxHeight);
+                height = size.Height;
             }
         }
-        else
-        {
-            width = Math.Clamp(Width, MinWidth, MaxWidth);
-            height = Math.Clamp(Height, MinHeight, MaxHeight);
-        }
 
-        DesiredSize = new(width, height);
+        float strokePadding = StrokeWidth * 2;
+
+        DesiredSize = new(Math.Clamp(width + Padding.Horizontal + strokePadding, MinWidth, MaxWidth),
+                          Math.Clamp(height + Padding.Vertical + strokePadding, MinHeight, MaxHeight));
     }
 
     private void Arrange(SKRect finalBounds)
     {
         Bounds = finalBounds;
 
-        OnArrange(finalBounds.Size);
+        float strokePadding = StrokeWidth * 2;
+
+        OnArrange(new(finalBounds.Width - Padding.Horizontal - strokePadding,
+                      finalBounds.Height - Padding.Vertical - strokePadding));
     }
 
     private void Render(IDrawingContext dc)
