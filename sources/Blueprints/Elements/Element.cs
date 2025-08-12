@@ -94,20 +94,7 @@ public abstract partial class Element : IController
         }
     }
 
-    internal void Render(IDrawingContext dc, float x, float y)
-    {
-        if (Editor is null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        Measure(dc);
-        Arrange(SKRect.Create(x, y, DesiredSize.Width, DesiredSize.Height));
-
-        Render(dc);
-    }
-
-    private void Render(IDrawingContext dc)
+    internal void Render(IDrawingContext dc)
     {
         dc.PushClip(Bounds, CornerRadius);
         {

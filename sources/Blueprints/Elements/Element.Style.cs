@@ -38,7 +38,7 @@ public partial class Element
 
     public float FontWeight { get; set; } = 400.0f;
 
-    public float FontSize { get; set; } = 12.0f;
+    public float FontSize { get; set; } = 14.0f;
 
     public void UseGlobalStyle()
     {

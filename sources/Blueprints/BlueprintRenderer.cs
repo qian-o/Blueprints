@@ -11,22 +11,26 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         dc.Canvas = canvas;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
-
-        dc.Clear(SKColors.Transparent);
-
-        GridLines(editor.Style.MinorGridLine);
-        GridLines(editor.Style.MajorGridLine);
-
-        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
-
-        foreach (Node node in editor.Nodes)
         {
-            node.Bind(editor);
-            node.Render(dc, node.X, node.Y);
+            dc.Clear(SKColors.Transparent);
+
+            GridLines(editor.Style.MinorGridLine);
+            GridLines(editor.Style.MajorGridLine);
+
+            dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
+            {
+                foreach (Node node in editor.Nodes)
+                {
+                    node.Bind(editor);
+
+                    node.Measure(dc);
+                    node.Arrange(SKRect.Create(node.X, node.Y, node.DesiredSize.Width, node.DesiredSize.Height));
+
+                    node.Render(dc);
+                }
+            }
+            dc.Pop();
         }
-
-        dc.Pop();
-
         dc.Pop();
     }
 
