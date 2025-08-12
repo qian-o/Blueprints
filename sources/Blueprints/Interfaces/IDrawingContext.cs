@@ -16,17 +16,33 @@ public interface IDrawingContext
 
     void Clear(SKColor color);
 
-    void DrawLine(SKPoint start, SKPoint end, float strokeWidth, SKColor strokeColor);
+    void DrawImage(SKImage image, SKRect src, SKRect dest);
 
-    void DrawRectangle(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+    void DrawPoint(SKPoint point, SKColor color);
 
-    void DrawRoundRectangle(SKRoundRect roundRect, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+    void DrawLine(SKPoint start, SKPoint end, SKColor stroke, float strokeWidth);
 
-    void DrawEllipse(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+    void DrawRectangle(SKRect rect, SKColor fill);
 
-    void DrawPath(SKPath path, SKColor fillColor, float strokeWidth, SKColor strokeColor);
+    void DrawRectangle(SKRect rect, SKColor stroke, float strokeWidth);
 
-    void DrawText(string text, SKPoint position, string fontFamily, float fontSize, SKColor color);
+    void DrawRoundRectangle(SKRoundRect roundRect, SKColor fill);
 
-    SKSize MeasureText(string text, string fontFamily, float fontSize);
+    void DrawRoundRectangle(SKRoundRect roundRect, SKColor stroke, float strokeWidth);
+
+    void DrawEllipse(SKRect rect, SKColor fill);
+
+    void DrawEllipse(SKRect rect, SKColor stroke, float strokeWidth);
+
+    void DrawCircle(SKPoint center, float radius, SKColor fill);
+
+    void DrawCircle(SKPoint center, float radius, SKColor stroke, float strokeWidth);
+
+    void DrawPath(SKPath path, SKColor fill);
+
+    void DrawPath(SKPath path, SKColor stroke, float strokeWidth);
+
+    void DrawText(string text, SKPoint position, string fontFamily, float fontWeight, float fontSize, SKColor color);
+
+    SKSize MeasureText(string text, string fontFamily, float fontWeight, float fontSize);
 }

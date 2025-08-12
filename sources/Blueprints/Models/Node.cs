@@ -47,6 +47,6 @@ public class Node : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red, 0, SKColors.Transparent);
+        dc.DrawRoundRectangle(new(Bounds, 10), SKColors.Red);
     }
 }

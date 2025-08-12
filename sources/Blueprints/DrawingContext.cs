@@ -75,84 +75,144 @@ internal class DrawingContext : IDrawingContext
         Canvas.Clear(color);
     }
 
-    public void DrawLine(SKPoint start, SKPoint end, float strokeWidth, SKColor strokeColor)
+    public void DrawImage(SKImage image, SKRect src, SKRect dest)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawLine(start, end, GetStrokePaint(strokeColor, strokeWidth));
+        Canvas.DrawImage(image, src, dest, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
     }
 
-    public void DrawRectangle(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    public void DrawPoint(SKPoint point, SKColor color)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawRect(rect, GetFillPaint(fillColor));
-
-        if (strokeWidth > 0)
-        {
-            Canvas.DrawRect(rect, GetStrokePaint(strokeColor, strokeWidth));
-        }
+        Canvas.DrawPoint(point, GetFillPaint(color));
     }
 
-    public void DrawRoundRectangle(SKRoundRect roundRect, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    public void DrawLine(SKPoint start, SKPoint end, SKColor stroke, float strokeWidth)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawRoundRect(roundRect, GetFillPaint(fillColor));
-
-        if (strokeWidth > 0)
-        {
-            Canvas.DrawRoundRect(roundRect, GetStrokePaint(strokeColor, strokeWidth));
-        }
+        Canvas.DrawLine(start, end, GetStrokePaint(stroke, strokeWidth));
     }
 
-    public void DrawEllipse(SKRect rect, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    public void DrawRectangle(SKRect rect, SKColor fill)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawOval(rect, GetFillPaint(fillColor));
-
-        if (strokeWidth > 0)
-        {
-            Canvas.DrawOval(rect, GetStrokePaint(strokeColor, strokeWidth));
-        }
+        Canvas.DrawRect(rect, GetFillPaint(fill));
     }
 
-    public void DrawPath(SKPath path, SKColor fillColor, float strokeWidth, SKColor strokeColor)
+    public void DrawRectangle(SKRect rect, SKColor stroke, float strokeWidth)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawPath(path, GetFillPaint(fillColor));
-
-        if (strokeWidth > 0)
-        {
-            Canvas.DrawPath(path, GetStrokePaint(strokeColor, strokeWidth));
-        }
+        Canvas.DrawRect(rect, GetStrokePaint(stroke, strokeWidth));
     }
 
-    public void DrawText(string text, SKPoint position, string fontFamily, float fontSize, SKColor color)
+    public void DrawRoundRectangle(SKRoundRect roundRect, SKColor fill)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        SKFont font = GetFont(fontFamily, fontSize);
+        Canvas.DrawRoundRect(roundRect, GetFillPaint(fill));
+    }
+
+    public void DrawRoundRectangle(SKRoundRect roundRect, SKColor stroke, float strokeWidth)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawRoundRect(roundRect, GetStrokePaint(stroke, strokeWidth));
+    }
+
+    public void DrawEllipse(SKRect rect, SKColor fill)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawOval(rect, GetFillPaint(fill));
+    }
+
+    public void DrawEllipse(SKRect rect, SKColor stroke, float strokeWidth)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawOval(rect, GetStrokePaint(stroke, strokeWidth));
+    }
+
+    public void DrawCircle(SKPoint center, float radius, SKColor fill)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawCircle(center, radius, GetFillPaint(fill));
+    }
+
+    public void DrawCircle(SKPoint center, float radius, SKColor stroke, float strokeWidth)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawCircle(center, radius, GetStrokePaint(stroke, strokeWidth));
+    }
+
+    public void DrawPath(SKPath path, SKColor fill)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawPath(path, GetFillPaint(fill));
+    }
+
+    public void DrawPath(SKPath path, SKColor stroke, float strokeWidth)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        Canvas.DrawPath(path, GetStrokePaint(stroke, strokeWidth));
+    }
+
+    public void DrawText(string text, SKPoint position, string fontFamily, float fontWeight, float fontSize, SKColor color)
+    {
+        if (Canvas is null)
+        {
+            throw new InvalidOperationException("Canvas is not set.");
+        }
+
+        SKFont font = GetFont(fontFamily, fontWeight, fontSize);
 
         float y = -font.Metrics.Ascent;
         foreach (string line in text.Split('\n'))
@@ -160,16 +220,16 @@ internal class DrawingContext : IDrawingContext
             Canvas.DrawText(line,
                             position.X,
                             position.Y + y,
-                            GetFont(fontFamily, fontSize),
+                            GetFont(fontFamily, fontWeight, fontSize),
                             GetTextPaint(color));
 
             y += font.GetFontMetrics(out _);
         }
     }
 
-    public SKSize MeasureText(string text, string fontFamily, float fontSize)
+    public SKSize MeasureText(string text, string fontFamily, float fontWeight, float fontSize)
     {
-        SKFont font = GetFont(fontFamily, fontSize);
+        SKFont font = GetFont(fontFamily, fontWeight, fontSize);
 
         string[] lines = text.Split('\n');
 
@@ -179,13 +239,15 @@ internal class DrawingContext : IDrawingContext
         return new SKSize(width, height);
     }
 
-    private SKFont GetFont(string fontFamily, float fontSize)
+    private SKFont GetFont(string fontFamily, float fontWeight, float fontSize)
     {
-        FontDescriptor descriptor = new(fontFamily, fontSize);
+        fontWeight = Math.Clamp((int)fontWeight / 100 * 100, 100, 900);
+
+        FontDescriptor descriptor = new(fontFamily, fontWeight, fontSize);
 
         if (!fontCache.TryGetValue(descriptor, out SKFont? font))
         {
-            fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily), fontSize);
+            fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily, new((SKFontStyleWeight)fontWeight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright)), fontSize);
         }
 
         return font;
@@ -197,7 +259,7 @@ internal class DrawingContext : IDrawingContext
 
         if (!fillPaintCache.TryGetValue(descriptor, out SKPaint? paint))
         {
-            fillPaintCache[descriptor] = paint = new SKPaint
+            fillPaintCache[descriptor] = paint = new()
             {
                 IsAntialias = true,
                 IsDither = true,
@@ -210,19 +272,19 @@ internal class DrawingContext : IDrawingContext
         return paint;
     }
 
-    private SKPaint GetStrokePaint(SKColor color, float strokeWidth)
+    private SKPaint GetStrokePaint(SKColor color, float width)
     {
-        StrokePaintDescriptor descriptor = new(color, strokeWidth);
+        StrokePaintDescriptor descriptor = new(color, width);
 
         if (!strokePaintCache.TryGetValue(descriptor, out SKPaint? paint))
         {
-            strokePaintCache[descriptor] = paint = new SKPaint
+            strokePaintCache[descriptor] = paint = new()
             {
                 IsAntialias = true,
                 IsDither = true,
                 Style = SKPaintStyle.Stroke,
                 Color = color,
-                StrokeWidth = strokeWidth,
+                StrokeWidth = width,
                 BlendMode = SKBlendMode.SrcOver
             };
         }
@@ -236,7 +298,7 @@ internal class DrawingContext : IDrawingContext
 
         if (!textPaintCache.TryGetValue(descriptor, out SKPaint? paint))
         {
-            textPaintCache[descriptor] = paint = new SKPaint
+            textPaintCache[descriptor] = paint = new()
             {
                 IsAntialias = true,
                 IsDither = true,
@@ -249,11 +311,11 @@ internal class DrawingContext : IDrawingContext
         return paint;
     }
 
-    private record FontDescriptor(string FontFamily, float FontSize);
+    private record FontDescriptor(string FontFamily, float FontWeight, float FontSize);
 
     private record FillPaintDescriptor(SKColor Color);
 
-    private record StrokePaintDescriptor(SKColor Color, float StrokeWidth);
+    private record StrokePaintDescriptor(SKColor Color, float Width);
 
     private record TextPaintDescriptor(SKColor Color);
 }

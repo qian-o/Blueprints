@@ -24,6 +24,6 @@ public class Pin : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawEllipse(Bounds, SKColors.Red, 0, SKColors.Transparent);
+        dc.DrawEllipse(Bounds, SKColors.Red);
     }
 }

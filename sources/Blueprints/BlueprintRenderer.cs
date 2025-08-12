@@ -15,12 +15,12 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         dc.Clear(editor.Style.Background);
 
         GridLines(editor.Style.MinorLineSpacing * editor.Zoom,
-                  editor.Style.MinorLineWidth * editor.Zoom,
-                  editor.Style.MinorLineColor);
+                  editor.Style.MinorLineColor,
+                  editor.Style.MinorLineWidth * editor.Zoom);
 
         GridLines(editor.Style.MajorLineSpacing * editor.Zoom,
-                  editor.Style.MajorLineWidth * editor.Zoom,
-                  editor.Style.MajorLineColor);
+                  editor.Style.MajorLineColor,
+                  editor.Style.MajorLineWidth * editor.Zoom);
 
         dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
 
@@ -35,16 +35,16 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         dc.Pop();
     }
 
-    private void GridLines(float spacing, float lineWidth, SKColor color)
+    private void GridLines(float spacing, SKColor color, float width)
     {
         for (float x = editor.X % spacing; x < editor.Width; x += spacing)
         {
-            dc.DrawLine(new(x, 0), new(x, editor.Height), lineWidth, color);
+            dc.DrawLine(new(x, 0), new(x, editor.Height), color, width);
         }
 
         for (float y = editor.Y % spacing; y < editor.Height; y += spacing)
         {
-            dc.DrawLine(new(0, y), new(editor.Width, y), lineWidth, color);
+            dc.DrawLine(new(0, y), new(editor.Width, y), color, width);
         }
     }
 }
