@@ -22,6 +22,17 @@ public abstract partial class Element : IController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public SKRect ContentBounds
+    {
+        get
+        {
+            return SKRect.Create(Bounds.Left + Padding.Left + StrokeWidth,
+                                 Bounds.Top + Padding.Top + StrokeWidth,
+                                 Bounds.Width - Padding.Horizontal - (StrokeWidth * 2),
+                                 Bounds.Height - Padding.Vertical - (StrokeWidth * 2));
+        }
+    }
+
     public SKRect ScreenBounds
     {
         get
@@ -43,30 +54,7 @@ public abstract partial class Element : IController
         Editor?.Invalidate();
     }
 
-    internal void Bind(IBlueprintEditor editor)
-    {
-        Editor = editor;
-
-        foreach (Element element in GetSubElements())
-        {
-            element.Bind(editor);
-        }
-    }
-
-    internal void Render(IDrawingContext dc, float offsetX, float offsetY)
-    {
-        if (Editor is null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        Measure(dc);
-        Arrange(SKRect.Create(offsetX, offsetY, DesiredSize.Width, DesiredSize.Height));
-
-        Render(dc);
-    }
-
-    private void Measure(IDrawingContext dc)
+    public void Measure(IDrawingContext dc)
     {
         foreach (Element element in GetSubElements())
         {
@@ -91,33 +79,64 @@ public abstract partial class Element : IController
             }
         }
 
-        float strokePadding = StrokeWidth * 2;
-
-        DesiredSize = new(Math.Clamp(width + Padding.Horizontal + strokePadding, MinWidth, MaxWidth),
-                          Math.Clamp(height + Padding.Vertical + strokePadding, MinHeight, MaxHeight));
+        DesiredSize = new(Math.Clamp(width + Padding.Horizontal + (StrokeWidth * 2), MinWidth, MaxWidth),
+                          Math.Clamp(height + Padding.Vertical + (StrokeWidth * 2), MinHeight, MaxHeight));
     }
 
-    private void Arrange(SKRect finalBounds)
+    public void Arrange(SKRect finalBounds)
     {
         Bounds = finalBounds;
 
-        float strokePadding = StrokeWidth * 2;
+        OnArrange(ContentBounds);
+    }
 
-        OnArrange(new(finalBounds.Width - Padding.Horizontal - strokePadding,
-                      finalBounds.Height - Padding.Vertical - strokePadding));
+    internal void Bind(IBlueprintEditor editor)
+    {
+        Editor = editor;
+
+        foreach (Element element in GetSubElements())
+        {
+            element.Bind(editor);
+        }
+    }
+
+    internal void Render(IDrawingContext dc, float x, float y)
+    {
+        if (Editor is null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        Measure(dc);
+        Arrange(SKRect.Create(x, y, DesiredSize.Width, DesiredSize.Height));
+
+        Render(dc);
     }
 
     private void Render(IDrawingContext dc)
     {
-        foreach (Element element in GetSubElements())
+        SKRect contentBounds = ContentBounds;
+
+        dc.PushClip(Bounds, CornerRadius);
         {
-            element.Render(dc);
+            dc.DrawRectangle(Bounds, CornerRadius, Background);
+            dc.DrawRectangle(Bounds, CornerRadius, Stroke, StrokeWidth * 2);
+
+            dc.PushClip(contentBounds, CornerRadius);
+            {
+                foreach (Element element in GetSubElements())
+                {
+                    element.Render(dc);
+                }
+
+                dc.PushTransform(SKMatrix.CreateTranslation(contentBounds.Left, contentBounds.Top));
+                {
+                    OnRender(dc);
+                }
+                dc.Pop();
+            }
+            dc.Pop();
         }
-
-        dc.PushTransform(SKMatrix.CreateTranslation(Bounds.Left, Bounds.Top));
-
-        OnRender(dc);
-
         dc.Pop();
     }
 
@@ -125,7 +144,7 @@ public abstract partial class Element : IController
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 
-    protected abstract void OnArrange(SKSize finalSize);
+    protected abstract void OnArrange(SKRect rect);
 
     protected abstract void OnRender(IDrawingContext dc);
 

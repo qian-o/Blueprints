@@ -4,9 +4,7 @@ namespace Blueprints;
 
 public interface IDrawingContext
 {
-    void PushClip(SKRect rect);
-
-    void PushClip(SKRoundRect roundRect);
+    void PushClip(SKRect rect, float radius);
 
     void PushClip(SKPath path);
 
@@ -22,13 +20,9 @@ public interface IDrawingContext
 
     void DrawLine(SKPoint start, SKPoint end, SKColor stroke, float strokeWidth);
 
-    void DrawRectangle(SKRect rect, SKColor fill);
+    void DrawRectangle(SKRect rect, float radius, SKColor fill);
 
-    void DrawRectangle(SKRect rect, SKColor stroke, float strokeWidth);
-
-    void DrawRoundRectangle(SKRoundRect roundRect, SKColor fill);
-
-    void DrawRoundRectangle(SKRoundRect roundRect, SKColor stroke, float strokeWidth);
+    void DrawRectangle(SKRect rect, float radius, SKColor stroke, float strokeWidth);
 
     void DrawEllipse(SKRect rect, SKColor fill);
 

@@ -41,8 +41,17 @@ public class Node : Element
         return new(100, 100);
     }
 
-    protected override void OnArrange(SKSize finalSize)
+    protected override void OnArrange(SKRect rect)
     {
+        if (Title is not null)
+        {
+            float x = rect.Left + Title.Margin.Left;
+            float y = rect.Top + Title.Margin.Top;
+            float width = Title.DesiredSize.Width;
+            float height = Title.DesiredSize.Height;
+
+            Title.Arrange(SKRect.Create(x, y, width, height));
+        }
     }
 
     protected override void OnRender(IDrawingContext dc)

@@ -11,7 +11,7 @@ internal class DrawingContext : IDrawingContext
 
     public SKCanvas? Canvas { get; set; }
 
-    public void PushClip(SKRect rect)
+    public void PushClip(SKRect rect, float radius)
     {
         if (Canvas is null)
         {
@@ -19,18 +19,15 @@ internal class DrawingContext : IDrawingContext
         }
 
         Canvas.Save();
-        Canvas.ClipRect(rect, SKClipOperation.Intersect, true);
-    }
 
-    public void PushClip(SKRoundRect roundRect)
-    {
-        if (Canvas is null)
+        if (radius is 0)
         {
-            throw new InvalidOperationException("Canvas is not set.");
+            Canvas.ClipRect(rect, SKClipOperation.Intersect, true);
         }
-
-        Canvas.Save();
-        Canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect, true);
+        else
+        {
+            Canvas.ClipRoundRect(new(rect, radius), SKClipOperation.Intersect, true);
+        }
     }
 
     public void PushClip(SKPath path)
@@ -105,44 +102,38 @@ internal class DrawingContext : IDrawingContext
         Canvas.DrawLine(start, end, GetStrokePaint(stroke, strokeWidth));
     }
 
-    public void DrawRectangle(SKRect rect, SKColor fill)
+    public void DrawRectangle(SKRect rect, float radius, SKColor fill)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawRect(rect, GetFillPaint(fill));
+        if (radius is 0)
+        {
+            Canvas.DrawRect(rect, GetFillPaint(fill));
+        }
+        else
+        {
+            Canvas.DrawRoundRect(new(rect, radius), GetFillPaint(fill));
+        }
     }
 
-    public void DrawRectangle(SKRect rect, SKColor stroke, float strokeWidth)
+    public void DrawRectangle(SKRect rect, float radius, SKColor stroke, float strokeWidth)
     {
         if (Canvas is null)
         {
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        Canvas.DrawRect(rect, GetStrokePaint(stroke, strokeWidth));
-    }
-
-    public void DrawRoundRectangle(SKRoundRect roundRect, SKColor fill)
-    {
-        if (Canvas is null)
+        if (radius is 0)
         {
-            throw new InvalidOperationException("Canvas is not set.");
+            Canvas.DrawRect(rect, GetStrokePaint(stroke, strokeWidth));
         }
-
-        Canvas.DrawRoundRect(roundRect, GetFillPaint(fill));
-    }
-
-    public void DrawRoundRectangle(SKRoundRect roundRect, SKColor stroke, float strokeWidth)
-    {
-        if (Canvas is null)
+        else
         {
-            throw new InvalidOperationException("Canvas is not set.");
+            Canvas.DrawRoundRect(new(rect, radius), GetStrokePaint(stroke, strokeWidth));
         }
-
-        Canvas.DrawRoundRect(roundRect, GetStrokePaint(stroke, strokeWidth));
     }
 
     public void DrawEllipse(SKRect rect, SKColor fill)

@@ -26,11 +26,12 @@ public class Text : Element
         return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
     }
 
-    protected override void OnArrange(SKSize finalSize)
+    protected override void OnArrange(SKRect rect)
     {
     }
 
     protected override void OnRender(IDrawingContext dc)
     {
+        dc.DrawText(Content, new(0, 0), FontFamily, FontWeight, FontSize, Foreground);
     }
 }
