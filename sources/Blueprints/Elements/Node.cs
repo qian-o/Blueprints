@@ -16,6 +16,17 @@ public class Node : Element
 
     public Pin[] Outputs { get; set; } = [];
 
+    public override void UseGlobalStyle()
+    {
+        base.UseGlobalStyle();
+
+        Stroke = Style.NodeStroke;
+        Background = Style.NodeBackground;
+        Padding = Style.NodePadding;
+        StrokeWidth = Style.NodeStrokeWidth;
+        CornerRadius = Style.NodeCornerRadius;
+    }
+
     protected override Element[] GetSubElements()
     {
         List<Element> children = [];

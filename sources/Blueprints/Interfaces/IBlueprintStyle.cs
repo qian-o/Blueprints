@@ -4,15 +4,27 @@ namespace Blueprints;
 
 public interface IBlueprintStyle
 {
-    #region Default Style Properties
     string FontFamily { get; }
 
     SKColor Foreground { get; }
-    #endregion
 
-    #region Grid Style Properties
     GridLine MinorGridLine { get; }
 
     GridLine MajorGridLine { get; }
-    #endregion
+
+    SKColor NodeStroke { get; }
+
+    SKColor NodeBackground { get; }
+
+    Thickness NodePadding { get; }
+
+    float NodeStrokeWidth { get; }
+
+    float NodeCornerRadius { get; }
+
+    SKColor Hover { get; }
+
+    SKColor Pressed { get; }
+
+    SKColor Attention { get; }
 }

@@ -40,7 +40,7 @@ public partial class Element
 
     public float FontSize { get; set; } = 14.0f;
 
-    public void UseGlobalStyle()
+    public virtual void UseGlobalStyle()
     {
         fontFamily = null;
         foreground = null;

@@ -23,6 +23,8 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                 {
                     node.Bind(editor);
 
+                    node.UseGlobalStyle();
+
                     node.Measure(dc);
                     node.Arrange(SKRect.Create(node.X, node.Y, node.DesiredSize.Width, node.DesiredSize.Height));
 
