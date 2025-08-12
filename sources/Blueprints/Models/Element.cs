@@ -78,12 +78,12 @@ public abstract class Element : IController
 
     private void Measure(IDrawingContext dc)
     {
-        DesiredSize = OnMeasure(dc);
-
         foreach (Element element in GetSubElements())
         {
             element.Measure(dc);
         }
+
+        DesiredSize = OnMeasure(dc);
     }
 
     private void Arrange(SKRect finalBounds)
