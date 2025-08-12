@@ -10,9 +10,9 @@ public class BlueprintStyle : IBlueprintStyle
 {
     public string FontFamily { get; } = "Segoe UI";
 
-    public SKColor Foreground { get; } = SKColors.Black;
+    public SKColor Foreground { get; } = ((SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"]).Color.ToSKColor();
 
-    public GridLine MinorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["DividerStrokeColorDefaultBrush"]).Color.ToSKColor(), 1.0f, 20.0f);
+    public GridLine MinorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["DividerStrokeColorDefaultBrush"]).Color.ToSKColor(), 1.0f, 40.0f);
 
     public GridLine MajorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["ControlStrongStrokeColorDefaultBrush"]).Color.ToSKColor(), 2.0f, 120.0f);
 
