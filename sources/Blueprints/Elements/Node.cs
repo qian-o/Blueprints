@@ -20,6 +20,8 @@ public class Node : Element
     {
         base.UseGlobalStyle();
 
+        MinWidth = 200;
+        MinHeight = 100;
         Stroke = Style.NodeStroke;
         Background = Style.NodeBackground;
         Padding = Style.NodePadding;
@@ -49,23 +51,37 @@ public class Node : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return new(100, 100);
+        float width = Padding.Horizontal;
+        float height = Padding.Vertical;
+
+        if (Title is not null)
+        {
+            width += Title.Margin.Horizontal + Title.DesiredSize.Width;
+            height += Title.Margin.Vertical + Title.DesiredSize.Height + Padding.Vertical;
+        }
+
+        return new(width, height);
     }
 
-    protected override void OnArrange(SKRect rect)
+    protected override void OnArrange()
     {
         if (Title is not null)
         {
-            float x = rect.Left + Title.Margin.Left;
-            float y = rect.Top + Title.Margin.Top;
-            float width = Title.DesiredSize.Width;
-            float height = Title.DesiredSize.Height;
+            float x = ContentBounds.Left + Padding.Left + Title.Margin.Left;
+            float y = ContentBounds.Top + Padding.Top + Title.Margin.Top;
 
-            Title.Arrange(SKRect.Create(x, y, width, height));
+            Title.Arrange(SKRect.Create(x, y, Title.DesiredSize.Width, Title.DesiredSize.Height));
         }
     }
 
     protected override void OnRender(IDrawingContext dc)
     {
+        if (Title is not null)
+        {
+            SKPoint start = new(ContentBounds.Left, ContentBounds.Top + Padding.Top + Title.DesiredSize.Height + Title.Margin.Vertical + Padding.Top);
+            SKPoint end = new(ContentBounds.Right, ContentBounds.Top + Padding.Top + Title.DesiredSize.Height + Title.Margin.Vertical + Padding.Top);
+
+            dc.DrawLine(start, end, Style.NodeStroke, Style.NodeStrokeWidth);
+        }
     }
 }

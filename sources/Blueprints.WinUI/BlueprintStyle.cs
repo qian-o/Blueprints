@@ -20,7 +20,7 @@ public class BlueprintStyle : IBlueprintStyle
 
     public SKColor NodeBackground { get; } = ((SolidColorBrush)Application.Current.Resources["SolidBackgroundFillColorBaseBrush"]).Color.ToSKColor();
 
-    public Thickness NodePadding { get; } = 16.0f;
+    public Thickness NodePadding { get; } = 8.0f;
 
     public float NodeStrokeWidth { get; } = 1.0f;
 

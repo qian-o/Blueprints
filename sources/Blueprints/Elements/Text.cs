@@ -26,7 +26,7 @@ public class Text : Element
         return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
     }
 
-    protected override void OnArrange(SKRect rect)
+    protected override void OnArrange()
     {
     }
 

@@ -18,7 +18,7 @@ public class Pin : Element
         return new SKSize(20, 20);
     }
 
-    protected override void OnArrange(SKRect rect)
+    protected override void OnArrange()
     {
     }
 

@@ -22,10 +22,7 @@ public abstract partial class Element : IController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public SKRect ContentBounds => SKRect.Create(Bounds.Left + Padding.Left + StrokeWidth,
-                                                 Bounds.Top + Padding.Top + StrokeWidth,
-                                                 Bounds.Width - Padding.Horizontal - (StrokeWidth * 2),
-                                                 Bounds.Height - Padding.Vertical - (StrokeWidth * 2));
+    public SKRect ContentBounds { get; private set; } = SKRect.Empty;
 
     public SKRect ScreenBounds
     {
@@ -73,15 +70,16 @@ public abstract partial class Element : IController
             }
         }
 
-        DesiredSize = new(Math.Clamp(width + Padding.Horizontal + (StrokeWidth * 2), MinWidth, MaxWidth),
-                          Math.Clamp(height + Padding.Vertical + (StrokeWidth * 2), MinHeight, MaxHeight));
+        DesiredSize = new(Math.Clamp(width + (StrokeWidth * 2), MinWidth, MaxWidth),
+                          Math.Clamp(height + (StrokeWidth * 2), MinHeight, MaxHeight));
     }
 
     public void Arrange(SKRect finalBounds)
     {
         Bounds = finalBounds;
+        ContentBounds = SKRect.Inflate(finalBounds, -StrokeWidth, -StrokeWidth);
 
-        OnArrange(ContentBounds);
+        OnArrange();
     }
 
     internal void Bind(IBlueprintEditor editor)
@@ -119,7 +117,7 @@ public abstract partial class Element : IController
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 
-    protected abstract void OnArrange(SKRect rect);
+    protected abstract void OnArrange();
 
     protected abstract void OnRender(IDrawingContext dc);
 
