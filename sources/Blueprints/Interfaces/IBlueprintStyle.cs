@@ -6,21 +6,11 @@ public interface IBlueprintStyle
 {
     string FontFamily { get; }
 
-    float FontSize { get; }
-
     SKColor Background { get; }
 
     SKColor Foreground { get; }
 
-    SKColor MinorLineColor { get; }
+    GridLine MinorGridLine { get; }
 
-    SKColor MajorLineColor { get; }
-
-    float MinorLineWidth { get; }
-
-    float MajorLineWidth { get; }
-
-    float MinorLineSpacing { get; }
-
-    float MajorLineSpacing { get; }
+    GridLine MajorGridLine { get; }
 }

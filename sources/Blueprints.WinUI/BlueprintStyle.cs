@@ -12,15 +12,7 @@ public class BlueprintStyle : IBlueprintStyle
 
     public SKColor Foreground { get; } = SKColors.Black;
 
-    public SKColor MinorLineColor { get; } = SKColors.LightGray;
+    public GridLine MinorGridLine { get; } = new(SKColors.LightGray, 1.0f, 20.0f);
 
-    public SKColor MajorLineColor { get; } = SKColors.Gray;
-
-    public float MinorLineWidth { get; } = 1.0f;
-
-    public float MajorLineWidth { get; } = 2.0f;
-
-    public float MinorLineSpacing { get; } = 20.0f;
-
-    public float MajorLineSpacing { get; } = 120.0f;
+    public GridLine MajorGridLine { get; } = new(SKColors.Gray, 2.0f, 120.0f);
 }

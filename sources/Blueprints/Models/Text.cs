@@ -4,23 +4,6 @@ namespace Blueprints;
 
 public class Text : Element
 {
-    private string? fontFamily;
-    private float? fontSize;
-
-    public string FontFamily
-    {
-        get => fontFamily ?? Style.FontFamily;
-        set => fontFamily = value;
-    }
-
-    public float FontWeight { get; set; } = 400;
-
-    public float FontSize
-    {
-        get => fontSize ?? Style.FontSize;
-        set => fontSize = value;
-    }
-
     public string Content { get; set; } = string.Empty;
 
     public static implicit operator Text(string content)
@@ -40,7 +23,8 @@ public class Text : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
+        throw new NotImplementedException("OnMeasure is not implemented yet.");
+        // return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
     }
 
     protected override void OnArrange(SKSize finalSize)
@@ -49,6 +33,6 @@ public class Text : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawText(Content, Bounds.Location, FontFamily, FontWeight, FontSize, Style.Foreground);
+        // dc.DrawText(Content, Bounds.Location, FontFamily, FontWeight, FontSize, Style.Foreground);
     }
 }
