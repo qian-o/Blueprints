@@ -22,16 +22,10 @@ public abstract partial class Element : IController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public SKRect ContentBounds
-    {
-        get
-        {
-            return SKRect.Create(Bounds.Left + Padding.Left + StrokeWidth,
-                                 Bounds.Top + Padding.Top + StrokeWidth,
-                                 Bounds.Width - Padding.Horizontal - (StrokeWidth * 2),
-                                 Bounds.Height - Padding.Vertical - (StrokeWidth * 2));
-        }
-    }
+    public SKRect ContentBounds => SKRect.Create(Bounds.Left + Padding.Left + StrokeWidth,
+                                                 Bounds.Top + Padding.Top + StrokeWidth,
+                                                 Bounds.Width - Padding.Horizontal - (StrokeWidth * 2),
+                                                 Bounds.Height - Padding.Vertical - (StrokeWidth * 2));
 
     public SKRect ScreenBounds
     {
