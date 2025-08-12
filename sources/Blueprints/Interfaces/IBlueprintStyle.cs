@@ -4,7 +4,13 @@ namespace Blueprints;
 
 public interface IBlueprintStyle
 {
+    string FontFamily { get; }
+
+    float FontSize { get; }
+
     SKColor Background { get; }
+
+    SKColor Foreground { get; }
 
     SKColor MinorLineColor { get; }
 

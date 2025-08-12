@@ -4,16 +4,33 @@ namespace Blueprints;
 
 public class Text : Element
 {
-    public string Content { get; set; } = string.Empty;
+    private string? fontFamily;
+    private float? fontSize;
 
-    public static implicit operator string(Text text)
+    public string FontFamily
     {
-        return text.Content;
+        get => fontFamily ?? Style.FontFamily;
+        set => fontFamily = value;
     }
+
+    public float FontWeight { get; set; } = 400;
+
+    public float FontSize
+    {
+        get => fontSize ?? Style.FontSize;
+        set => fontSize = value;
+    }
+
+    public string Content { get; set; } = string.Empty;
 
     public static implicit operator Text(string content)
     {
         return new() { Content = content };
+    }
+
+    public static implicit operator string(Text text)
+    {
+        return text.Content;
     }
 
     protected override Element[] GetSubElements()
@@ -23,7 +40,7 @@ public class Text : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return SKSize.Empty;
+        return dc.MeasureText(Content, FontFamily, FontWeight, FontSize);
     }
 
     protected override void OnArrange(SKSize finalSize)
@@ -32,5 +49,6 @@ public class Text : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
+        dc.DrawText(Content, Bounds.Location, FontFamily, FontWeight, FontSize, Style.Foreground);
     }
 }
