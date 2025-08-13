@@ -31,35 +31,6 @@ public abstract partial class Element : IController
         Editor?.Invalidate();
     }
 
-    public void Measure(IDrawingContext dc)
-    {
-        foreach (Element element in GetSubElements())
-        {
-            element.Measure(dc);
-        }
-
-        float width = Width;
-        float height = Height;
-
-        if (float.IsNaN(width) || float.IsNaN(height))
-        {
-            SKSize size = OnMeasure(dc);
-
-            if (float.IsNaN(width))
-            {
-                width = size.Width;
-            }
-
-            if (float.IsNaN(height))
-            {
-                height = size.Height;
-            }
-        }
-
-        DesiredSize = new(Math.Clamp(width + (StrokeWidth * 2), MinWidth, MaxWidth),
-                          Math.Clamp(height + (StrokeWidth * 2), MinHeight, MaxHeight));
-    }
-
     public void Arrange(SKRect finalBounds)
     {
         Bounds = finalBounds;
@@ -74,12 +45,18 @@ public abstract partial class Element : IController
 
     internal void Bind(IBlueprintEditor editor)
     {
-        Editor = editor;
-
         foreach (Element element in GetSubElements())
         {
             element.Bind(editor);
         }
+
+        Editor = editor;
+    }
+
+    internal void Layout(IDrawingContext dc, float x, float y)
+    {
+        Measure(dc);
+        Arrange(SKRect.Create(x, y, DesiredSize.Width, DesiredSize.Height));
     }
 
     internal void Render(IDrawingContext dc)
@@ -229,5 +206,34 @@ public abstract partial class Element : IController
         }
 
         OnPointerWheelChanged(args);
+    }
+
+    private void Measure(IDrawingContext dc)
+    {
+        foreach (Element element in GetSubElements())
+        {
+            element.Measure(dc);
+        }
+
+        float width = Width;
+        float height = Height;
+
+        if (float.IsNaN(width) || float.IsNaN(height))
+        {
+            SKSize size = OnMeasure(dc);
+
+            if (float.IsNaN(width))
+            {
+                width = size.Width;
+            }
+
+            if (float.IsNaN(height))
+            {
+                height = size.Height;
+            }
+        }
+
+        DesiredSize = new(Math.Clamp(width + (StrokeWidth * 2), MinWidth, MaxWidth),
+                          Math.Clamp(height + (StrokeWidth * 2), MinHeight, MaxHeight));
     }
 }
