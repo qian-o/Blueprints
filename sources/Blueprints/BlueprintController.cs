@@ -43,7 +43,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
             return;
         }
 
-        if (args.Pointers.HasFlag(PointerFlags.RightButton))
+        if (args.Pointers.HasFlag(Pointers.RightButton))
         {
             lastPointerPosition = args.Position;
         }

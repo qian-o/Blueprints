@@ -1,7 +1,7 @@
 ﻿namespace Blueprints;
 
 [Flags]
-public enum PointerFlags
+public enum Pointers
 {
     None = 0,
 

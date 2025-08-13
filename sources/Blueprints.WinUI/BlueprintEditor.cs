@@ -47,31 +47,31 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         static PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
         {
-            PointerFlags pointers = PointerFlags.None;
+            Pointers pointers = Pointers.None;
 
             if (pointerPoint.Properties.IsLeftButtonPressed)
             {
-                pointers |= PointerFlags.LeftButton;
+                pointers |= Pointers.LeftButton;
             }
 
             if (pointerPoint.Properties.IsRightButtonPressed)
             {
-                pointers |= PointerFlags.RightButton;
+                pointers |= Pointers.RightButton;
             }
 
             if (pointerPoint.Properties.IsMiddleButtonPressed)
             {
-                pointers |= PointerFlags.MiddleButton;
+                pointers |= Pointers.MiddleButton;
             }
 
             if (pointerPoint.Properties.IsXButton1Pressed)
             {
-                pointers |= PointerFlags.XButton1;
+                pointers |= Pointers.XButton1;
             }
 
             if (pointerPoint.Properties.IsXButton2Pressed)
             {
-                pointers |= PointerFlags.XButton2;
+                pointers |= Pointers.XButton2;
             }
 
             return new(pointerPoint.Position.ToSKPoint(), pointers);

@@ -89,7 +89,7 @@ public class Node : Element
 
     protected override void OnPointerPressed(PointerEventArgs args)
     {
-        if (args.Pointers.HasFlag(PointerFlags.LeftButton))
+        if (args.Pointers.HasFlag(Pointers.LeftButton))
         {
             pointerPressPosition = args.Position - ScreenBounds.Location;
         }
