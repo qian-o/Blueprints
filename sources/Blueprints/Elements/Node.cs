@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public class Node : Element
 {
+    private SKPoint? pointerPressPosition;
+
     public float X { get; set; }
 
     public float Y { get; set; }
@@ -83,5 +85,31 @@ public class Node : Element
 
             dc.DrawLine(start, end, Style.NodeStroke, Style.NodeStrokeWidth);
         }
+    }
+
+    protected override void OnPointerPressed(PointerEventArgs args)
+    {
+        if (args.Pointers.HasFlag(PointerFlags.LeftButton))
+        {
+            pointerPressPosition = args.Position - ScreenBounds.Location;
+        }
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs args)
+    {
+        if (pointerPressPosition is not null)
+        {
+            X = args.Position.X - Editor.X - pointerPressPosition.Value.X;
+            Y = args.Position.Y - Editor.Y - pointerPressPosition.Value.Y;
+            X /= Editor.Zoom;
+            Y /= Editor.Zoom;
+
+            Invalidate();
+        }
+    }
+
+    protected override void OnPointerReleased(PointerEventArgs args)
+    {
+        pointerPressPosition = null;
     }
 }

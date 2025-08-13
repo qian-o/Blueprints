@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public abstract partial class Element : IController
 {
-    public IBlueprintEditor? Editor { get; private set; }
+    public IBlueprintEditor Editor { get; private set; } = null!;
 
     public float MinWidth { get; set; }
 
@@ -35,10 +35,10 @@ public abstract partial class Element : IController
     {
         Bounds = finalBounds;
         ContentBounds = SKRect.Inflate(finalBounds, -StrokeWidth, -StrokeWidth);
-        ScreenBounds = new(Editor?.X ?? 0 + (finalBounds.Left * Editor?.Zoom ?? 1),
-                           Editor?.Y ?? 0 + (finalBounds.Top * Editor?.Zoom ?? 1),
-                           Editor?.X ?? 0 + (finalBounds.Right * Editor?.Zoom ?? 1),
-                           Editor?.Y ?? 0 + (finalBounds.Bottom * Editor?.Zoom ?? 1));
+        ScreenBounds = new((Editor?.X ?? 0) + (finalBounds.Left * (Editor?.Zoom ?? 1)),
+                           (Editor?.Y ?? 0) + (finalBounds.Top * (Editor?.Zoom ?? 1)),
+                           (Editor?.X ?? 0) + (finalBounds.Right * (Editor?.Zoom ?? 1)),
+                           (Editor?.Y ?? 0) + (finalBounds.Bottom * (Editor?.Zoom ?? 1)));
 
         OnArrange();
     }

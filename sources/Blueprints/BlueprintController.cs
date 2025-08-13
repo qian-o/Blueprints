@@ -53,10 +53,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerMoved(args);
-            }
+            ((IController)node).PointerMoved(args);
         }
 
         if (args.Handled)
@@ -82,10 +79,7 @@ public class BlueprintController(IBlueprintEditor editor) : IController
     {
         foreach (Node node in editor.Nodes)
         {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerReleased(args);
-            }
+            ((IController)node).PointerReleased(args);
         }
 
         if (args.Handled)
