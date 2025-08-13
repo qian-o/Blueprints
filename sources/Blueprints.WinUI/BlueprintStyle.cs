@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using SkiaSharp.Views.Windows;
-using Windows.UI;
 
 namespace Blueprints.WinUI;
 
@@ -10,25 +9,15 @@ public class BlueprintStyle : IBlueprintStyle
 {
     public string FontFamily { get; } = "Segoe UI";
 
-    public SKColor Foreground { get; } = ((SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"]).Color.ToSKColor();
+    public SKColor TextColor { get; } = ((SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"]).Color.ToSKColor();
 
-    public GridLine MinorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["DividerStrokeColorDefaultBrush"]).Color.ToSKColor(), 1.0f, 40.0f);
+    public SKColor HoverColor { get; } = ((SolidColorBrush)Application.Current.Resources["SubtleFillColorSecondaryBrush"]).Color.ToSKColor();
 
-    public GridLine MajorGridLine { get; } = new(((SolidColorBrush)Application.Current.Resources["ControlStrongStrokeColorDefaultBrush"]).Color.ToSKColor(), 2.0f, 120.0f);
+    public SKColor PressedColor { get; } = ((SolidColorBrush)Application.Current.Resources["SubtleFillColorTertiaryBrush"]).Color.ToSKColor();
 
-    public SKColor NodeStroke { get; } = ((Color)Application.Current.Resources["CardStrokeColorDefault"]).ToSKColor();
+    public SKColor AttentionColor { get; } = ((SolidColorBrush)Application.Current.Resources["SystemFillColorAttentionBrush"]).Color.ToSKColor();
 
-    public SKColor NodeBackground { get; } = ((SolidColorBrush)Application.Current.Resources["SolidBackgroundFillColorBaseBrush"]).Color.ToSKColor();
+    public SKColor MinorGridLineColor { get; } = ((SolidColorBrush)Application.Current.Resources["DividerStrokeColorDefaultBrush"]).Color.ToSKColor();
 
-    public Thickness NodePadding { get; } = 8.0f;
-
-    public float NodeStrokeWidth { get; } = 1.0f;
-
-    public float NodeCornerRadius { get; } = 8.0f;
-
-    public SKColor Hover { get; } = ((SolidColorBrush)Application.Current.Resources["SubtleFillColorSecondaryBrush"]).Color.ToSKColor();
-
-    public SKColor Pressed { get; } = ((SolidColorBrush)Application.Current.Resources["SubtleFillColorTertiaryBrush"]).Color.ToSKColor();
-
-    public SKColor Attention { get; } = ((SolidColorBrush)Application.Current.Resources["SystemFillColorAttentionBrush"]).Color.ToSKColor();
+    public SKColor MajorGridLineColor { get; } = ((SolidColorBrush)Application.Current.Resources["ControlStrongStrokeColorDefaultBrush"]).Color.ToSKColor();
 }

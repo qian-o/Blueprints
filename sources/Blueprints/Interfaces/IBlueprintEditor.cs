@@ -1,20 +1,18 @@
-﻿namespace Blueprints;
+﻿using SkiaSharp;
+
+namespace Blueprints;
 
 public interface IBlueprintEditor
 {
-    float Width { get; }
-
-    float Height { get; }
-
     IBlueprintStyle Style { get; }
+
+    SKSize Extent { get; }
 
     float X { get; set; }
 
     float Y { get; set; }
 
     float Zoom { get; set; }
-
-    IEnumerable<Node> Nodes { get; set; }
 
     void Invalidate();
 }

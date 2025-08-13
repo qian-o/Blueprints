@@ -6,25 +6,15 @@ public interface IBlueprintStyle
 {
     string FontFamily { get; }
 
-    SKColor Foreground { get; }
+    SKColor TextColor { get; }
 
-    GridLine MinorGridLine { get; }
+    SKColor HoverColor { get; }
 
-    GridLine MajorGridLine { get; }
+    SKColor PressedColor { get; }
 
-    SKColor NodeStroke { get; }
+    SKColor AttentionColor { get; }
 
-    SKColor NodeBackground { get; }
+    SKColor MinorGridLineColor { get; }
 
-    Thickness NodePadding { get; }
-
-    float NodeStrokeWidth { get; }
-
-    float NodeCornerRadius { get; }
-
-    SKColor Hover { get; }
-
-    SKColor Pressed { get; }
-
-    SKColor Attention { get; }
+    SKColor MajorGridLineColor { get; }
 }

@@ -8,41 +8,14 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 
     public void PointerEntered(PointerEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerEntered(args);
-            }
-        }
     }
 
     public void PointerExited(PointerEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerExited(args);
-            }
-        }
     }
 
     public void PointerPressed(PointerEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerPressed(args);
-            }
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
         if (args.Pointers.HasFlag(Pointers.RightButton))
         {
             lastPointerPosition = args.Position;
@@ -51,23 +24,10 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            ((IController)node).PointerMoved(args);
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
         if (lastPointerPosition is not null)
         {
-            float deltaX = args.Position.X - lastPointerPosition.Value.X;
-            float deltaY = args.Position.Y - lastPointerPosition.Value.Y;
-
-            editor.X += deltaX;
-            editor.Y += deltaY;
+            editor.X += args.Position.X - lastPointerPosition.Value.X;
+            editor.Y += args.Position.Y - lastPointerPosition.Value.Y;
 
             lastPointerPosition = args.Position;
 
@@ -77,34 +37,11 @@ public class BlueprintController(IBlueprintEditor editor) : IController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            ((IController)node).PointerReleased(args);
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
         lastPointerPosition = null;
     }
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
     {
-        foreach (Node node in editor.Nodes)
-        {
-            if (node.ScreenBounds.Contains(args.Position))
-            {
-                ((IController)node).PointerWheelChanged(args);
-            }
-        }
-
-        if (args.Handled)
-        {
-            return;
-        }
-
         float scale = args.Delta > 0.0f ? 1.1f : 0.9f;
 
         editor.Zoom *= scale;

@@ -14,44 +14,37 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         {
             dc.Clear(SKColors.Transparent);
 
-            GridLines(editor.Style.MinorGridLine);
-            GridLines(editor.Style.MajorGridLine);
+            GridLines(editor.Style.MinorGridLineColor, 1.0f, 40.0f);
+            GridLines(editor.Style.MajorGridLineColor, 2.0f, 160.0f);
 
             dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
             {
-                foreach (Node node in editor.Nodes)
-                {
-                    node.Bind(editor);
-
-                    node.UseGlobalStyle();
-
-                    node.Layout(dc, node.X, node.Y);
-                    node.Render(dc);
-                }
             }
             dc.Pop();
         }
         dc.Pop();
     }
 
-    private void GridLines(GridLine gridLine)
+    private void GridLines(SKColor color, float width, float spacing)
     {
-        if (gridLine.Color.Alpha is 0 || gridLine.Width <= 0 || gridLine.Spacing <= 0)
+        if (color.Alpha is 0)
         {
             return;
         }
 
-        float width = gridLine.Width * editor.Zoom;
-        float spacing = gridLine.Spacing * editor.Zoom;
+        SKSize extent = editor.Extent;
 
-        for (float x = editor.X % spacing; x < editor.Width; x += spacing)
+        width *= editor.Zoom;
+        spacing *= editor.Zoom;
+
+        for (float x = editor.X % spacing; x < extent.Width; x += spacing)
         {
-            dc.DrawLine(new(x, 0), new(x, editor.Height), gridLine.Color, width);
+            dc.DrawLine(new(x, 0), new(x, extent.Height), color, width);
         }
 
-        for (float y = editor.Y % spacing; y < editor.Height; y += spacing)
+        for (float y = editor.Y % spacing; y < extent.Height; y += spacing)
         {
-            dc.DrawLine(new(0, y), new(editor.Width, y), gridLine.Color, width);
+            dc.DrawLine(new(0, y), new(extent.Width, y), color, width);
         }
     }
 }

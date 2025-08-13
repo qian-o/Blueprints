@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using SkiaSharp;
 using SkiaSharp.Views.Windows;
 
 namespace Blueprints.WinUI;
@@ -20,11 +21,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                          typeof(double),
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0));
-
-    public static readonly DependencyProperty NodesProperty = DependencyProperty.Register(nameof(Nodes),
-                                                                                          typeof(IEnumerable<Node>),
-                                                                                          typeof(BlueprintEditor),
-                                                                                          new PropertyMetadata(null));
 
     public BlueprintEditor()
     {
@@ -101,23 +97,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
-    public IEnumerable<Node>? Nodes
-    {
-        get => (IEnumerable<Node>)GetValue(NodesProperty);
-        set => SetValue(NodesProperty, value);
-    }
-
-    float IBlueprintEditor.Width => (float)ActualWidth;
-
-    float IBlueprintEditor.Height => (float)ActualHeight;
-
     IBlueprintStyle IBlueprintEditor.Style { get; } = new BlueprintStyle();
+
+    SKSize IBlueprintEditor.Extent => new((float)ActualWidth, (float)ActualHeight);
 
     float IBlueprintEditor.X { get => (float)X; set => X = value; }
 
     float IBlueprintEditor.Y { get => (float)Y; set => Y = value; }
 
     float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
-
-    IEnumerable<Node> IBlueprintEditor.Nodes { get => Nodes ?? []; set => Nodes = value; }
 }
