@@ -22,6 +22,10 @@ public class Node : Element
         return new(100, 50);
     }
 
+    protected override void OnArrange()
+    {
+    }
+
     protected override void OnRender(IDrawingContext dc)
     {
         dc.DrawEllipse(Bounds, SKColors.Red);

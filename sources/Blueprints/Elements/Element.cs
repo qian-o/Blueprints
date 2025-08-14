@@ -8,9 +8,9 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKPoint Position { get; set; } = SKPoint.Empty;
 
-    public SKSize Size { get; set; } = SKSize.Empty;
+    public SKSize Size { get; private set; } = SKSize.Empty;
 
-    public SKRect Bounds { get; set; } = SKRect.Empty;
+    public SKRect Bounds { get; private set; } = SKRect.Empty;
 
     public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
@@ -197,6 +197,8 @@ public abstract class Element : IInputController, IDragDropController
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 
+    protected abstract void OnArrange();
+
     protected abstract void OnRender(IDrawingContext dc);
 
     protected virtual void OnPointerEntered(PointerEventArgs args) { }
@@ -223,11 +225,13 @@ public abstract class Element : IInputController, IDragDropController
 
     private void Arrange()
     {
+        Bounds = SKRect.Create(Position, Size);
+
+        OnArrange();
+
         foreach (Element element in Children())
         {
             element.Arrange();
         }
-
-        Bounds = SKRect.Create(Position, Size);
     }
 }
