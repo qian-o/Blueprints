@@ -17,7 +17,7 @@ public class Node : Element
         return [.. Inputs, .. Outputs];
     }
 
-    protected override SKSize OnLayout(IDrawingContext dc)
+    protected override SKSize OnMeasure(IDrawingContext dc)
     {
         return new(100, 50);
     }

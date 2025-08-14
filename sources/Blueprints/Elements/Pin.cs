@@ -11,7 +11,7 @@ public class Pin : Element
         return [];
     }
 
-    protected override SKSize OnLayout(IDrawingContext dc)
+    protected override SKSize OnMeasure(IDrawingContext dc)
     {
         return new(20, 20);
     }

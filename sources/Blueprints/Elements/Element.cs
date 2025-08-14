@@ -36,18 +36,12 @@ public abstract class Element : IInputController, IDragDropController
 
     internal void Layout(IDrawingContext dc)
     {
-        foreach (Element element in Children())
-        {
-            element.Layout(dc);
-        }
-
-        Size = OnLayout(dc);
+        Measure(dc);
+        Arrange();
     }
 
     internal void Render(IDrawingContext dc)
     {
-        Bounds = SKRect.Create(Position, Size);
-
         if (Bounds.IsEmpty)
         {
             return;
@@ -201,7 +195,7 @@ public abstract class Element : IInputController, IDragDropController
 
     protected abstract Element[] Children();
 
-    protected abstract SKSize OnLayout(IDrawingContext dc);
+    protected abstract SKSize OnMeasure(IDrawingContext dc);
 
     protected abstract void OnRender(IDrawingContext dc);
 
@@ -216,4 +210,24 @@ public abstract class Element : IInputController, IDragDropController
     protected virtual void OnPointerReleased(PointerEventArgs args) { }
 
     protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
+
+    private void Measure(IDrawingContext dc)
+    {
+        foreach (Element element in Children())
+        {
+            element.Measure(dc);
+        }
+
+        Size = OnMeasure(dc);
+    }
+
+    private void Arrange()
+    {
+        foreach (Element element in Children())
+        {
+            element.Arrange();
+        }
+
+        Bounds = SKRect.Create(Position, Size);
+    }
 }
