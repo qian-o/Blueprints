@@ -8,32 +8,21 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
     private DragEventArgs? dragEventArgs;
     private SKPoint? lastPointerPosition;
 
-    public void PointerEntered(PointerEventArgs args)
-    {
-        foreach (Element element in editor.Elements)
-        {
-            ((IInputController)element).PointerPressed(args);
-        }
-    }
-
-    public void PointerExited(PointerEventArgs args)
-    {
-        foreach (Element element in editor.Elements)
-        {
-            ((IInputController)element).PointerExited(args);
-        }
-    }
-
     public void PointerPressed(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements)
+        foreach (Element element in editor.Elements.Reverse())
         {
-            ((IInputController)element).PointerPressed(args);
-        }
+            if (element.HitTest(args.Position))
+            {
+                ((IInputController)element).PointerPressed(args);
 
-        if (args.Handled)
-        {
-            return;
+                if (args.Handled)
+                {
+                    return;
+                }
+
+                break;
+            }
         }
 
         if (args.Pointers.HasFlag(Pointers.LeftButton))
@@ -48,14 +37,19 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements)
+        foreach (Element element in editor.Elements.Reverse())
         {
-            ((IInputController)element).PointerMoved(args);
-        }
+            if (element.HitTest(args.Position))
+            {
+                ((IInputController)element).PointerMoved(args);
 
-        if (args.Handled)
-        {
-            return;
+                if (args.Handled)
+                {
+                    return;
+                }
+
+                break;
+            }
         }
 
         if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
@@ -88,14 +82,19 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements)
+        foreach (Element element in editor.Elements.Reverse())
         {
-            ((IInputController)element).PointerReleased(args);
-        }
+            if (element.HitTest(args.Position))
+            {
+                ((IInputController)element).PointerReleased(args);
 
-        if (args.Handled)
-        {
-            return;
+                if (args.Handled)
+                {
+                    return;
+                }
+
+                break;
+            }
         }
 
         if (dragedElement is Element { IsDragged: true } && dragEventArgs is not null)
@@ -116,14 +115,19 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
     {
-        foreach (Element element in editor.Elements)
+        foreach (Element element in editor.Elements.Reverse())
         {
-            ((IInputController)element).PointerWheelChanged(args);
-        }
+            if (element.HitTest(args.Position))
+            {
+                ((IInputController)element).PointerWheelChanged(args);
 
-        if (args.Handled)
-        {
-            return;
+                if (args.Handled)
+                {
+                    return;
+                }
+
+                break;
+            }
         }
 
         float scale = args.Delta > 0.0f ? 1.1f : 0.9f;
