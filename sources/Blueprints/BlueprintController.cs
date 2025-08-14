@@ -122,6 +122,11 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
                 }
             }
 
+            if (!dragEventArgs.Handled)
+            {
+                ((IDragDropController)dragedElement).DragCancelled(dragEventArgs);
+            }
+
             dragedElement = null;
             dragEventArgs = null;
         }

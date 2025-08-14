@@ -11,4 +11,6 @@ public interface IDragDropController
     void Drop(DragEventArgs args);
 
     void DragCompleted(DragEventArgs args);
+
+    void DragCancelled(DragEventArgs args);
 }

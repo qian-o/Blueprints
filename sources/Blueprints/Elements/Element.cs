@@ -105,6 +105,11 @@ public abstract class Element : IInputController, IDragDropController
     protected virtual void OnDrop(DragEventArgs args) { }
 
     protected virtual void OnDragCompleted(DragEventArgs args) { }
+
+    protected virtual void OnDragCancelled(DragEventArgs args)
+    {
+        lastWorldPosition = null;
+    }
     #endregion
 
     private void Measure(IDrawingContext dc)
@@ -339,6 +344,28 @@ public abstract class Element : IInputController, IDragDropController
         IsDragged = false;
 
         OnDragCompleted(args);
+    }
+
+    void IDragDropController.DragCancelled(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        foreach (Element element in Children())
+        {
+            if (element.IsDragged)
+            {
+                ((IDragDropController)element).DragCancelled(args);
+
+                return;
+            }
+        }
+
+        IsDragged = false;
+
+        OnDragCancelled(args);
     }
     #endregion
 }
