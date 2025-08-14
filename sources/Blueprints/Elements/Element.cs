@@ -78,6 +78,8 @@ public abstract class Element : IInputController, IDragDropController
     #region DragDropController event handlers
     protected virtual void OnDragStarted(DragEventArgs args) { }
 
+    protected virtual void OnDragDelta(DragEventArgs args) { }
+
     protected virtual void OnDragOver(DragEventArgs args) { }
 
     protected virtual void OnDrop(DragEventArgs args) { }
@@ -223,18 +225,33 @@ public abstract class Element : IInputController, IDragDropController
             {
                 ((IDragDropController)element).DragStarted(args);
 
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
+                return;
             }
         }
 
         IsDragged = true;
 
         OnDragStarted(args);
+    }
+
+    void IDragDropController.DragDelta(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        foreach (Element element in Children())
+        {
+            if (element.IsDragged)
+            {
+                ((IDragDropController)element).DragDelta(args);
+
+                return;
+            }
+        }
+
+        OnDragDelta(args);
     }
 
     void IDragDropController.DragOver(DragEventArgs args)
@@ -291,16 +308,11 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.IsDragged)
             {
                 ((IDragDropController)element).DragCompleted(args);
 
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
+                return;
             }
         }
 

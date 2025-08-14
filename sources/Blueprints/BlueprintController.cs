@@ -59,6 +59,8 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
             if (dragedElement.IsDragged)
             {
+                ((IDragDropController)dragedElement).DragDelta(dragEventArgs);
+
                 foreach (Element element in editor.Elements.Reverse())
                 {
                     if (element.HitTest(args.Position))
@@ -113,9 +115,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
                     if (dragEventArgs.Handled)
                     {
                         ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
-                    }
 
-                    break;
+                        break;
+                    }
                 }
             }
 
