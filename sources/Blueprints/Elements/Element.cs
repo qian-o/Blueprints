@@ -63,32 +63,140 @@ public abstract class Element : IInputController, IDragDropController
 
     void IInputController.PointerEntered(PointerEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerEntered(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerEntered(args);
+        }
     }
 
     void IInputController.PointerExited(PointerEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerExited(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerExited(args);
+        }
     }
 
     void IInputController.PointerPressed(PointerEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerPressed(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerPressed(args);
+        }
     }
 
     void IInputController.PointerMoved(PointerEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerMoved(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerMoved(args);
+        }
     }
 
     void IInputController.PointerReleased(PointerEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerReleased(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerReleased(args);
+        }
     }
 
     void IInputController.PointerWheelChanged(PointerWheelEventArgs args)
     {
-        throw new NotImplementedException();
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IInputController)element).PointerWheelChanged(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnPointerWheelChanged(args);
+        }
     }
 
     protected abstract Element[] Children();
@@ -96,4 +204,16 @@ public abstract class Element : IInputController, IDragDropController
     protected abstract SKSize OnLayout(IDrawingContext dc);
 
     protected abstract void OnRender(IDrawingContext dc);
+
+    protected virtual void OnPointerEntered(PointerEventArgs args) { }
+
+    protected virtual void OnPointerExited(PointerEventArgs args) { }
+
+    protected virtual void OnPointerPressed(PointerEventArgs args) { }
+
+    protected virtual void OnPointerMoved(PointerEventArgs args) { }
+
+    protected virtual void OnPointerReleased(PointerEventArgs args) { }
+
+    protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
 }

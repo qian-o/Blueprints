@@ -8,14 +8,32 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerEntered(PointerEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerPressed(args);
+        }
     }
 
     public void PointerExited(PointerEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerExited(args);
+        }
     }
 
     public void PointerPressed(PointerEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerPressed(args);
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         if (args.Pointers.HasFlag(Pointers.RightButton))
         {
             lastPointerPosition = args.Position;
@@ -24,6 +42,16 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerMoved(args);
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         if (lastPointerPosition is not null)
         {
             editor.X += args.Position.X - lastPointerPosition.Value.X;
@@ -37,11 +65,31 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerReleased(args);
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         lastPointerPosition = null;
     }
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
     {
+        foreach (Element element in editor.Elements)
+        {
+            ((IInputController)element).PointerWheelChanged(args);
+        }
+
+        if (args.Handled)
+        {
+            return;
+        }
+
         float scale = args.Delta > 0.0f ? 1.1f : 0.9f;
 
         editor.Zoom *= scale;
