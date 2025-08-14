@@ -12,6 +12,10 @@ public class Text(string text) : IDrawable
 
     public SKColor? Color { get; set; }
 
+    public SKRect Bounds { get; set; }
+
+    public static implicit operator Text(string text) => new(text);
+
     public void UseGlobalStyle(IBlueprintStyle style)
     {
         FontFamily ??= style.FontFamily;
@@ -23,13 +27,8 @@ public class Text(string text) : IDrawable
         return dc.MeasureText(text, FontFamily!, FontWeight, FontSize);
     }
 
-    public void Render(IDrawingContext dc, SKRect bounds)
+    public void Render(IDrawingContext dc)
     {
-        dc.DrawText(text, bounds.Location, FontFamily!, FontWeight, FontSize, Color!.Value);
-    }
-
-    public static implicit operator Text(string text)
-    {
-        return new Text(text);
+        dc.DrawText(text, Bounds.Location, FontFamily!, FontWeight, FontSize, Color!.Value);
     }
 }

@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public abstract class Element : IInputController, IDragDropController
 {
+    private SKPoint? startPosition;
+
     public IBlueprintEditor? Editor { get; private set; }
 
     public SKPoint Position { get; set; } = SKPoint.Empty;
@@ -12,18 +14,20 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public SKRect ScreenBounds { get; private set; } = SKRect.Empty;
+
     public bool IsDragged { get; set; }
 
     public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
     public virtual bool HitTest(SKPoint position)
     {
-        if (Bounds.IsEmpty)
+        if (ScreenBounds.IsEmpty)
         {
             return false;
         }
 
-        return Bounds.Contains(position);
+        return ScreenBounds.Contains(position);
     }
 
     internal void Bind(IBlueprintEditor editor)
@@ -76,9 +80,17 @@ public abstract class Element : IInputController, IDragDropController
     #endregion
 
     #region DragDropController event handlers
-    protected virtual void OnDragStarted(DragEventArgs args) { }
+    protected virtual void OnDragStarted(DragEventArgs args)
+    {
+        startPosition = args.Position;
+    }
 
-    protected virtual void OnDragDelta(DragEventArgs args) { }
+    protected virtual void OnDragDelta(DragEventArgs args)
+    {
+        if (startPosition.HasValue)
+        {
+        }
+    }
 
     protected virtual void OnDragOver(DragEventArgs args) { }
 
@@ -100,6 +112,10 @@ public abstract class Element : IInputController, IDragDropController
     private void Arrange()
     {
         Bounds = SKRect.Create(Position, Size);
+        ScreenBounds = new((Editor?.X ?? 0) + (Bounds.Left * (Editor?.Zoom ?? 1)),
+                           (Editor?.Y ?? 0) + (Bounds.Top * (Editor?.Zoom ?? 1)),
+                           (Editor?.X ?? 0) + (Bounds.Right * (Editor?.Zoom ?? 1)),
+                           (Editor?.Y ?? 0) + (Bounds.Bottom * (Editor?.Zoom ?? 1)));
 
         OnArrange();
 
