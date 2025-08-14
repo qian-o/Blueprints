@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public class BlueprintController(IBlueprintEditor editor) : IInputController
 {
+    private Element? dragedElement;
+    private DragEventArgs? dragEventArgs;
     private SKPoint? lastPointerPosition;
 
     public void PointerEntered(PointerEventArgs args)
@@ -34,7 +36,11 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             return;
         }
 
-        if (args.Pointers.HasFlag(Pointers.RightButton))
+        if (args.Pointers.HasFlag(Pointers.LeftButton))
+        {
+            dragedElement = editor.Elements.FirstOrDefault(e => e.HitTest(args.Position));
+        }
+        else if (args.Pointers.HasFlag(Pointers.RightButton))
         {
             lastPointerPosition = args.Position;
         }
@@ -52,7 +58,24 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             return;
         }
 
-        if (lastPointerPosition is not null)
+        if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
+        {
+            dragEventArgs ??= new();
+            dragEventArgs.Position = args.Position;
+
+            if (dragedElement.IsDragged)
+            {
+                foreach (Element element in editor.Elements)
+                {
+                    ((IDragDropController)element).DragOver(dragEventArgs);
+                }
+            }
+            else
+            {
+                ((IDragDropController)dragedElement).DragStarted(dragEventArgs);
+            }
+        }
+        else if (args.Pointers.HasFlag(Pointers.RightButton) && lastPointerPosition is not null)
         {
             editor.X += args.Position.X - lastPointerPosition.Value.X;
             editor.Y += args.Position.Y - lastPointerPosition.Value.Y;
@@ -73,6 +96,19 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         if (args.Handled)
         {
             return;
+        }
+
+        if (dragedElement is Element { IsDragged: true } && dragEventArgs is not null)
+        {
+            foreach (Element element in editor.Elements)
+            {
+                ((IDragDropController)element).Drop(dragEventArgs);
+            }
+
+            ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
+
+            dragedElement = null;
+            dragEventArgs = null;
         }
 
         lastPointerPosition = null;

@@ -12,6 +12,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public bool IsDragged { get; set; }
+
     public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
     public virtual bool HitTest(SKPoint position)
@@ -80,11 +82,7 @@ public abstract class Element : IInputController, IDragDropController
     #region DragDropController event handlers
     protected virtual void OnDragStarted(DragEventArgs args) { }
 
-    protected virtual void OnDragEntered(DragEventArgs args) { }
-
     protected virtual void OnDragOver(DragEventArgs args) { }
-
-    protected virtual void OnDragLeave(DragEventArgs args) { }
 
     protected virtual void OnDrop(DragEventArgs args) { }
 
@@ -273,30 +271,9 @@ public abstract class Element : IInputController, IDragDropController
                 return;
             }
 
+            IsDragged = true;
+
             OnDragStarted(args);
-        }
-    }
-
-    void IDragDropController.DragEntered(DragEventArgs args)
-    {
-        if (Editor == null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        if (HitTest(args.Position))
-        {
-            foreach (Element element in Children())
-            {
-                ((IDragDropController)element).DragEntered(args);
-            }
-
-            if (args.Handled)
-            {
-                return;
-            }
-
-            OnDragEntered(args);
         }
     }
 
@@ -320,29 +297,6 @@ public abstract class Element : IInputController, IDragDropController
             }
 
             OnDragOver(args);
-        }
-    }
-
-    void IDragDropController.DragLeave(DragEventArgs args)
-    {
-        if (Editor == null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        if (HitTest(args.Position))
-        {
-            foreach (Element element in Children())
-            {
-                ((IDragDropController)element).DragLeave(args);
-            }
-
-            if (args.Handled)
-            {
-                return;
-            }
-
-            OnDragLeave(args);
         }
     }
 
@@ -387,6 +341,8 @@ public abstract class Element : IInputController, IDragDropController
             {
                 return;
             }
+
+            IsDragged = false;
 
             OnDragCompleted(args);
         }

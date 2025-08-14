@@ -2,11 +2,11 @@
 
 namespace Blueprints;
 
-public class DragEventArgs(SKPoint position)
+public class DragEventArgs
 {
-    public SKPoint Position { get; } = position;
+    public SKPoint Position { get; set; }
 
-    public object? Data { get; }
+    public object? Data { get; set; }
 
     public bool Handled { get; set; }
 }
