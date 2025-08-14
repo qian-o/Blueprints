@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public abstract class Element : IInputController, IDragDropController
 {
-    private SKPoint? startPosition;
+    private SKPoint? lastWorldPosition;
 
     public IBlueprintEditor? Editor { get; private set; }
 
@@ -26,6 +26,11 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         return Bounds.Contains(position);
+    }
+
+    public void Invalidate()
+    {
+        Editor?.Invalidate();
     }
 
     internal void Bind(IBlueprintEditor editor)
@@ -80,13 +85,18 @@ public abstract class Element : IInputController, IDragDropController
     #region DragDropController event handlers
     protected virtual void OnDragStarted(DragEventArgs args)
     {
-        startPosition = args.WorldPosition;
+        lastWorldPosition = args.WorldPosition;
     }
 
     protected virtual void OnDragDelta(DragEventArgs args)
     {
-        if (startPosition.HasValue)
+        if (lastWorldPosition.HasValue)
         {
+            Position += args.WorldPosition - lastWorldPosition.Value;
+
+            lastWorldPosition = args.WorldPosition;
+
+            Invalidate();
         }
     }
 
