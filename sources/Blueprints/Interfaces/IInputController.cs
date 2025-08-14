@@ -1,6 +1,6 @@
 ﻿namespace Blueprints;
 
-public interface IController
+public interface IInputController
 {
     void PointerEntered(PointerEventArgs args);
 

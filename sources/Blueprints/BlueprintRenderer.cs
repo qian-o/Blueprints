@@ -19,6 +19,12 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
             dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
             {
+                foreach (Element element in editor.Elements)
+                {
+                    element.Bind(editor);
+                    element.Layout(dc);
+                    element.Render(dc);
+                }
             }
             dc.Pop();
         }

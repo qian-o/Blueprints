@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public class BlueprintController(IBlueprintEditor editor) : IController
+public class BlueprintController(IBlueprintEditor editor) : IInputController
 {
     private SKPoint? lastPointerPosition;
 
