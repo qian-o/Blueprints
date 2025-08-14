@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public class Pin : Element
 {
-    public string Title { get; set; } = "Pin";
+    public IDrawable? Header { get; set; }
 
     protected override Element[] Children()
     {

@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public class Node : Element
 {
-    public string Title { get; set; } = "Node";
+    public IDrawable? Header { get; set; }
 
     public Pin[] Inputs { get; set; } = [];
 
