@@ -10,7 +10,7 @@ public class Node : Element
 
     public Pin[] Outputs { get; set; } = [];
 
-    public IDrawableContent? Content { get; set; }
+    public IDrawable? Content { get; set; }
 
     protected override Element[] Children()
     {

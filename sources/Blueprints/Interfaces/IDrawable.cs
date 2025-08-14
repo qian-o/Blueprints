@@ -2,9 +2,9 @@
 
 namespace Blueprints;
 
-public interface IDrawableContent
+public interface IDrawable
 {
-    SKSize Size { get; }
+    SKSize Measure(IDrawingContext dc);
 
     void Render(IDrawingContext dc, SKRect bounds);
 }
