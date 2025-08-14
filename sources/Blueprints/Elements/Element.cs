@@ -55,6 +55,65 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
+    protected abstract Element[] Children();
+
+    protected abstract SKSize OnMeasure(IDrawingContext dc);
+
+    protected abstract void OnArrange();
+
+    protected abstract void OnRender(IDrawingContext dc);
+
+    #region InputController event handlers
+    protected virtual void OnPointerEntered(PointerEventArgs args) { }
+
+    protected virtual void OnPointerExited(PointerEventArgs args) { }
+
+    protected virtual void OnPointerPressed(PointerEventArgs args) { }
+
+    protected virtual void OnPointerMoved(PointerEventArgs args) { }
+
+    protected virtual void OnPointerReleased(PointerEventArgs args) { }
+
+    protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
+    #endregion
+
+    #region DragDropController event handlers
+    protected virtual void OnDragStarted(DragEventArgs args) { }
+
+    protected virtual void OnDragEntered(DragEventArgs args) { }
+
+    protected virtual void OnDragOver(DragEventArgs args) { }
+
+    protected virtual void OnDragLeave(DragEventArgs args) { }
+
+    protected virtual void OnDrop(DragEventArgs args) { }
+
+    protected virtual void OnDragCompleted(DragEventArgs args) { }
+    #endregion
+
+    private void Measure(IDrawingContext dc)
+    {
+        foreach (Element element in Children())
+        {
+            element.Measure(dc);
+        }
+
+        Size = OnMeasure(dc);
+    }
+
+    private void Arrange()
+    {
+        Bounds = SKRect.Create(Position, Size);
+
+        OnArrange();
+
+        foreach (Element element in Children())
+        {
+            element.Arrange();
+        }
+    }
+
+    #region IInputController implementation
     void IInputController.PointerEntered(PointerEventArgs args)
     {
         if (Editor == null)
@@ -192,46 +251,145 @@ public abstract class Element : IInputController, IDragDropController
             OnPointerWheelChanged(args);
         }
     }
+    #endregion
 
-    protected abstract Element[] Children();
-
-    protected abstract SKSize OnMeasure(IDrawingContext dc);
-
-    protected abstract void OnArrange();
-
-    protected abstract void OnRender(IDrawingContext dc);
-
-    protected virtual void OnPointerEntered(PointerEventArgs args) { }
-
-    protected virtual void OnPointerExited(PointerEventArgs args) { }
-
-    protected virtual void OnPointerPressed(PointerEventArgs args) { }
-
-    protected virtual void OnPointerMoved(PointerEventArgs args) { }
-
-    protected virtual void OnPointerReleased(PointerEventArgs args) { }
-
-    protected virtual void OnPointerWheelChanged(PointerWheelEventArgs args) { }
-
-    private void Measure(IDrawingContext dc)
+    #region IDragDropController implementation
+    void IDragDropController.DragStarted(DragEventArgs args)
     {
-        foreach (Element element in Children())
+        if (Editor == null)
         {
-            element.Measure(dc);
+            throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        Size = OnMeasure(dc);
-    }
-
-    private void Arrange()
-    {
-        Bounds = SKRect.Create(Position, Size);
-
-        OnArrange();
-
-        foreach (Element element in Children())
+        if (HitTest(args.Position))
         {
-            element.Arrange();
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).DragStarted(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDragStarted(args);
         }
     }
+
+    void IDragDropController.DragEntered(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).DragEntered(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDragEntered(args);
+        }
+    }
+
+    void IDragDropController.DragOver(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).DragOver(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDragOver(args);
+        }
+    }
+
+    void IDragDropController.DragLeave(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).DragLeave(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDragLeave(args);
+        }
+    }
+
+    void IDragDropController.Drop(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).Drop(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDrop(args);
+        }
+    }
+
+    void IDragDropController.DragCompleted(DragEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        if (HitTest(args.Position))
+        {
+            foreach (Element element in Children())
+            {
+                ((IDragDropController)element).DragCompleted(args);
+            }
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            OnDragCompleted(args);
+        }
+    }
+    #endregion
 }
