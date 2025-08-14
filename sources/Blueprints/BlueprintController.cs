@@ -59,9 +59,14 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
             if (dragedElement.IsDragged)
             {
-                foreach (Element element in editor.Elements)
+                foreach (Element element in editor.Elements.Reverse())
                 {
-                    ((IDragDropController)element).DragOver(dragEventArgs);
+                    if (element.HitTest(args.Position))
+                    {
+                        ((IDragDropController)element).DragOver(dragEventArgs);
+
+                        break;
+                    }
                 }
             }
             else
@@ -99,12 +104,20 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
         if (dragedElement is Element { IsDragged: true } && dragEventArgs is not null)
         {
-            foreach (Element element in editor.Elements)
+            foreach (Element element in editor.Elements.Reverse())
             {
-                ((IDragDropController)element).Drop(dragEventArgs);
-            }
+                if (element.HitTest(args.Position))
+                {
+                    ((IDragDropController)element).Drop(dragEventArgs);
 
-            ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
+                    if (dragEventArgs.Handled)
+                    {
+                        ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
+                    }
+
+                    break;
+                }
+            }
 
             dragedElement = null;
             dragEventArgs = null;

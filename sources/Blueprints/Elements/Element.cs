@@ -250,11 +250,6 @@ public abstract class Element : IInputController, IDragDropController
             {
                 ((IDragDropController)element).DragOver(args);
 
-                if (args.Handled)
-                {
-                    return;
-                }
-
                 break;
             }
         }
