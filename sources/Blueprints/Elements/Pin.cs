@@ -6,7 +6,7 @@ public class Pin : Element
 {
     public new SKPoint Position { get; internal set; }
 
-    public IDrawable? Header { get; set; }
+    public Drawable? Header { get; set; }
 
     protected override Element[] Children()
     {

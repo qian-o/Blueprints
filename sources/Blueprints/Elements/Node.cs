@@ -4,13 +4,13 @@ namespace Blueprints;
 
 public class Node : Element
 {
-    public IDrawable? Header { get; set; }
+    public Drawable? Header { get; set; }
 
     public Pin[] Inputs { get; set; } = [];
 
     public Pin[] Outputs { get; set; } = [];
 
-    public IDrawable? Content { get; set; }
+    public Drawable? Content { get; set; }
 
     protected override Element[] Children()
     {
