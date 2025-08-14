@@ -42,7 +42,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e.GetCurrentPoint(this)));
 
-        static PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
+        PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
         {
             Pointers pointers = Pointers.None;
 
@@ -71,12 +71,16 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                 pointers |= Pointers.XButton2;
             }
 
-            return new(pointerPoint.Position.ToSKPoint(), pointers);
+            SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
+
+            return new(screenPosition, screenPosition.ToWorld(this), pointers);
         }
 
-        static PointerWheelEventArgs PointerWheelEventArgs(PointerPoint pointerPoint)
+        PointerWheelEventArgs PointerWheelEventArgs(PointerPoint pointerPoint)
         {
-            return new(pointerPoint.Position.ToSKPoint(), pointerPoint.Properties.MouseWheelDelta);
+            SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
+
+            return new(screenPosition, screenPosition.ToWorld(this), pointerPoint.Properties.MouseWheelDelta);
         }
     }
 

@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public class PointerWheelEventArgs(SKPoint position, float delta) : PointerEventArgs(position, Pointers.None)
+public class PointerWheelEventArgs(SKPoint screenPosition, SKPoint worldPosition, float delta) : PointerEventArgs(screenPosition, worldPosition, Pointers.None)
 {
     public float Delta { get; } = delta;
 }

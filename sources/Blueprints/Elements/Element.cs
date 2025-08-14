@@ -14,20 +14,18 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public SKRect ScreenBounds { get; private set; } = SKRect.Empty;
-
     public bool IsDragged { get; set; }
 
     public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
     public virtual bool HitTest(SKPoint position)
     {
-        if (ScreenBounds.IsEmpty)
+        if (Bounds.IsEmpty)
         {
             return false;
         }
 
-        return ScreenBounds.Contains(position);
+        return Bounds.Contains(position);
     }
 
     internal void Bind(IBlueprintEditor editor)
@@ -82,7 +80,7 @@ public abstract class Element : IInputController, IDragDropController
     #region DragDropController event handlers
     protected virtual void OnDragStarted(DragEventArgs args)
     {
-        startPosition = args.Position;
+        startPosition = args.WorldPosition;
     }
 
     protected virtual void OnDragDelta(DragEventArgs args)
@@ -112,10 +110,6 @@ public abstract class Element : IInputController, IDragDropController
     private void Arrange()
     {
         Bounds = SKRect.Create(Position, Size);
-        ScreenBounds = new((Editor?.X ?? 0) + (Bounds.Left * (Editor?.Zoom ?? 1)),
-                           (Editor?.Y ?? 0) + (Bounds.Top * (Editor?.Zoom ?? 1)),
-                           (Editor?.X ?? 0) + (Bounds.Right * (Editor?.Zoom ?? 1)),
-                           (Editor?.Y ?? 0) + (Bounds.Bottom * (Editor?.Zoom ?? 1)));
 
         OnArrange();
 
@@ -135,7 +129,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IInputController)element).PointerPressed(args);
 
@@ -160,7 +154,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IInputController)element).PointerMoved(args);
 
@@ -185,7 +179,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IInputController)element).PointerReleased(args);
 
@@ -210,7 +204,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IInputController)element).PointerWheelChanged(args);
 
@@ -237,7 +231,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IDragDropController)element).DragStarted(args);
 
@@ -279,7 +273,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IDragDropController)element).DragOver(args);
 
@@ -299,7 +293,7 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in Children())
         {
-            if (element.HitTest(args.Position))
+            if (element.HitTest(args.WorldPosition))
             {
                 ((IDragDropController)element).Drop(args);
 

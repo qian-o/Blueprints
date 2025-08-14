@@ -4,7 +4,9 @@ namespace Blueprints;
 
 public class DragEventArgs
 {
-    public SKPoint Position { get; set; }
+    public SKPoint ScreenPosition { get; set; }
+
+    public SKPoint WorldPosition { get; set; }
 
     public object? Data { get; set; }
 
