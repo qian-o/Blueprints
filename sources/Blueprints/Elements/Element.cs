@@ -20,12 +20,7 @@ public abstract class Element : IInputController, IDragDropController
 
     public virtual bool HitTest(SKPoint position)
     {
-        if (Bounds.IsEmpty)
-        {
-            return false;
-        }
-
-        return Bounds.Contains(position);
+        return !Bounds.IsEmpty && Bounds.Contains(position);
     }
 
     public void Invalidate()
