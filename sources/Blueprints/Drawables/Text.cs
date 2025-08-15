@@ -12,7 +12,7 @@ public class Text(string text) : Drawable
 
     public SKColor? Color { get; set; }
 
-    public void UseGlobalStyle(IBlueprintEditor editor)
+    protected override void OnInitialize(IBlueprintEditor editor)
     {
         FontFamily ??= editor.FontFamily;
         Color ??= editor.Theme.TextColor;

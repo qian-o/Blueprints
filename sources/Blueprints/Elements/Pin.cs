@@ -8,9 +8,14 @@ public class Pin : Element
 
     public Drawable? Header { get; set; }
 
-    protected override Element[] Children()
+    protected override Element[] SubElements()
     {
         return [];
+    }
+
+    protected override Drawable[] SubDrawables()
+    {
+        return Header is null ? [] : [Header];
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)

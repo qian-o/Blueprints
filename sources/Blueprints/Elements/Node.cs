@@ -12,9 +12,26 @@ public class Node : Element
 
     public Drawable? Content { get; set; }
 
-    protected override Element[] Children()
+    protected override Element[] SubElements()
     {
         return [.. Inputs, .. Outputs];
+    }
+
+    protected override Drawable[] SubDrawables()
+    {
+        List<Drawable> drawables = [];
+
+        if (Header is not null)
+        {
+            drawables.Add(Header);
+        }
+
+        if (Content is not null)
+        {
+            drawables.Add(Content);
+        }
+
+        return [.. drawables];
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)

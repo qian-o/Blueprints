@@ -4,18 +4,32 @@ namespace Blueprints;
 
 public abstract class Drawable
 {
+    public IBlueprintEditor? Editor { get; private set; }
+
+    public SKPoint Position { get; set; } = SKPoint.Empty;
+
     public SKSize Size { get; private set; } = SKSize.Empty;
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
+
+    internal void Bind(IBlueprintEditor editor)
+    {
+        if (Editor != editor)
+        {
+            Editor = editor;
+
+            OnInitialize(editor);
+        }
+    }
 
     internal void Measure(IDrawingContext dc)
     {
         Size = OnMeasure(dc);
     }
 
-    internal void Arrange(SKPoint position)
+    internal void Arrange()
     {
-        Bounds = SKRect.Create(position, Size);
+        Bounds = SKRect.Create(Position, Size);
     }
 
     internal void Render(IDrawingContext dc)
@@ -31,6 +45,8 @@ public abstract class Drawable
         }
         dc.Pop();
     }
+
+    protected abstract void OnInitialize(IBlueprintEditor editor);
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 
