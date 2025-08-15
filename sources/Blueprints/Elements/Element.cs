@@ -14,7 +14,7 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public bool IsDragged { get; set; }
+    public bool IsDragged { get; private set; }
 
     public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
