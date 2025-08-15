@@ -9,13 +9,14 @@ public class BlueprintRenderer(IBlueprintEditor editor)
     public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
+        dc.FontFileResolver = editor.FontFileResolver;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
             dc.Clear(SKColors.Transparent);
 
-            GridLines(editor.Style.MinorGridLineColor, 1.0f, 40.0f);
-            GridLines(editor.Style.MajorGridLineColor, 2.0f, 160.0f);
+            GridLines(editor.Theme.MinorGridLineColor, 1.0f, 40.0f);
+            GridLines(editor.Theme.MajorGridLineColor, 2.0f, 160.0f);
 
             dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
             {

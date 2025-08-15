@@ -4,8 +4,6 @@ namespace Blueprints;
 
 public interface IBlueprintEditor
 {
-    IBlueprintStyle Style { get; }
-
     SKSize Extent { get; }
 
     float X { get; set; }
@@ -14,7 +12,13 @@ public interface IBlueprintEditor
 
     float Zoom { get; set; }
 
+    string FontFamily { get; }
+
+    IBlueprintTheme Theme { get; }
+
     IEnumerable<Element> Elements { get; }
 
     void Invalidate();
+
+    byte[] FontFileResolver(string fontFamily);
 }

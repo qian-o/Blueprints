@@ -16,7 +16,7 @@ public abstract class Element : IInputController, IDragDropController
 
     public bool IsDragged { get; private set; }
 
-    public IBlueprintStyle Style => Editor?.Style ?? throw new InvalidOperationException("Editor is not bound to this element.");
+    public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
     public virtual bool HitTest(SKPoint position)
     {

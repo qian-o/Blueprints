@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using SkiaSharp.Views.Windows;
 
@@ -8,19 +9,29 @@ namespace Blueprints.WinUI;
 public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 {
     public static readonly DependencyProperty XProperty = DependencyProperty.Register(nameof(X),
-                                                                                      typeof(double),
+                                                                                      typeof(float),
                                                                                       typeof(BlueprintEditor),
-                                                                                      new PropertyMetadata(0.0));
+                                                                                      new PropertyMetadata(0.0f));
 
     public static readonly DependencyProperty YProperty = DependencyProperty.Register(nameof(Y),
-                                                                                      typeof(double),
+                                                                                      typeof(float),
                                                                                       typeof(BlueprintEditor),
-                                                                                      new PropertyMetadata(0.0));
+                                                                                      new PropertyMetadata(0.0f));
 
     public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register(nameof(Zoom),
-                                                                                         typeof(double),
+                                                                                         typeof(float),
                                                                                          typeof(BlueprintEditor),
-                                                                                         new PropertyMetadata(1.0));
+                                                                                         new PropertyMetadata(1.0f));
+
+    public static readonly DependencyProperty FontFamilyProperty = DependencyProperty.Register(nameof(FontFamily),
+                                                                                               typeof(FontFamily),
+                                                                                               typeof(BlueprintEditor),
+                                                                                               new PropertyMetadata(FontFamily.XamlAutoFontFamily));
+
+    public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(nameof(Theme),
+                                                                                          typeof(IBlueprintTheme),
+                                                                                          typeof(BlueprintEditor),
+                                                                                          new PropertyMetadata(new DefaultBlueprintTheme()));
 
     public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register(nameof(Elements),
                                                                                              typeof(IEnumerable<Element>),
@@ -84,22 +95,36 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         }
     }
 
-    public double X
+    SKSize IBlueprintEditor.Extent => new((float)ActualWidth, (float)ActualHeight);
+
+    public float X
     {
-        get => (double)GetValue(XProperty);
+        get => (float)GetValue(XProperty);
         set => SetValue(XProperty, value);
     }
 
-    public double Y
+    public float Y
     {
-        get => (double)GetValue(YProperty);
+        get => (float)GetValue(YProperty);
         set => SetValue(YProperty, value);
     }
 
-    public double Zoom
+    public float Zoom
     {
-        get => (double)GetValue(ZoomProperty);
+        get => (float)GetValue(ZoomProperty);
         set => SetValue(ZoomProperty, value);
+    }
+
+    public FontFamily? FontFamily
+    {
+        get => (FontFamily?)GetValue(FontFamilyProperty);
+        set => SetValue(FontFamilyProperty, value);
+    }
+
+    public IBlueprintTheme? Theme
+    {
+        get => (IBlueprintTheme)GetValue(ThemeProperty);
+        set => SetValue(ThemeProperty, value);
     }
 
     public IEnumerable<Element>? Elements
@@ -108,15 +133,14 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         set => SetValue(ElementsProperty, value);
     }
 
-    IBlueprintStyle IBlueprintEditor.Style { get; } = new BlueprintStyle();
+    string IBlueprintEditor.FontFamily => FontFamily?.Source ?? FontFamily.XamlAutoFontFamily.Source;
 
-    SKSize IBlueprintEditor.Extent => new((float)ActualWidth, (float)ActualHeight);
-
-    float IBlueprintEditor.X { get => (float)X; set => X = value; }
-
-    float IBlueprintEditor.Y { get => (float)Y; set => Y = value; }
-
-    float IBlueprintEditor.Zoom { get => (float)Zoom; set => Zoom = value; }
+    IBlueprintTheme IBlueprintEditor.Theme => Theme ?? new DefaultBlueprintTheme();
 
     IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
+
+    byte[] IBlueprintEditor.FontFileResolver(string fontFamily)
+    {
+        return [];
+    }
 }

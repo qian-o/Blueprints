@@ -12,10 +12,10 @@ public class Text(string text) : Drawable
 
     public SKColor? Color { get; set; }
 
-    public void UseGlobalStyle(IBlueprintStyle style)
+    public void UseGlobalStyle(IBlueprintEditor editor)
     {
-        FontFamily ??= style.FontFamily;
-        Color ??= style.TextColor;
+        FontFamily ??= editor.FontFamily;
+        Color ??= editor.Theme.TextColor;
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)

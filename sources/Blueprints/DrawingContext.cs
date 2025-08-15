@@ -11,6 +11,8 @@ internal class DrawingContext : IDrawingContext
 
     public SKCanvas? Canvas { get; set; }
 
+    public Func<string, byte[]>? FontFileResolver { get; set; }
+
     public void PushClip(SKRect rect, float radius)
     {
         if (Canvas is null)
@@ -238,7 +240,16 @@ internal class DrawingContext : IDrawingContext
 
         if (!fontCache.TryGetValue(descriptor, out SKFont? font))
         {
-            fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily, new((SKFontStyleWeight)fontWeight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright)), fontSize);
+            if (FontFileResolver is not null)
+            {
+                using MemoryStream memoryStream = new(FontFileResolver(fontFamily));
+
+                fontCache[descriptor] = font = new(SKTypeface.FromStream(memoryStream), fontSize);
+            }
+            else
+            {
+                fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily, new((SKFontStyleWeight)fontWeight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright)), fontSize);
+            }
         }
 
         return font;
