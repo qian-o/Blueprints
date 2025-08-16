@@ -140,7 +140,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
 
-    SKTypeface? IBlueprintEditor.ResolveTypeface(string fontFamily, float fontWeight)
+    SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
     {
         if (Uri.TryCreate(fontFamily, UriKind.Absolute, out Uri? uri) && uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
         {
@@ -151,6 +151,6 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
             return SKTypeface.FromStream(stream);
         }
 
-        return null;
+        return SKTypeface.FromFamilyName(fontFamily, new(weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright));
     }
 }

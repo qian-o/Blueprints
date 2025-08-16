@@ -4,12 +4,11 @@ namespace Blueprints;
 
 public class BlueprintRenderer(IBlueprintEditor editor)
 {
-    private readonly DrawingContext dc = new();
+    private readonly DrawingContext dc = new(editor.ResolveTypeface);
 
     public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
-        dc.ResolveTypeface = editor.ResolveTypeface;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {

@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-internal class DrawingContext : IDrawingContext
+internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolveTypeface) : IDrawingContext
 {
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
     private readonly Dictionary<FillPaintDescriptor, SKPaint> fillPaintCache = [];
@@ -10,8 +10,6 @@ internal class DrawingContext : IDrawingContext
     private readonly Dictionary<TextPaintDescriptor, SKPaint> textPaintCache = [];
 
     public SKCanvas? Canvas { get; set; }
-
-    public Func<string, float, SKTypeface?>? ResolveTypeface { get; set; }
 
     public void PushClip(SKRect rect, float radius)
     {
@@ -234,20 +232,13 @@ internal class DrawingContext : IDrawingContext
 
     private SKFont GetFont(string fontFamily, float fontWeight, float fontSize)
     {
-        fontWeight = Math.Clamp((int)fontWeight / 100 * 100, 100, 900);
+        fontWeight = Math.Clamp((int)fontWeight / 100 * 100, 0, 1000);
 
         FontDescriptor descriptor = new(fontFamily, fontWeight, fontSize);
 
         if (!fontCache.TryGetValue(descriptor, out SKFont? font))
         {
-            if (ResolveTypeface?.Invoke(fontFamily, fontWeight) is SKTypeface typeface)
-            {
-                fontCache[descriptor] = font = new(typeface, fontSize);
-            }
-            else
-            {
-                fontCache[descriptor] = font = new(SKTypeface.FromFamilyName(fontFamily, new((SKFontStyleWeight)fontWeight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright)));
-            }
+            fontCache[descriptor] = font = new(resolveTypeface(fontFamily, (SKFontStyleWeight)fontWeight), fontSize);
         }
 
         return font;
