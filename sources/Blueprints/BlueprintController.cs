@@ -10,7 +10,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerPressed(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] reverseElements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in reverseElements)
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -27,7 +29,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
         if (args.Pointers.HasFlag(Pointers.LeftButton))
         {
-            dragedElement = editor.Elements.FirstOrDefault(e => e.HitTest(args.WorldPosition));
+            dragedElement = reverseElements.FirstOrDefault(e => e.HitTest(args.WorldPosition));
         }
         else if (args.Pointers.HasFlag(Pointers.RightButton))
         {
@@ -37,7 +39,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] reverseElements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in reverseElements)
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -62,7 +66,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             {
                 ((IDragDropController)dragedElement).DragDelta(dragEventArgs);
 
-                foreach (Element element in editor.Elements.Reverse())
+                foreach (Element element in reverseElements)
                 {
                     if (element.HitTest(args.WorldPosition))
                     {
@@ -90,7 +94,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] reverseElements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in reverseElements)
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -107,7 +113,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
         if (dragedElement is Element { IsDragged: true } && dragEventArgs is not null)
         {
-            foreach (Element element in editor.Elements.Reverse())
+            foreach (Element element in reverseElements)
             {
                 if (element.HitTest(args.WorldPosition))
                 {

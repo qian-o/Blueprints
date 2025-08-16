@@ -36,15 +36,118 @@ public class Node : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return new(100, 50);
+        float contentWidth = 200;
+        float contentHeight = 200;
+
+        // Header
+        if (Header is not null)
+        {
+            contentWidth = Math.Max(contentWidth, Header.Size.Width);
+            contentHeight += Header.Size.Height + Theme.CardPadding;
+        }
+
+        // Pins
+        {
+            const float pinSpacing = 4;
+
+            int rows = Math.Max(Inputs.Length, Outputs.Length);
+
+            for (int i = 0; i < rows; i++)
+            {
+                float rowWidth = 0;
+                float rowHeight = 0;
+
+                if (i < Inputs.Length)
+                {
+                    Pin input = Inputs[i];
+
+                    rowWidth = input.Size.Width;
+                    rowHeight = input.Size.Height;
+                }
+
+                if (i < Outputs.Length)
+                {
+                    Pin output = Outputs[i];
+
+                    rowWidth += output.Size.Width + pinSpacing;
+                    rowHeight = Math.Max(rowHeight, output.Size.Height);
+                }
+
+                contentWidth = Math.Max(contentWidth, rowWidth);
+                contentHeight += rowHeight + pinSpacing;
+            }
+        }
+
+        // Content
+        if (Content is not null)
+        {
+            contentWidth = Math.Max(contentWidth, Content.Size.Width);
+            contentHeight += Content.Size.Height;
+        }
+
+        return new((Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentWidth, (Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentHeight);
     }
 
     protected override void OnArrange()
     {
+        float x = Bounds.Location.X + Theme.CardBorderWidth + Theme.CardPadding;
+        float y = Bounds.Location.Y + Theme.CardBorderWidth + Theme.CardPadding;
+
+        // Header
+        if (Header is not null)
+        {
+            Header.Position = new SKPoint(x, y);
+            y += Header.Size.Height + Theme.CardPadding;
+        }
+
+        // Pins
+        {
+            const float pinSpacing = 4;
+
+            int rows = Math.Max(Inputs.Length, Outputs.Length);
+
+            for (int i = 0; i < rows; i++)
+            {
+                float inputWidth = 0;
+
+                if (i < Inputs.Length)
+                {
+                    Pin input = Inputs[i];
+                    input.Position = new SKPoint(x, y);
+
+                    inputWidth = input.Size.Width;
+                    y += input.Size.Height;
+                }
+
+                if (i < Outputs.Length)
+                {
+                    Pin output = Outputs[i];
+                    output.Position = new SKPoint(x + inputWidth + pinSpacing, y);
+
+                    y += output.Size.Height;
+                }
+
+                y += pinSpacing;
+            }
+        }
+
+        // Content
+        if (Content is not null)
+        {
+            Content.Position = new SKPoint(x, y);
+        }
     }
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawEllipse(Bounds, SKColors.Red);
+        dc.DrawRectangle(Bounds, Theme.CardCornerRadius, Theme.CardBackgroundColor);
+        dc.DrawRectangle(Bounds, Theme.CardCornerRadius, Theme.CardBorderColor, Theme.CardBorderWidth);
+
+        if (Header is not null)
+        {
+            float lineY = Header.Bounds.Bottom + (Theme.CardPadding / 2);
+
+            dc.DrawLine(new(Bounds.Left, lineY), new(Bounds.Right, lineY), Theme.CardBorderColor, Theme.CardBorderWidth);
+        }
     }
 }
