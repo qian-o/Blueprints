@@ -12,7 +12,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
-            dc.Clear(SKColors.Transparent);
+            dc.Clear(editor.Theme.BackgroundColor);
 
             GridLines(editor.Theme.MinorGridLineColor, 1.0f, 40.0f);
             GridLines(editor.Theme.MajorGridLineColor, 2.0f, 160.0f);
