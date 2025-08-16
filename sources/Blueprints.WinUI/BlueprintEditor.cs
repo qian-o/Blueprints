@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using SkiaSharp.Views.Windows;
+using Windows.Storage;
 
 namespace Blueprints.WinUI;
 
@@ -139,8 +140,17 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
 
-    byte[] IBlueprintEditor.FontFileResolver(string fontFamily)
+    SKTypeface? IBlueprintEditor.ResolveTypeface(string fontFamily, float fontWeight)
     {
-        return [];
+        if (Uri.TryCreate(fontFamily, UriKind.Absolute, out Uri? uri) && uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
+        {
+            StorageFile file = StorageFile.GetFileFromApplicationUriAsync(uri).GetResults();
+
+            using Stream stream = file.OpenStreamForReadAsync().GetAwaiter().GetResult();
+
+            return SKTypeface.FromStream(stream);
+        }
+
+        return null;
     }
 }

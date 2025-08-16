@@ -20,5 +20,5 @@ public interface IBlueprintEditor
 
     void Invalidate();
 
-    byte[] FontFileResolver(string fontFamily);
+    SKTypeface? ResolveTypeface(string fontFamily, float fontWeight);
 }

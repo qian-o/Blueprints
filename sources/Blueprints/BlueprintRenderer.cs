@@ -9,7 +9,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
     public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
-        dc.FontFileResolver = editor.FontFileResolver;
+        dc.ResolveTypeface = editor.ResolveTypeface;
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
