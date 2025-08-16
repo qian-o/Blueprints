@@ -4,6 +4,7 @@ namespace Blueprints;
 
 internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolveTypeface) : IDrawingContext
 {
+    private readonly Dictionary<TypefaceDescriptor, SKTypeface> typefaceCache = [];
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
     private readonly Dictionary<FillPaintDescriptor, SKPaint> fillPaintCache = [];
     private readonly Dictionary<StrokePaintDescriptor, SKPaint> strokePaintCache = [];
@@ -203,7 +204,7 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
             throw new InvalidOperationException("Canvas is not set.");
         }
 
-        SKFont font = GetFont(fontFamily, fontWeight, fontSize);
+        SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
 
         float y = -font.Metrics.Ascent;
         foreach (string line in text.Split('\n'))
@@ -211,7 +212,7 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
             Canvas.DrawText(line,
                             position.X,
                             position.Y + y,
-                            GetFont(fontFamily, fontWeight, fontSize),
+                            GetFont(GetTypeface(fontFamily, fontWeight), fontSize),
                             GetTextPaint(color));
 
             y += font.GetFontMetrics(out _);
@@ -220,7 +221,7 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
 
     public SKSize MeasureText(string text, string fontFamily, float fontWeight, float fontSize)
     {
-        SKFont font = GetFont(fontFamily, fontWeight, fontSize);
+        SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
 
         string[] lines = text.Split('\n');
 
@@ -230,15 +231,27 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
         return new SKSize(width, height);
     }
 
-    private SKFont GetFont(string fontFamily, float fontWeight, float fontSize)
+    private SKTypeface GetTypeface(string fontFamily, float fontWeight)
     {
         fontWeight = Math.Clamp((int)fontWeight / 100 * 100, 0, 1000);
 
-        FontDescriptor descriptor = new(fontFamily, fontWeight, fontSize);
+        TypefaceDescriptor descriptor = new(fontFamily, fontWeight);
+
+        if (!typefaceCache.TryGetValue(descriptor, out SKTypeface? typeface))
+        {
+            typefaceCache[descriptor] = typeface = resolveTypeface(fontFamily, (SKFontStyleWeight)fontWeight);
+        }
+
+        return typeface;
+    }
+
+    private SKFont GetFont(SKTypeface typeface, float fontSize)
+    {
+        FontDescriptor descriptor = new(typeface, fontSize);
 
         if (!fontCache.TryGetValue(descriptor, out SKFont? font))
         {
-            fontCache[descriptor] = font = new(resolveTypeface(fontFamily, (SKFontStyleWeight)fontWeight), fontSize);
+            fontCache[descriptor] = font = new(typeface, fontSize);
         }
 
         return font;
@@ -302,7 +315,9 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
         return paint;
     }
 
-    private record FontDescriptor(string FontFamily, float FontWeight, float FontSize);
+    private record TypefaceDescriptor(string FontFamily, float FontWeight);
+
+    private record FontDescriptor(SKTypeface Typeface, float FontSize);
 
     private record FillPaintDescriptor(SKColor Color);
 
