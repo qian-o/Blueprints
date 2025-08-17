@@ -29,4 +29,16 @@ public class Pin : Element
     {
         dc.DrawEllipse(Bounds, SKColors.Blue);
     }
+
+    protected override void OnDragStarted(DragEventArgs args)
+    {
+    }
+
+    protected override void OnDragDelta(DragEventArgs args)
+    {
+    }
+
+    protected override void OnDragCancelled(DragEventArgs args)
+    {
+    }
 }

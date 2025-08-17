@@ -58,12 +58,21 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
         if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
         {
-            dragEventArgs ??= new();
-            dragEventArgs.WorldPosition = args.WorldPosition;
-            dragEventArgs.ScreenPosition = args.ScreenPosition;
-
-            if (dragedElement.IsDragged)
+            if (dragEventArgs is null)
             {
+                dragEventArgs = new()
+                {
+                    WorldPosition = args.WorldPosition,
+                    ScreenPosition = args.ScreenPosition
+                };
+
+                ((IDragDropController)dragedElement).DragStarted(dragEventArgs);
+            }
+            else
+            {
+                dragEventArgs.WorldPosition = args.WorldPosition;
+                dragEventArgs.ScreenPosition = args.ScreenPosition;
+
                 ((IDragDropController)dragedElement).DragDelta(dragEventArgs);
 
                 foreach (Element element in reverseElements)
@@ -75,10 +84,6 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
                         break;
                     }
                 }
-            }
-            else
-            {
-                ((IDragDropController)dragedElement).DragStarted(dragEventArgs);
             }
         }
         else if (args.Pointers.HasFlag(Pointers.RightButton) && lastScreenPosition is not null)
@@ -111,7 +116,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             }
         }
 
-        if (dragedElement is Element { IsDragged: true } && dragEventArgs is not null)
+        if (dragedElement is not null && dragEventArgs is not null)
         {
             foreach (Element element in reverseElements)
             {
