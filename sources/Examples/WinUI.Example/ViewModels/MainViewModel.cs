@@ -10,24 +10,24 @@ public partial class MainViewModel : ObservableObject
         Node node1 = new()
         {
             Header = "Node 1",
-            Inputs = [new Pin { Header = "Input 1" }, new Pin { Header = "Input 2" }],
-            Outputs = [new Pin { Header = "Output 1" }, new Pin { Header = "Output 2" }],
+            Inputs = [new() { Content = "Input 1" }, new() { Content = "Input 2" }],
+            Outputs = [new() { Content = "Output 1" }, new() { Content = "Output 2" }],
             Content = "This is the content of Node 1."
         };
 
         Node node2 = new()
         {
             Header = "Node 2",
-            Inputs = [new Pin { Header = "Input A" }],
-            Outputs = [new Pin { Header = "Output A" }, new Pin { Header = "Output B" }],
+            Inputs = [new() { Content = "Input A" }],
+            Outputs = [new() { Content = "Output A" }, new() { Content = "Output B" }],
             Content = "This is the content of Node 2."
         };
 
         Node node3 = new()
         {
             Header = "Node 3",
-            Inputs = [new Pin { Header = "Input X" }],
-            Outputs = [new Pin { Header = "Output X" }, new Pin { Header = "Output Y" }],
+            Inputs = [new() { Content = "Input X" }],
+            Outputs = [new() { Content = "Output X" }, new() { Content = "Output Y" }],
             Content = "This is the content of Node 3."
         };
 

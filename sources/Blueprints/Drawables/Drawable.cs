@@ -14,12 +14,14 @@ public abstract class Drawable
 
     internal void Bind(IBlueprintEditor editor)
     {
-        if (Editor != editor)
+        if (Editor == editor)
         {
-            Editor = editor;
-
-            OnInitialize(editor);
+            return;
         }
+
+        Editor = editor;
+
+        OnInitialize();
     }
 
     internal void Measure(IDrawingContext dc)
@@ -46,7 +48,7 @@ public abstract class Drawable
         dc.Pop();
     }
 
-    protected abstract void OnInitialize(IBlueprintEditor editor);
+    protected abstract void OnInitialize();
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 

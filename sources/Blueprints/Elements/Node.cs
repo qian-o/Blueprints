@@ -34,6 +34,10 @@ public class Node : Element
         return [.. drawables];
     }
 
+    protected override void OnInitialize()
+    {
+    }
+
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
         float contentWidth = 200;

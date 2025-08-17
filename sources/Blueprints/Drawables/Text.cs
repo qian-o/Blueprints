@@ -12,10 +12,15 @@ public class Text(string text) : Drawable
 
     public SKColor? Color { get; set; }
 
-    protected override void OnInitialize(IBlueprintEditor editor)
+    protected override void OnInitialize()
     {
-        FontFamily ??= editor.FontFamily;
-        Color ??= editor.Theme.TextColor;
+        if (Editor is null)
+        {
+            return;
+        }
+
+        FontFamily ??= Editor.FontFamily;
+        Color ??= Editor.Theme.TextColor;
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)

@@ -21,7 +21,7 @@ public class BlueprintRenderer(IBlueprintEditor editor)
             {
                 foreach (Element element in editor.Elements)
                 {
-                    element.Bind(editor);
+                    element.Bind(editor, null);
                     element.Layout(dc);
                     element.Render(dc);
                 }

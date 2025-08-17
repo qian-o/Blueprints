@@ -8,6 +8,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public IBlueprintEditor? Editor { get; private set; }
 
+    public Element? Parent { get; private set; }
+
     public SKPoint Position { get; set; } = SKPoint.Empty;
 
     public SKSize Size { get; private set; } = SKSize.Empty;
@@ -28,19 +30,27 @@ public abstract class Element : IInputController, IDragDropController
         Editor?.Invalidate();
     }
 
-    internal void Bind(IBlueprintEditor editor)
+    internal void Bind(IBlueprintEditor editor, Element? parent)
     {
+        if (Editor == editor && Parent == parent)
+        {
+            return;
+        }
+
         Editor = editor;
+        Parent = parent;
 
         foreach (Element element in SubElements())
         {
-            element.Bind(editor);
+            element.Bind(editor, this);
         }
 
         foreach (Drawable drawable in SubDrawables())
         {
             drawable.Bind(editor);
         }
+
+        OnInitialize();
     }
 
     internal void Layout(IDrawingContext dc)
@@ -72,6 +82,8 @@ public abstract class Element : IInputController, IDragDropController
     protected abstract Element[] SubElements();
 
     protected abstract Drawable[] SubDrawables();
+
+    protected abstract void OnInitialize();
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 
