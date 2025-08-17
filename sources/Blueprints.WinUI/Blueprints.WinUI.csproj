@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net9.0-windows10.0.19041.0;net9.0</TargetFrameworks>
-        <IsTrimmable>true</IsTrimmable>
+        <IsAotCompatible>true</IsAotCompatible>
         <NoWarn>IDE0130</NoWarn>
     </PropertyGroup>
 
@@ -16,7 +16,6 @@
         <Otherwise>
             <ItemGroup>
                 <PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
-                <PackageReference Include="Uno.Fonts.Fluent" />
                 <PackageReference Include="Uno.WinUI" />
             </ItemGroup>
         </Otherwise>

@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public interface IBlueprintTheme
 {
+    ThemeMode Mode { get; set; }
+
     SKColor TextColor { get; }
 
     SKColor BackgroundColor { get; }
