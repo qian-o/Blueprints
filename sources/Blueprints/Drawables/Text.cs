@@ -14,12 +14,7 @@ public class Text(string text) : Drawable
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        if (FontFamily is null)
-        {
-            return dc.MeasureText(text, FontWeight, FontSize);
-        }
-
-        return dc.MeasureText(text, FontFamily, FontWeight, FontSize);
+        return FontFamily is null ? dc.MeasureText(text, FontWeight, FontSize) : dc.MeasureText(text, FontFamily, FontWeight, FontSize);
     }
 
     protected override void OnRender(IDrawingContext dc)
