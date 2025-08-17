@@ -48,7 +48,7 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 4;
+            const float pinSpacing = 6;
 
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
@@ -90,49 +90,49 @@ public class Node : Element
 
     protected override void OnArrange()
     {
-        float x = Bounds.Location.X + Theme.CardBorderWidth + Theme.CardPadding;
-        float y = Bounds.Location.Y + Theme.CardBorderWidth + Theme.CardPadding;
+        float left = Bounds.Location.X + Theme.CardBorderWidth + Theme.CardPadding;
+        float top = Bounds.Location.Y + Theme.CardBorderWidth + Theme.CardPadding;
+        float right = Bounds.Right - Theme.CardBorderWidth - Theme.CardPadding;
 
         // Header
         if (Header is not null)
         {
-            Header.Position = new SKPoint(x, y);
-            y += Header.Size.Height + Theme.CardPadding;
+            Header.Position = new(left, top);
+            top += Header.Size.Height + Theme.CardPadding;
         }
 
         // Pins
         {
-            const float pinSpacing = 4;
+            const float pinSpacing = 6;
 
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
             {
-                float inputWidth = 0;
+                float rowHeight = 0;
 
                 if (i < Inputs.Length)
                 {
                     Pin input = Inputs[i];
-                    input.Position = new SKPoint(x, y);
+                    input.Position = new(left, top);
 
-                    inputWidth = input.Size.Width;
-                    y += input.Size.Height;
+                    rowHeight = input.Size.Height;
                 }
 
                 if (i < Outputs.Length)
                 {
                     Pin output = Outputs[i];
-                    output.Position = new SKPoint(x + inputWidth + pinSpacing, y);
+                    output.Position = new(right - output.Size.Width, top);
 
-                    y += output.Size.Height;
+                    rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
-                y += pinSpacing;
+                top += rowHeight + pinSpacing;
             }
         }
 
         // Content
-        Content?.Position = new SKPoint(x, y);
+        Content?.Position = new(left, top);
     }
 
     protected override void OnRender(IDrawingContext dc)
