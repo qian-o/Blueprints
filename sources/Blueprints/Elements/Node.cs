@@ -132,10 +132,7 @@ public class Node : Element
         }
 
         // Content
-        if (Content is not null)
-        {
-            Content.Position = new SKPoint(x, y);
-        }
+        Content?.Position = new SKPoint(x, y);
     }
 
     protected override void OnRender(IDrawingContext dc)
