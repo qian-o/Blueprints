@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public class BlueprintRenderer(IBlueprintEditor editor)
 {
-    private readonly DrawingContext dc = new(editor.ResolveTypeface);
+    private readonly DrawingContext dc = new(editor);
 
     public void Render(SKCanvas canvas, float dpi)
     {

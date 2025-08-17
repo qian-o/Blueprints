@@ -12,17 +12,25 @@ public class Text(string text) : Drawable
 
     public SKColor? Color { get; set; }
 
-    protected override void OnInitialize()
-    {
-    }
-
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return dc.MeasureText(text, FontFamily!, FontWeight, FontSize);
+        if (FontFamily is null)
+        {
+            return dc.MeasureText(text, FontWeight, FontSize);
+        }
+
+        return dc.MeasureText(text, FontFamily, FontWeight, FontSize);
     }
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawText(text, Bounds.Location, FontFamily ?? Editor!.FontFamily, FontWeight, FontSize, Color ?? Theme.TextColor);
+        if (FontFamily is null)
+        {
+            dc.DrawText(text, Bounds.Location, FontWeight, FontSize, Color ?? Theme.TextColor);
+        }
+        else
+        {
+            dc.DrawText(text, Bounds.Location, FontFamily, FontWeight, FontSize, Color ?? Theme.TextColor);
+        }
     }
 }

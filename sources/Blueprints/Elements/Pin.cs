@@ -29,18 +29,7 @@ public class Pin : Element
             return;
         }
 
-        if (node.Inputs.Contains(this))
-        {
-            Direction = PinDirection.Input;
-        }
-        else if (node.Outputs.Contains(this))
-        {
-            Direction = PinDirection.Output;
-        }
-        else
-        {
-            throw new InvalidOperationException("Pin must be part of a Node's Inputs or Outputs.");
-        }
+        Direction = node.Inputs.Contains(this) ? PinDirection.Input : PinDirection.Output;
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)

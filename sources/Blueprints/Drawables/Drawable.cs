@@ -22,8 +22,6 @@ public abstract class Drawable
         }
 
         Editor = editor;
-
-        OnInitialize();
     }
 
     internal void Measure(IDrawingContext dc)
@@ -49,8 +47,6 @@ public abstract class Drawable
         }
         dc.Pop();
     }
-
-    protected abstract void OnInitialize();
 
     protected abstract SKSize OnMeasure(IDrawingContext dc);
 

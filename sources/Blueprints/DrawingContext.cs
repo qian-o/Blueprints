@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolveTypeface) : IDrawingContext
+internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 {
     private readonly Dictionary<TypefaceDescriptor, SKTypeface> typefaceCache = [];
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
@@ -197,6 +197,16 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
         Canvas.DrawPath(path, GetStrokePaint(stroke, strokeWidth));
     }
 
+    public void DrawText(string text, SKPoint position, float fontWeight, float fontSize, SKColor color)
+    {
+        DrawText(text, position, editor.FontFamily, fontWeight, fontSize, color);
+    }
+
+    public SKSize MeasureText(string text, float fontWeight, float fontSize)
+    {
+        return MeasureText(text, editor.FontFamily, fontWeight, fontSize);
+    }
+
     public void DrawText(string text, SKPoint position, string fontFamily, float fontWeight, float fontSize, SKColor color)
     {
         if (Canvas is null)
@@ -239,7 +249,7 @@ internal class DrawingContext(Func<string, SKFontStyleWeight, SKTypeface> resolv
 
         if (!typefaceCache.TryGetValue(descriptor, out SKTypeface? typeface))
         {
-            typefaceCache[descriptor] = typeface = resolveTypeface(fontFamily, (SKFontStyleWeight)fontWeight);
+            typefaceCache[descriptor] = typeface = editor.ResolveTypeface(fontFamily, (SKFontStyleWeight)fontWeight);
         }
 
         return typeface;
