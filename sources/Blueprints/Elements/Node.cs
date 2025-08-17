@@ -40,8 +40,8 @@ public class Node : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        float contentWidth = 200;
-        float contentHeight = 200;
+        float contentWidth = 0;
+        float contentHeight = 0;
 
         // Header
         if (Header is not null)
