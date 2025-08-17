@@ -23,4 +23,8 @@ public interface IBlueprintTheme
     float CardCornerRadius { get; }
 
     float CardPadding { get; }
+
+    SKColor PinColor { get; }
+
+    float PinSize { get; }
 }

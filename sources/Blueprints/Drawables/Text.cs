@@ -14,13 +14,6 @@ public class Text(string text) : Drawable
 
     protected override void OnInitialize()
     {
-        if (Editor is null)
-        {
-            return;
-        }
-
-        FontFamily ??= Editor.FontFamily;
-        Color ??= Editor.Theme.TextColor;
     }
 
     protected override SKSize OnMeasure(IDrawingContext dc)
@@ -30,6 +23,6 @@ public class Text(string text) : Drawable
 
     protected override void OnRender(IDrawingContext dc)
     {
-        dc.DrawText(text, Bounds.Location, FontFamily!, FontWeight, FontSize, Color!.Value);
+        dc.DrawText(text, Bounds.Location, FontFamily ?? Editor!.FontFamily, FontWeight, FontSize, Color ?? Theme.TextColor);
     }
 }

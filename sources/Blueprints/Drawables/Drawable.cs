@@ -12,6 +12,8 @@ public abstract class Drawable
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
+
     internal void Bind(IBlueprintEditor editor)
     {
         if (Editor == editor)

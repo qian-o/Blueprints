@@ -29,6 +29,10 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public float CardPadding { get; } = 10.0f;
 
+    public SKColor PinColor { get; } = new SKColor(100, 100, 100);
+
+    public float PinSize { get; } = 8.0f;
+
     private void ApplyTheme()
     {
         switch (Mode)
