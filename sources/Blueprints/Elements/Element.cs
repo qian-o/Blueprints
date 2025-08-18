@@ -4,7 +4,12 @@ namespace Blueprints;
 
 public abstract class Element : IInputController, IDragDropController
 {
-    private SKPoint? lastWorldPosition;
+    private readonly HashSet<Behavior> behaviors = [];
+
+    ~Element()
+    {
+        ClearBehaviors();
+    }
 
     public IBlueprintEditor? Editor { get; private set; }
 
@@ -16,13 +21,35 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public bool CanMove { get; set; } = true;
-
     public bool IsPointerOver { get; private set => SetValue(ref field, value); }
 
     public bool IsDragged { get; private set => SetValue(ref field, value); }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
+
+    public event EventHandler<PointerEventArgs>? PointerEntered;
+
+    public event EventHandler<PointerEventArgs>? PointerExited;
+
+    public event EventHandler<PointerEventArgs>? PointerPressed;
+
+    public event EventHandler<PointerEventArgs>? PointerMoved;
+
+    public event EventHandler<PointerEventArgs>? PointerReleased;
+
+    public event EventHandler<PointerWheelEventArgs>? PointerWheelChanged;
+
+    public event EventHandler<DragEventArgs>? DragStarted;
+
+    public event EventHandler<DragEventArgs>? DragDelta;
+
+    public event EventHandler<DragEventArgs>? DragOver;
+
+    public event EventHandler<DragEventArgs>? Drop;
+
+    public event EventHandler<DragEventArgs>? DragCompleted;
+
+    public event EventHandler<DragEventArgs>? DragCancelled;
 
     public virtual bool HitTest(SKPoint position)
     {
@@ -32,6 +59,32 @@ public abstract class Element : IInputController, IDragDropController
     public void Invalidate()
     {
         Editor?.Invalidate();
+    }
+
+    public void AddBehavior(Behavior behavior)
+    {
+        if (behaviors.Add(behavior))
+        {
+            behavior.Attach(this);
+        }
+    }
+
+    public void RemoveBehavior(Behavior behavior)
+    {
+        if (behaviors.Remove(behavior))
+        {
+            behavior.Detach(this);
+        }
+    }
+
+    public void ClearBehaviors()
+    {
+        foreach (Behavior behavior in behaviors)
+        {
+            behavior.Detach(this);
+        }
+
+        behaviors.Clear();
     }
 
     internal void Bind(IBlueprintEditor editor, Element? parent)
@@ -120,30 +173,9 @@ public abstract class Element : IInputController, IDragDropController
     #endregion
 
     #region DragDropController event handlers
-    protected virtual void OnDragStarted(DragEventArgs args)
-    {
-        if (!CanMove)
-        {
-            return;
-        }
+    protected virtual void OnDragStarted(DragEventArgs args) { }
 
-        lastWorldPosition = args.WorldPosition;
-    }
-
-    protected virtual void OnDragDelta(DragEventArgs args)
-    {
-        if (!CanMove)
-        {
-            return;
-        }
-
-        if (lastWorldPosition.HasValue)
-        {
-            Position += args.WorldPosition - lastWorldPosition.Value;
-
-            lastWorldPosition = args.WorldPosition;
-        }
-    }
+    protected virtual void OnDragDelta(DragEventArgs args) { }
 
     protected virtual void OnDragOver(DragEventArgs args) { }
 
@@ -151,15 +183,7 @@ public abstract class Element : IInputController, IDragDropController
 
     protected virtual void OnDragCompleted(DragEventArgs args) { }
 
-    protected virtual void OnDragCancelled(DragEventArgs args)
-    {
-        if (!CanMove)
-        {
-            return;
-        }
-
-        lastWorldPosition = null;
-    }
+    protected virtual void OnDragCancelled(DragEventArgs args) { }
     #endregion
 
     private void Measure(IDrawingContext dc)
@@ -213,6 +237,8 @@ public abstract class Element : IInputController, IDragDropController
         IsPointerOver = true;
 
         OnPointerEntered(args);
+
+        PointerEntered?.Invoke(this, args);
     }
 
     void IInputController.PointerExited(PointerEventArgs args)
@@ -233,6 +259,8 @@ public abstract class Element : IInputController, IDragDropController
         IsPointerOver = false;
 
         OnPointerExited(args);
+
+        PointerExited?.Invoke(this, args);
     }
 
     void IInputController.PointerPressed(PointerEventArgs args)
@@ -258,6 +286,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnPointerPressed(args);
+
+        PointerPressed?.Invoke(this, args);
     }
 
     void IInputController.PointerMoved(PointerEventArgs args)
@@ -294,6 +324,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnPointerMoved(args);
+
+        PointerMoved?.Invoke(this, args);
     }
 
     void IInputController.PointerReleased(PointerEventArgs args)
@@ -319,6 +351,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnPointerReleased(args);
+
+        PointerReleased?.Invoke(this, args);
     }
 
     void IInputController.PointerWheelChanged(PointerWheelEventArgs args)
@@ -344,6 +378,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnPointerWheelChanged(args);
+
+        PointerWheelChanged?.Invoke(this, args);
     }
     #endregion
 
@@ -368,6 +404,8 @@ public abstract class Element : IInputController, IDragDropController
         IsDragged = true;
 
         OnDragStarted(args);
+
+        DragStarted?.Invoke(this, args);
     }
 
     void IDragDropController.DragDelta(DragEventArgs args)
@@ -388,6 +426,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnDragDelta(args);
+
+        DragDelta?.Invoke(this, args);
     }
 
     void IDragDropController.DragOver(DragEventArgs args)
@@ -408,6 +448,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnDragOver(args);
+
+        DragOver?.Invoke(this, args);
     }
 
     void IDragDropController.Drop(DragEventArgs args)
@@ -433,6 +475,8 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         OnDrop(args);
+
+        Drop?.Invoke(this, args);
     }
 
     void IDragDropController.DragCompleted(DragEventArgs args)
@@ -455,6 +499,8 @@ public abstract class Element : IInputController, IDragDropController
         IsDragged = false;
 
         OnDragCompleted(args);
+
+        DragCompleted?.Invoke(this, args);
     }
 
     void IDragDropController.DragCancelled(DragEventArgs args)
@@ -477,6 +523,8 @@ public abstract class Element : IInputController, IDragDropController
         IsDragged = false;
 
         OnDragCancelled(args);
+
+        DragCancelled?.Invoke(this, args);
     }
     #endregion
 }

@@ -4,6 +4,11 @@ namespace Blueprints;
 
 public class Node : Element
 {
+    public Node()
+    {
+        AddBehavior(MoveBehavior.Instance);
+    }
+
     public Drawable? Header { get; set; }
 
     public Pin[] Inputs { get; set; } = [];

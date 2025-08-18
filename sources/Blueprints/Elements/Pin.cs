@@ -6,11 +6,6 @@ public class Pin : Element
 {
     private readonly HashSet<Connection> connections = [];
 
-    public Pin()
-    {
-        CanMove = false;
-    }
-
     public PinShape Shape { get; set; }
 
     public Drawable? Content { get; set; }

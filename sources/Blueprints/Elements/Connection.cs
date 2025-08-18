@@ -2,19 +2,11 @@
 
 namespace Blueprints;
 
-public class Connection : Element
+public class Connection(Pin source, Pin target) : Element
 {
-    public Connection(Pin source, Pin target)
-    {
-        CanMove = false;
+    public Pin Source { get; } = source;
 
-        Source = source;
-        Target = target;
-    }
-
-    public Pin Source { get; }
-
-    public Pin Target { get; }
+    public Pin Target { get; } = target;
 
     public bool Connects(Pin pin1, Pin pin2)
     {
