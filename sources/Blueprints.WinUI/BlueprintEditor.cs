@@ -43,6 +43,15 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     public BlueprintEditor()
     {
+        Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
+
+        ActualThemeChanged += (_, _) =>
+        {
+            Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
+
+            Invalidate();
+        };
+
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
