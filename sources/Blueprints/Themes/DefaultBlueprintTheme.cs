@@ -27,7 +27,7 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public float CardCornerRadius { get; } = 8.0f;
 
-    public float CardPadding { get; } = 10.0f;
+    public float CardPadding { get; } = 12.0f;
 
     public SKColor PinColor { get; private set; }
 
@@ -35,7 +35,7 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public float PinShapeSize { get; } = 8.0f;
 
-    public float PinPadding { get; } = 4.0f;
+    public float PinPadding { get; } = 6.0f;
 
     private void ApplyTheme()
     {
