@@ -4,6 +4,13 @@ namespace Blueprints;
 
 public class Pin : Element
 {
+    private readonly HashSet<Connection> connections = [];
+
+    public Pin()
+    {
+        CanMove = false;
+    }
+
     public PinShape Shape { get; set; }
 
     public Drawable? Content { get; set; }
@@ -11,6 +18,91 @@ public class Pin : Element
     public SKColor? Color { get; set; }
 
     public PinDirection Direction { get; private set; }
+
+    public int MaxConnections { get; set; }
+
+    public IReadOnlyCollection<Connection> Connections => connections;
+
+    public bool AllowsMultipleConnections => MaxConnections is 0;
+
+    public bool IsConnectionLimitReached => MaxConnections > 1 && connections.Count >= MaxConnections;
+
+    public bool CanConnectTo(Pin other)
+    {
+        if (other == this)
+        {
+            return false;
+        }
+
+        if (Parent == other.Parent)
+        {
+            return false;
+        }
+
+        if (Direction == other.Direction)
+        {
+            return false;
+        }
+
+        if (IsConnectedTo(other))
+        {
+            return false;
+        }
+
+        if (IsConnectionLimitReached || other.IsConnectionLimitReached)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool IsConnectedTo(Pin other)
+    {
+        return connections.Any(item => item.Connects(this, other));
+    }
+
+    public void ConnectTo(Pin other)
+    {
+        if (!CanConnectTo(other))
+        {
+            return;
+        }
+
+        if (MaxConnections == 1 && connections.Count > 0)
+        {
+            DisconnectAll();
+        }
+
+        if (other.MaxConnections == 1 && other.connections.Count > 0)
+        {
+            other.DisconnectAll();
+        }
+
+        Connection connection = new(this, other);
+
+        connections.Add(connection);
+        other.connections.Add(connection);
+    }
+
+    public void DisconnectFrom(Pin other)
+    {
+        Connection? connection = connections.FirstOrDefault(item => item.Connects(this, other));
+
+        if (connection is not null)
+        {
+            connections.Remove(connection);
+            other.connections.Remove(connection);
+        }
+    }
+
+    public void DisconnectAll()
+    {
+        foreach (Connection connection in connections.ToArray())
+        {
+            connection.Disconnect();
+        }
+    }
 
     protected override Element[] SubElements()
     {
@@ -124,17 +216,5 @@ public class Pin : Element
                 dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor);
                 break;
         }
-    }
-
-    protected override void OnDragStarted(DragEventArgs args)
-    {
-    }
-
-    protected override void OnDragDelta(DragEventArgs args)
-    {
-    }
-
-    protected override void OnDragCancelled(DragEventArgs args)
-    {
     }
 }

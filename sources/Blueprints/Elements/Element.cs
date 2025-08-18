@@ -16,6 +16,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public bool CanMove { get; set; } = true;
+
     public bool IsPointerOver { get; private set => SetValue(ref field, value); }
 
     public bool IsDragged { get; private set => SetValue(ref field, value); }
@@ -120,11 +122,21 @@ public abstract class Element : IInputController, IDragDropController
     #region DragDropController event handlers
     protected virtual void OnDragStarted(DragEventArgs args)
     {
+        if (!CanMove)
+        {
+            return;
+        }
+
         lastWorldPosition = args.WorldPosition;
     }
 
     protected virtual void OnDragDelta(DragEventArgs args)
     {
+        if (!CanMove)
+        {
+            return;
+        }
+
         if (lastWorldPosition.HasValue)
         {
             Position += args.WorldPosition - lastWorldPosition.Value;
@@ -141,6 +153,11 @@ public abstract class Element : IInputController, IDragDropController
 
     protected virtual void OnDragCancelled(DragEventArgs args)
     {
+        if (!CanMove)
+        {
+            return;
+        }
+
         lastWorldPosition = null;
     }
     #endregion
