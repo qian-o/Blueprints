@@ -7,31 +7,20 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
-        Node node1 = new()
-        {
-            Header = "Node 1",
-            Content = "This is the content of Node 1.",
-            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input 1" }, new() { Content = "Input 2" }],
-            Outputs = [new() { Content = "Output 1" }, new() { Content = "Output 2" }]
-        };
+        Node[] nodes = new Node[20];
 
-        Node node2 = new()
+        for (int i = 0; i < nodes.Length; i++)
         {
-            Header = "Node 2",
-            Content = "This is the content of Node 2.",
-            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input A" }],
-            Outputs = [new() { Content = "Output A" }, new() { Content = "Output B" }]
-        };
+            nodes[i] = new Node
+            {
+                Header = $"Node {i + 1}",
+                Content = $"This is the content of Node {i + 1}.",
+                Inputs = [new Pin { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new Pin { Content = $"Input {i + 1}B" }],
+                Outputs = [new Pin { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new Pin { Content = $"Output {i + 1}B" }]
+            };
+        }
 
-        Node node3 = new()
-        {
-            Header = "Node 3",
-            Content = "This is the content of Node 3.",
-            Inputs = [new() { Content = "Input X" }],
-            Outputs = [new() { Content = "Output X" }, new() { Content = "Output Y" }]
-        };
-
-        Elements = [node1, node2, node3];
+        Elements = nodes;
     }
 
     [ObservableProperty]
