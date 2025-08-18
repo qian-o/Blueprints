@@ -1,11 +1,7 @@
-﻿using SkiaSharp;
-
-namespace Blueprints;
+﻿namespace Blueprints;
 
 public abstract class Drawable : Element
 {
-    public new SKPoint Position { get => base.Position; internal set => base.Position = value; }
-
     protected override Element[] SubElements()
     {
         return [];
