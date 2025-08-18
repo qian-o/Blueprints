@@ -2,12 +2,12 @@
 
 public abstract class Drawable : Element
 {
-    protected override Element[] SubElements()
+    protected sealed override Element[] SubElements()
     {
         return [];
     }
 
-    protected override sealed void OnArrange()
+    protected sealed override void OnArrange()
     {
     }
 
