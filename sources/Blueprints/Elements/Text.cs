@@ -12,6 +12,10 @@ public class Text(string text) : Drawable
 
     public SKColor? Color { get; set; }
 
+    protected override void OnInitialize()
+    {
+    }
+
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
         return FontFamily is null ? dc.MeasureText(text, FontWeight, FontSize) : dc.MeasureText(text, FontFamily, FontWeight, FontSize);

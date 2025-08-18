@@ -23,11 +23,6 @@ public class Connection(Pin source, Pin target) : Element
         return [];
     }
 
-    protected override Drawable[] SubDrawables()
-    {
-        return [];
-    }
-
     protected override void OnInitialize()
     {
     }

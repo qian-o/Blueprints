@@ -102,11 +102,6 @@ public abstract class Element : IInputController, IDragDropController
             element.Bind(editor, this);
         }
 
-        foreach (Drawable drawable in SubDrawables())
-        {
-            drawable.Bind(editor);
-        }
-
         OnInitialize();
     }
 
@@ -129,11 +124,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             element.Render(dc);
         }
-
-        foreach (Drawable drawable in SubDrawables())
-        {
-            drawable.Render(dc);
-        }
     }
 
     protected void SetValue<T>(ref T field, T value)
@@ -147,8 +137,6 @@ public abstract class Element : IInputController, IDragDropController
     }
 
     protected abstract Element[] SubElements();
-
-    protected abstract Drawable[] SubDrawables();
 
     protected abstract void OnInitialize();
 
@@ -193,11 +181,6 @@ public abstract class Element : IInputController, IDragDropController
             element.Measure(dc);
         }
 
-        foreach (Drawable drawable in SubDrawables())
-        {
-            drawable.Measure(dc);
-        }
-
         Size = OnMeasure(dc);
     }
 
@@ -210,11 +193,6 @@ public abstract class Element : IInputController, IDragDropController
         foreach (Element element in SubElements())
         {
             element.Arrange();
-        }
-
-        foreach (Drawable drawable in SubDrawables())
-        {
-            drawable.Arrange();
         }
     }
 

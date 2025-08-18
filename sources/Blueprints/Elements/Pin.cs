@@ -101,12 +101,7 @@ public class Pin : Element
 
     protected override Element[] SubElements()
     {
-        return [];
-    }
-
-    protected override Drawable[] SubDrawables()
-    {
-        return Content is null ? [] : [Content];
+        return Content is not null ? [Content] : [];
     }
 
     protected override void OnInitialize()

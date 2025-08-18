@@ -11,32 +11,27 @@ public class Node : Element
 
     public Drawable? Header { get; set; }
 
+    public Drawable? Content { get; set; }
+
     public Pin[] Inputs { get; set; } = [];
 
     public Pin[] Outputs { get; set; } = [];
 
-    public Drawable? Content { get; set; }
-
     protected override Element[] SubElements()
     {
-        return [.. Inputs, .. Outputs];
-    }
-
-    protected override Drawable[] SubDrawables()
-    {
-        List<Drawable> drawables = [];
+        List<Element> elements = [];
 
         if (Header is not null)
         {
-            drawables.Add(Header);
+            elements.Add(Header);
         }
 
         if (Content is not null)
         {
-            drawables.Add(Content);
+            elements.Add(Content);
         }
 
-        return [.. drawables];
+        return [.. elements, .. Inputs, .. Outputs];
     }
 
     protected override void OnInitialize()
