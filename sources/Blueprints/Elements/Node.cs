@@ -46,14 +46,12 @@ public class Node : Element
         // Header
         if (Header is not null)
         {
-            contentWidth = Math.Max(contentWidth, Header.Size.Width);
-            contentHeight += Header.Size.Height + Theme.CardPadding;
+            contentWidth = Header.Size.Width;
+            contentHeight = Header.Size.Height + Theme.CardPadding;
         }
 
         // Pins
         {
-            const float pinSpacing = 6;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -73,12 +71,12 @@ public class Node : Element
                 {
                     Pin output = Outputs[i];
 
-                    rowWidth += output.Size.Width + pinSpacing;
+                    rowWidth += output.Size.Width;
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
                 contentWidth = Math.Max(contentWidth, rowWidth);
-                contentHeight += rowHeight + pinSpacing;
+                contentHeight += rowHeight;
             }
         }
 
@@ -107,8 +105,6 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 6;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -131,7 +127,7 @@ public class Node : Element
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
-                top += rowHeight + pinSpacing;
+                top += rowHeight;
             }
         }
 

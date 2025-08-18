@@ -34,29 +34,32 @@ public class Pin : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        float width = Theme.PinSize;
-        float height = Theme.PinSize;
+        float contentWidth = Theme.PinShapeSize;
+        float contentHeight = Theme.PinShapeSize;
 
         if (Content is not null)
         {
-            width = Theme.PinSize + Content.Size.Width + 6;
-            height = Math.Max(Theme.PinSize, Content.Size.Height);
+            contentWidth += Content.Size.Width + Theme.PinPadding;
+            contentHeight = Math.Max(contentHeight, Content.Size.Height);
         }
 
-        return new(width, height);
+        return new((Theme.PinPadding * 2) + contentWidth, (Theme.PinPadding * 2) + contentHeight);
     }
 
     protected override void OnArrange()
     {
         if (Content is not null)
         {
+            float left = Bounds.Location.X + Theme.PinPadding;
+            float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
+
             switch (Direction)
             {
                 case PinDirection.Input:
-                    Content.Position = new SKPoint(Bounds.Left + Theme.PinSize + 6, Bounds.MidY - (Content.Size.Height / 2));
+                    Content.Position = new SKPoint(left + Theme.PinPadding + Theme.PinShapeSize, Bounds.MidY - (Content.Size.Height / 2));
                     break;
                 case PinDirection.Output:
-                    Content.Position = new SKPoint(Bounds.Right - Theme.PinSize - 6 - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
+                    Content.Position = new SKPoint(right - Theme.PinPadding - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
                     break;
             }
         }
@@ -69,25 +72,28 @@ public class Pin : Element
             dc.DrawRectangle(Bounds, 4.0f, Theme.PinHoverColor);
         }
 
+        float left = Bounds.Location.X + Theme.PinPadding;
+        float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
+
         SKRect rect = SKRect.Empty;
 
         switch (Direction)
         {
             case PinDirection.Input:
-                rect = SKRect.Create(Bounds.Left, Bounds.MidY - (Theme.PinSize / 2), Theme.PinSize, Theme.PinSize);
+                rect = SKRect.Create(left, Bounds.MidY - (Theme.PinShapeSize / 2), Theme.PinShapeSize, Theme.PinShapeSize);
                 break;
             case PinDirection.Output:
-                rect = SKRect.Create(Bounds.Right - Theme.PinSize, Bounds.MidY - (Theme.PinSize / 2), Theme.PinSize, Theme.PinSize);
+                rect = SKRect.Create(right, Bounds.MidY - (Theme.PinShapeSize / 2), Theme.PinShapeSize, Theme.PinShapeSize);
                 break;
         }
 
         switch (Shape)
         {
             case PinShape.Circle:
-                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinSize / 2, Color ?? Theme.PinColor, 1.0f);
+                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor, 1.0f);
                 break;
             case PinShape.FilledCircle:
-                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinSize / 2, Color ?? Theme.PinColor);
+                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor);
                 break;
             case PinShape.Triangle:
                 {

@@ -33,7 +33,9 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public SKColor PinHoverColor { get; private set; }
 
-    public float PinSize { get; } = 8.0f;
+    public float PinShapeSize { get; } = 8.0f;
+
+    public float PinPadding { get; } = 4.0f;
 
     private void ApplyTheme()
     {
