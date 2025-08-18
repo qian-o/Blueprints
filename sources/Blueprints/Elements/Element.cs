@@ -10,15 +10,15 @@ public abstract class Element : IInputController, IDragDropController
 
     public Element? Parent { get; private set; }
 
-    public SKPoint Position { get; set; } = SKPoint.Empty;
+    public SKPoint Position { get; set => SetValue(ref field, value); } = SKPoint.Empty;
 
     public SKSize Size { get; private set; } = SKSize.Empty;
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public bool IsPointerOver { get; private set; }
+    public bool IsPointerOver { get; private set => SetValue(ref field, value); }
 
-    public bool IsDragged { get; private set; }
+    public bool IsDragged { get; private set => SetValue(ref field, value); }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
@@ -81,6 +81,16 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
+    protected void SetValue<T>(ref T field, T value)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+
+            Invalidate();
+        }
+    }
+
     protected abstract Element[] SubElements();
 
     protected abstract Drawable[] SubDrawables();
@@ -120,8 +130,6 @@ public abstract class Element : IInputController, IDragDropController
             Position += args.WorldPosition - lastWorldPosition.Value;
 
             lastWorldPosition = args.WorldPosition;
-
-            Invalidate();
         }
     }
 

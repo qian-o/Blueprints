@@ -14,6 +14,11 @@ public abstract class Drawable
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
+    public void Invalidate()
+    {
+        Editor?.Invalidate();
+    }
+
     internal void Bind(IBlueprintEditor editor)
     {
         if (Editor == editor)

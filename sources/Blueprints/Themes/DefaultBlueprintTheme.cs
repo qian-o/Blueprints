@@ -9,7 +9,7 @@ public class DefaultBlueprintTheme : IBlueprintTheme
         ApplyTheme();
     }
 
-    public ThemeMode Mode { get => field; set { field = value; ApplyTheme(); } }
+    public ThemeMode Mode { get; set { field = value; ApplyTheme(); } }
 
     public SKColor TextColor { get; private set; }
 
