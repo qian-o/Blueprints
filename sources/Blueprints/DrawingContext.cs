@@ -216,16 +216,18 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 
         SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
 
-        float y = -font.Metrics.Ascent;
+        float lineHeight = font.GetFontMetrics(out _);
+
+        float deltaY = 0;
         foreach (string line in text.Split('\n'))
         {
             Canvas.DrawText(line,
                             position.X,
-                            position.Y + y,
+                            position.Y + fontSize + deltaY,
                             GetFont(GetTypeface(fontFamily, fontWeight), fontSize),
                             GetTextPaint(color));
 
-            y += font.GetFontMetrics(out _);
+            deltaY += lineHeight;
         }
     }
 
