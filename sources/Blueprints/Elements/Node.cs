@@ -52,6 +52,8 @@ public class Node : Element
 
         // Pins
         {
+            const float pinSpacing = 4;
+
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -71,12 +73,12 @@ public class Node : Element
                 {
                     Pin output = Outputs[i];
 
-                    rowWidth += output.Size.Width;
+                    rowWidth += output.Size.Width + pinSpacing;
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
                 contentWidth = Math.Max(contentWidth, rowWidth);
-                contentHeight += rowHeight;
+                contentHeight += rowHeight + pinSpacing;
             }
         }
 
@@ -105,6 +107,8 @@ public class Node : Element
 
         // Pins
         {
+            const float pinSpacing = 4;
+
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -127,7 +131,7 @@ public class Node : Element
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
-                top += rowHeight;
+                top += rowHeight + pinSpacing;
             }
         }
 
