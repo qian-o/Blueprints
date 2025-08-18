@@ -6,19 +6,11 @@ public enum PinShape
 
     FilledCircle,
 
-    Square,
-
-    FilledSquare,
-
     Triangle,
 
     FilledTriangle,
 
-    Diamond,
+    Square,
 
-    FilledDiamond,
-
-    Hexagon,
-
-    FilledHexagon
+    FilledSquare
 }

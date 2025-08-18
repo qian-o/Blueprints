@@ -76,7 +76,43 @@ public class Pin : Element
                 break;
         }
 
-        dc.DrawRectangle(rect, 0, Color ?? Theme.PinColor);
+        switch (Shape)
+        {
+            case PinShape.Circle:
+                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinSize / 2, Color ?? Theme.PinColor, 1.0f);
+                break;
+            case PinShape.FilledCircle:
+                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinSize / 2, Color ?? Theme.PinColor);
+                break;
+            case PinShape.Triangle:
+                {
+                    SKPath path = new();
+                    path.MoveTo(rect.Left, rect.Top);
+                    path.LineTo(rect.Right, rect.MidY);
+                    path.LineTo(rect.Left, rect.Bottom);
+                    path.Close();
+
+                    dc.DrawPath(path, Color ?? Theme.PinColor, 1.0f);
+                }
+                break;
+            case PinShape.FilledTriangle:
+                {
+                    SKPath path = new();
+                    path.MoveTo(rect.Left, rect.Top);
+                    path.LineTo(rect.Right, rect.MidY);
+                    path.LineTo(rect.Left, rect.Bottom);
+                    path.Close();
+
+                    dc.DrawPath(path, Color ?? Theme.PinColor);
+                }
+                break;
+            case PinShape.Square:
+                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor, 1.0f);
+                break;
+            case PinShape.FilledSquare:
+                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor);
+                break;
+        }
     }
 
     protected override void OnDragStarted(DragEventArgs args)
