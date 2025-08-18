@@ -10,7 +10,7 @@ public partial class MainViewModel : ObservableObject
         Node node1 = new()
         {
             Header = "Node 1",
-            Inputs = [new() { Content = "Input 1" }, new() { Content = "Input 2" }],
+            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input 1" }, new() { Content = "Input 2" }],
             Outputs = [new() { Content = "Output 1" }, new() { Content = "Output 2" }],
             Content = "This is the content of Node 1."
         };
@@ -18,7 +18,7 @@ public partial class MainViewModel : ObservableObject
         Node node2 = new()
         {
             Header = "Node 2",
-            Inputs = [new() { Content = "Input A" }],
+            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input A" }],
             Outputs = [new() { Content = "Output A" }, new() { Content = "Output B" }],
             Content = "This is the content of Node 2."
         };

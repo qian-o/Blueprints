@@ -88,7 +88,7 @@ public class Pin : Element
                 {
                     SKPath path = new();
                     path.MoveTo(rect.Left, rect.Top);
-                    path.LineTo(rect.Right, rect.MidY);
+                    path.LineTo(rect.Left + MathF.Sqrt(MathF.Pow(rect.Width, 2) - MathF.Pow(rect.Width / 2, 2)), rect.MidY);
                     path.LineTo(rect.Left, rect.Bottom);
                     path.Close();
 
@@ -99,7 +99,7 @@ public class Pin : Element
                 {
                     SKPath path = new();
                     path.MoveTo(rect.Left, rect.Top);
-                    path.LineTo(rect.Right, rect.MidY);
+                    path.LineTo(rect.Left + MathF.Sqrt(MathF.Pow(rect.Width, 2) - MathF.Pow(rect.Width / 2, 2)), rect.MidY);
                     path.LineTo(rect.Left, rect.Bottom);
                     path.Close();
 
