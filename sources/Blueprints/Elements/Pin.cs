@@ -64,6 +64,11 @@ public class Pin : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
+        if (IsPointerOver)
+        {
+            dc.DrawRectangle(Bounds, 4.0f, Theme.PinHoverColor);
+        }
+
         SKRect rect = SKRect.Empty;
 
         switch (Direction)

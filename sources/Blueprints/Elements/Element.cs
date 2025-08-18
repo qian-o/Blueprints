@@ -16,6 +16,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public bool IsPointerOver { get; private set; }
+
     public bool IsDragged { get; private set; }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
@@ -92,6 +94,10 @@ public abstract class Element : IInputController, IDragDropController
     protected abstract void OnRender(IDrawingContext dc);
 
     #region InputController event handlers
+    protected virtual void OnPointerEntered(PointerEventArgs args) { }
+
+    protected virtual void OnPointerExited(PointerEventArgs args) { }
+
     protected virtual void OnPointerPressed(PointerEventArgs args) { }
 
     protected virtual void OnPointerMoved(PointerEventArgs args) { }
@@ -164,6 +170,46 @@ public abstract class Element : IInputController, IDragDropController
     }
 
     #region IInputController implementation
+    void IInputController.PointerEntered(PointerEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        foreach (Element element in SubElements())
+        {
+            if (element.HitTest(args.WorldPosition))
+            {
+                ((IInputController)element).PointerEntered(args);
+            }
+        }
+
+        IsPointerOver = true;
+
+        OnPointerEntered(args);
+    }
+
+    void IInputController.PointerExited(PointerEventArgs args)
+    {
+        if (Editor == null)
+        {
+            throw new InvalidOperationException("Editor is not bound to this element.");
+        }
+
+        foreach (Element element in SubElements())
+        {
+            if (element.IsPointerOver)
+            {
+                ((IInputController)element).PointerExited(args);
+            }
+        }
+
+        IsPointerOver = false;
+
+        OnPointerExited(args);
+    }
+
     void IInputController.PointerPressed(PointerEventArgs args)
     {
         if (Editor == null)
@@ -200,14 +246,25 @@ public abstract class Element : IInputController, IDragDropController
         {
             if (element.HitTest(args.WorldPosition))
             {
-                ((IInputController)element).PointerMoved(args);
-
-                if (args.Handled)
+                if (element.IsPointerOver)
                 {
-                    return;
-                }
+                    ((IInputController)element).PointerMoved(args);
 
-                break;
+                    if (args.Handled)
+                    {
+                        return;
+                    }
+
+                    break;
+                }
+                else
+                {
+                    ((IInputController)element).PointerEntered(args);
+                }
+            }
+            else if (element.IsPointerOver)
+            {
+                ((IInputController)element).PointerExited(args);
             }
         }
 

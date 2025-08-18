@@ -8,6 +8,28 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
     private DragEventArgs? dragEventArgs;
     private SKPoint? lastScreenPosition;
 
+    public void PointerEntered(PointerEventArgs args)
+    {
+        foreach (Element element in editor.Elements.Reverse())
+        {
+            if (element.HitTest(args.WorldPosition))
+            {
+                ((IInputController)element).PointerEntered(args);
+            }
+        }
+    }
+
+    public void PointerExited(PointerEventArgs args)
+    {
+        foreach (Element element in editor.Elements.Reverse())
+        {
+            if (element.IsPointerOver)
+            {
+                ((IInputController)element).PointerExited(args);
+            }
+        }
+    }
+
     public void PointerPressed(PointerEventArgs args)
     {
         Element[] reverseElements = [.. editor.Elements.Reverse()];
@@ -45,14 +67,25 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         {
             if (element.HitTest(args.WorldPosition))
             {
-                ((IInputController)element).PointerMoved(args);
-
-                if (args.Handled)
+                if (element.IsPointerOver)
                 {
-                    return;
-                }
+                    ((IInputController)element).PointerMoved(args);
 
-                break;
+                    if (args.Handled)
+                    {
+                        return;
+                    }
+
+                    break;
+                }
+                else
+                {
+                    ((IInputController)element).PointerEntered(args);
+                }
+            }
+            else if (element.IsPointerOver)
+            {
+                ((IInputController)element).PointerExited(args);
             }
         }
 

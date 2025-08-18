@@ -26,5 +26,7 @@ public interface IBlueprintTheme
 
     SKColor PinColor { get; }
 
+    SKColor PinHoverColor { get; }
+
     float PinSize { get; }
 }

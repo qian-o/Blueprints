@@ -29,7 +29,9 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public float CardPadding { get; } = 10.0f;
 
-    public SKColor PinColor { get; } = new SKColor(100, 100, 100);
+    public SKColor PinColor { get; private set; }
+
+    public SKColor PinHoverColor { get; private set; }
 
     public float PinSize { get; } = 8.0f;
 
@@ -45,6 +47,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBackgroundColor = SKColors.White;
                 CardBorderColor = new SKColor(180, 180, 180);
                 CardBorderWidth = 1.0f;
+                PinColor = new SKColor(100, 100, 100);
+                PinHoverColor = new SKColor(220, 220, 220);
                 break;
 
             case ThemeMode.Dark:
@@ -55,6 +59,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBackgroundColor = new SKColor(45, 45, 48);
                 CardBorderColor = new SKColor(100, 100, 100);
                 CardBorderWidth = 1.0f;
+                PinColor = new SKColor(150, 150, 150);
+                PinHoverColor = new SKColor(50, 50, 50);
                 break;
 
             case ThemeMode.HighContrast:
@@ -65,6 +71,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBackgroundColor = new SKColor(20, 20, 20);
                 CardBorderColor = SKColors.White;
                 CardBorderWidth = 2.0f;
+                PinColor = new SKColor(200, 200, 200);
+                PinHoverColor = new SKColor(80, 80, 80);
                 break;
         }
     }
