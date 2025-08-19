@@ -55,14 +55,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        PaintSurface += (_, e) =>
-        {
-            rendering = true;
-            {
-                renderer.Render(e.Surface.Canvas, (float)Dpi);
-            }
-            rendering = false;
-        };
+        PaintSurface += (_, e) => { rendering = true; renderer.Render(e.Surface.Canvas, (float)Dpi); rendering = false; };
 
         PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
 
@@ -164,12 +157,12 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     void IBlueprintEditor.Invalidate()
     {
-        if (!rendering)
+        if (rendering)
         {
-            rendering = true;
-
-            Invalidate();
+            return;
         }
+
+        Invalidate();
     }
 
     SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
