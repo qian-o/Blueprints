@@ -39,17 +39,21 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                              typeof(BlueprintEditor),
                                                                                              new PropertyMetadata(null));
 
-    private bool canInvalidate;
+    private bool isInvalidateScheduled;
 
     public BlueprintEditor()
     {
-        Loaded += (_, _) => UpdateTheme();
+        UpdateTheme();
         ActualThemeChanged += (_, _) => UpdateTheme();
 
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        PaintSurface += (_, e) => { canInvalidate = false; renderer.Render(e.Surface.Canvas, (float)Dpi); canInvalidate = true; };
+        Loaded += (_, _) => CompositionTarget.Rendering += Rendering;
+
+        Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
+
+        PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
 
         PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
 
@@ -158,12 +162,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     void IBlueprintEditor.Invalidate()
     {
-        if (canInvalidate)
-        {
-            canInvalidate = false;
-
-            Invalidate();
-        }
+        isInvalidateScheduled = true;
     }
 
     SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
@@ -178,5 +177,15 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         }
 
         return SKTypeface.FromFamilyName(fontFamily, new(weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright));
+    }
+
+    private void Rendering(object? sender, object e)
+    {
+        if (isInvalidateScheduled)
+        {
+            Invalidate();
+
+            isInvalidateScheduled = false;
+        }
     }
 }
