@@ -43,19 +43,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     public BlueprintEditor()
     {
-        Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
-
-        ActualThemeChanged += (_, _) =>
-        {
-            Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
-
-            Invalidate();
-        };
+        Loaded += (_, _) => UpdateTheme();
+        ActualThemeChanged += (_, _) => UpdateTheme();
 
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        PaintSurface += (_, e) => { renderer.Render(e.Surface.Canvas, (float)Dpi); canInvalidate = true; };
+        PaintSurface += (_, e) => { canInvalidate = false; renderer.Render(e.Surface.Canvas, (float)Dpi); canInvalidate = true; };
 
         PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
 
@@ -68,6 +62,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e.GetCurrentPoint(this)));
 
         PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e.GetCurrentPoint(this)));
+
+        void UpdateTheme()
+        {
+            Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
+
+            Invalidate();
+        }
 
         PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
         {
@@ -151,9 +152,9 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     string IBlueprintEditor.FontFamily => FontFamily?.Source ?? FontFamily.XamlAutoFontFamily.Source;
 
-    IBlueprintTheme IBlueprintEditor.Theme => Theme ?? new DefaultBlueprintTheme();
+    IBlueprintTheme IBlueprintEditor.Theme => Theme ??= new DefaultBlueprintTheme();
 
-    IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
+    IEnumerable<Element> IBlueprintEditor.Elements => Elements ??= [];
 
     void IBlueprintEditor.Invalidate()
     {
