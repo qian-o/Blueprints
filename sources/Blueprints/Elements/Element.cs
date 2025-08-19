@@ -15,15 +15,15 @@ public abstract class Element : IInputController, IDragDropController
 
     public Element? Parent { get; private set; }
 
-    public SKPoint Position { get; set => SetValue(ref field, value); } = SKPoint.Empty;
+    public SKPoint Position { get; set => SetAndInvalidate(ref field, value); } = SKPoint.Empty;
 
     public SKSize Size { get; private set; } = SKSize.Empty;
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
-    public bool IsPointerOver { get; private set => SetValue(ref field, value); }
+    public bool IsPointerOver { get; private set => SetAndInvalidate(ref field, value); }
 
-    public bool IsDragged { get; private set => SetValue(ref field, value); }
+    public bool IsDragged { get; private set => SetAndInvalidate(ref field, value); }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
@@ -126,7 +126,7 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
-    protected void SetValue<T>(ref T field, T value)
+    protected void SetAndInvalidate<T>(ref T field, T value)
     {
         if (!EqualityComparer<T>.Default.Equals(field, value))
         {
