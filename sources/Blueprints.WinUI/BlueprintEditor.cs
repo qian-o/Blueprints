@@ -39,7 +39,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                                                                                              typeof(BlueprintEditor),
                                                                                              new PropertyMetadata(null));
 
-    private bool rendering;
+    private bool canInvalidate;
 
     public BlueprintEditor()
     {
@@ -55,7 +55,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        PaintSurface += (_, e) => { rendering = true; renderer.Render(e.Surface.Canvas, (float)Dpi); rendering = false; };
+        PaintSurface += (_, e) => { renderer.Render(e.Surface.Canvas, (float)Dpi); canInvalidate = true; };
 
         PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
 
@@ -157,12 +157,12 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     void IBlueprintEditor.Invalidate()
     {
-        if (rendering)
+        if (canInvalidate)
         {
-            return;
-        }
+            canInvalidate = false;
 
-        Invalidate();
+            Invalidate();
+        }
     }
 
     SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
