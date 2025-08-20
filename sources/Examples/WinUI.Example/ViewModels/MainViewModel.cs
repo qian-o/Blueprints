@@ -11,12 +11,12 @@ public partial class MainViewModel : ObservableObject
 
         for (int i = 0; i < nodes.Length; i++)
         {
-            nodes[i] = new Node
+            nodes[i] = new()
             {
                 Header = $"Node {i + 1}",
                 Content = $"This is the content of Node {i + 1}.",
-                Inputs = [new Pin { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new Pin { Content = $"Input {i + 1}B" }],
-                Outputs = [new Pin { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new Pin { Content = $"Output {i + 1}B" }]
+                Inputs = [new() { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new() { Content = $"Input {i + 1}B" }],
+                Outputs = [new() { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new() { Content = $"Output {i + 1}B" }]
             };
         }
 
