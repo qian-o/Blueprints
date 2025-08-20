@@ -7,7 +7,7 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
-        Node[] nodes = new Node[2000];
+        Node[] nodes = new Node[100];
 
         for (int i = 0; i < nodes.Length; i++)
         {
