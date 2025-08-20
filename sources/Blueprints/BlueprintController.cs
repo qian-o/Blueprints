@@ -63,32 +63,6 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
     {
         Element[] reverseElements = [.. editor.Elements.Reverse()];
 
-        foreach (Element element in reverseElements)
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                if (element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerMoved(args);
-
-                    if (args.Handled)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-                else
-                {
-                    ((IInputController)element).PointerEntered(args);
-                }
-            }
-            else if (element.IsPointerOver)
-            {
-                ((IInputController)element).PointerExited(args);
-            }
-        }
-
         if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
         {
             if (dragEventArgs is null)
@@ -119,35 +93,49 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
                 }
             }
         }
-        else if (args.Pointers.HasFlag(Pointers.RightButton) && lastScreenPosition is not null)
+        else
         {
-            editor.X += args.ScreenPosition.X - lastScreenPosition.Value.X;
-            editor.Y += args.ScreenPosition.Y - lastScreenPosition.Value.Y;
+            foreach (Element element in reverseElements)
+            {
+                if (element.HitTest(args.WorldPosition))
+                {
+                    if (element.IsPointerOver)
+                    {
+                        ((IInputController)element).PointerMoved(args);
 
-            lastScreenPosition = args.ScreenPosition;
+                        if (args.Handled)
+                        {
+                            return;
+                        }
 
-            editor.Invalidate();
+                        break;
+                    }
+                    else
+                    {
+                        ((IInputController)element).PointerEntered(args);
+                    }
+                }
+                else if (element.IsPointerOver)
+                {
+                    ((IInputController)element).PointerExited(args);
+                }
+            }
+
+            if (args.Pointers.HasFlag(Pointers.RightButton) && lastScreenPosition is not null)
+            {
+                editor.X += args.ScreenPosition.X - lastScreenPosition.Value.X;
+                editor.Y += args.ScreenPosition.Y - lastScreenPosition.Value.Y;
+
+                lastScreenPosition = args.ScreenPosition;
+
+                editor.Invalidate();
+            }
         }
     }
 
     public void PointerReleased(PointerEventArgs args)
     {
         Element[] reverseElements = [.. editor.Elements.Reverse()];
-
-        foreach (Element element in reverseElements)
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerReleased(args);
-
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
-            }
-        }
 
         if (dragedElement is not null && dragEventArgs is not null)
         {
@@ -174,8 +162,25 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             dragedElement = null;
             dragEventArgs = null;
         }
+        else
+        {
+            foreach (Element element in reverseElements)
+            {
+                if (element.HitTest(args.WorldPosition))
+                {
+                    ((IInputController)element).PointerReleased(args);
 
-        lastScreenPosition = null;
+                    if (args.Handled)
+                    {
+                        return;
+                    }
+
+                    break;
+                }
+            }
+
+            lastScreenPosition = null;
+        }
     }
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
