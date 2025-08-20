@@ -2,6 +2,11 @@
 
 public abstract class Drawable : Element
 {
+    protected Drawable()
+    {
+        IsHitTestVisible = false;
+    }
+
     protected sealed override Element[] SubElements()
     {
         return [];

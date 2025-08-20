@@ -21,6 +21,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public SKRect Bounds { get; private set; } = SKRect.Empty;
 
+    public bool IsHitTestVisible { get; set; } = true;
+
     public bool IsPointerOver { get; private set => SetAndInvalidate(ref field, value); }
 
     public bool IsDragged { get; private set => SetAndInvalidate(ref field, value); }
@@ -51,9 +53,9 @@ public abstract class Element : IInputController, IDragDropController
 
     public event EventHandler<DragEventArgs>? DragCancelled;
 
-    public virtual bool HitTest(SKPoint position)
+    public bool HitTest(SKPoint position)
     {
-        return !Bounds.IsEmpty && Bounds.Contains(position);
+        return IsHitTestVisible && Bounds.Contains(position);
     }
 
     public void Invalidate()
