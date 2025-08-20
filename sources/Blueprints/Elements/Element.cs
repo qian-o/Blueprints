@@ -89,26 +89,10 @@ public abstract class Element : IInputController, IDragDropController
         return IsHitTestVisible && Bounds.Contains(position);
     }
 
-    internal void Bind(IBlueprintEditor editor, Element? parent)
+    internal void Layout(IBlueprintEditor editor, IDrawingContext dc)
     {
-        if (Editor == editor && Parent == parent)
-        {
-            return;
-        }
+        Bind(editor, null);
 
-        Editor = editor;
-        Parent = parent;
-
-        foreach (Element element in SubElements())
-        {
-            element.Bind(editor, this);
-        }
-
-        OnInitialize();
-    }
-
-    internal void Layout(IDrawingContext dc)
-    {
         Measure(dc);
         Arrange();
     }
@@ -175,6 +159,24 @@ public abstract class Element : IInputController, IDragDropController
 
     protected virtual void OnDragCancelled(DragEventArgs args) { }
     #endregion
+
+    private void Bind(IBlueprintEditor editor, Element? parent)
+    {
+        if (Editor == editor && Parent == parent)
+        {
+            return;
+        }
+
+        Editor = editor;
+        Parent = parent;
+
+        foreach (Element element in SubElements())
+        {
+            element.Bind(editor, this);
+        }
+
+        OnInitialize();
+    }
 
     private void Measure(IDrawingContext dc)
     {
