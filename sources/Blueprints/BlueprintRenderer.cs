@@ -23,6 +23,23 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                 {
                     element.Bind(editor, null);
                     element.Layout(dc);
+                }
+
+                List<Element> visibleElements = [];
+                List<SKRect> coveredAreas = [];
+                foreach (Element element in editor.Elements.Reverse())
+                {
+                    if (coveredAreas.Any(item => item.Contains(element.Bounds)))
+                    {
+                        break;
+                    }
+
+                    visibleElements.Add(element);
+                    coveredAreas.Add(element.Bounds);
+                }
+
+                foreach (Element element in visibleElements.AsEnumerable().Reverse())
+                {
                     element.Render(dc);
                 }
             }
