@@ -53,11 +53,6 @@ public abstract class Element : IInputController, IDragDropController
 
     public event EventHandler<DragEventArgs>? DragCancelled;
 
-    public bool HitTest(SKPoint position)
-    {
-        return IsHitTestVisible && Bounds.Contains(position);
-    }
-
     public void Invalidate()
     {
         Editor?.Invalidate();
@@ -87,6 +82,11 @@ public abstract class Element : IInputController, IDragDropController
         }
 
         behaviors.Clear();
+    }
+
+    public bool HitTest(SKPoint position)
+    {
+        return IsHitTestVisible && Bounds.Contains(position);
     }
 
     internal void Bind(IBlueprintEditor editor, Element? parent)
