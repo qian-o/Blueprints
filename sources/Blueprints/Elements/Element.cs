@@ -55,15 +55,13 @@ public abstract class Element : IInputController, IDragDropController
 
     public event EventHandler<DragEventArgs>? DragCancelled;
 
-    public void UpdateLayout()
+    public void Invalidate(bool updateLayout)
     {
-        isLayouted = false;
+        if (updateLayout)
+        {
+            UpdateLayout();
+        }
 
-        Parent?.UpdateLayout();
-    }
-
-    public void Invalidate()
-    {
         Editor?.Invalidate();
     }
 
@@ -102,15 +100,13 @@ public abstract class Element : IInputController, IDragDropController
     {
         Bind(editor, null);
 
-        if (isLayouted)
+        if (!isLayouted)
         {
-            return;
+            Measure(dc);
+            Arrange();
+
+            isLayouted = true;
         }
-
-        Measure(dc);
-        Arrange();
-
-        isLayouted = true;
     }
 
     internal void Render(IDrawingContext dc)
@@ -134,12 +130,7 @@ public abstract class Element : IInputController, IDragDropController
         {
             field = value;
 
-            if (updateLayout)
-            {
-                UpdateLayout();
-            }
-
-            Invalidate();
+            Invalidate(updateLayout);
         }
     }
 
@@ -219,6 +210,13 @@ public abstract class Element : IInputController, IDragDropController
         {
             element.Arrange();
         }
+    }
+
+    private void UpdateLayout()
+    {
+        isLayouted = false;
+
+        Parent?.UpdateLayout();
     }
 
     #region IInputController implementation
