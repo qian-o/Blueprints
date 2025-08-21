@@ -6,6 +6,8 @@ public abstract class Element : IInputController, IDragDropController
 {
     private readonly HashSet<Behavior> behaviors = [];
 
+    private bool isLayouted;
+
     ~Element()
     {
         ClearBehaviors();
@@ -15,7 +17,7 @@ public abstract class Element : IInputController, IDragDropController
 
     public Element? Parent { get; private set; }
 
-    public SKPoint Position { get; set => SetAndInvalidate(ref field, value); } = SKPoint.Empty;
+    public SKPoint Position { get; set => Set(ref field, value, true); } = SKPoint.Empty;
 
     public SKSize Size { get; private set; } = SKSize.Empty;
 
@@ -23,9 +25,9 @@ public abstract class Element : IInputController, IDragDropController
 
     public bool IsHitTestVisible { get; set; } = true;
 
-    public bool IsPointerOver { get; private set => SetAndInvalidate(ref field, value); }
+    public bool IsPointerOver { get; private set => Set(ref field, value, false); }
 
-    public bool IsDragged { get; private set => SetAndInvalidate(ref field, value); }
+    public bool IsDragged { get; private set => Set(ref field, value, false); }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
@@ -52,6 +54,13 @@ public abstract class Element : IInputController, IDragDropController
     public event EventHandler<DragEventArgs>? DragCompleted;
 
     public event EventHandler<DragEventArgs>? DragCancelled;
+
+    public void UpdateLayout()
+    {
+        isLayouted = false;
+
+        Parent?.UpdateLayout();
+    }
 
     public void Invalidate()
     {
@@ -93,8 +102,15 @@ public abstract class Element : IInputController, IDragDropController
     {
         Bind(editor, null);
 
+        if (isLayouted)
+        {
+            return;
+        }
+
         Measure(dc);
         Arrange();
+
+        isLayouted = true;
     }
 
     internal void Render(IDrawingContext dc)
@@ -112,11 +128,16 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
-    protected void SetAndInvalidate<T>(ref T field, T value)
+    protected void Set<T>(ref T field, T value, bool updateLayout)
     {
         if (!EqualityComparer<T>.Default.Equals(field, value))
         {
             field = value;
+
+            if (updateLayout)
+            {
+                UpdateLayout();
+            }
 
             Invalidate();
         }

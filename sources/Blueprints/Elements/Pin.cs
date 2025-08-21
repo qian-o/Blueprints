@@ -6,11 +6,11 @@ public class Pin : Element
 {
     private readonly HashSet<Connection> connections = [];
 
-    public PinShape Shape { get; set; }
+    public PinShape Shape { get; set => Set(ref field, value, false); }
 
-    public Drawable? Content { get; set; }
+    public Drawable? Content { get; set => Set(ref field, value, true); }
 
-    public SKColor? Color { get; set; }
+    public SKColor? Color { get; set => Set(ref field, value, false); }
 
     public PinDirection Direction { get; private set; }
 

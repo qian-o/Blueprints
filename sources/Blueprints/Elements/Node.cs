@@ -9,13 +9,13 @@ public class Node : Element
         AddBehavior(MoveBehavior.Instance);
     }
 
-    public Drawable? Header { get; set; }
+    public Drawable? Header { get; set => Set(ref field, value, true); }
 
-    public Drawable? Content { get; set; }
+    public Drawable? Content { get; set => Set(ref field, value, true); }
 
-    public Pin[] Inputs { get; set; } = [];
+    public Pin[] Inputs { get; set => Set(ref field, value, true); } = [];
 
-    public Pin[] Outputs { get; set; } = [];
+    public Pin[] Outputs { get; set => Set(ref field, value, true); } = [];
 
     protected override Element[] SubElements()
     {
