@@ -36,6 +36,8 @@ public interface IDrawingContext
 
     void DrawPath(SKPath path, SKColor stroke, float strokeWidth);
 
+    SKPath GetFillPath(SKPath path, float strokeWidth);
+
     void DrawText(string text, SKPoint position, float fontWeight, float fontSize, SKColor color);
 
     SKSize MeasureText(string text, float fontWeight, float fontSize);
