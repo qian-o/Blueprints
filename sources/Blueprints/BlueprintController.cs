@@ -5,10 +5,13 @@ namespace Blueprints;
 public class BlueprintController(IBlueprintEditor editor) : IInputController
 {
     private SKPoint? lastScreenPosition;
+    private DragEventArgs? dragEventArgs;
 
     public void PointerMoved(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] elements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in elements)
         {
             ((IInputController)element).PointerMoved(args);
         }
@@ -27,11 +30,26 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
             editor.Invalidate();
         }
+
+        if (args.Pointers.HasFlag(Pointers.LeftButton) && dragEventArgs is not null)
+        {
+            dragEventArgs.ScreenPosition = args.ScreenPosition;
+            dragEventArgs.WorldPosition = args.WorldPosition;
+
+            ((IDragDropController)dragEventArgs.Element!).DragDelta(dragEventArgs);
+
+            foreach (Element element in elements)
+            {
+                ((IDragDropController)element).DragOver(dragEventArgs);
+            }
+        }
     }
 
     public void PointerPressed(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] elements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in elements)
         {
             ((IInputController)element).PointerPressed(args);
         }
@@ -45,11 +63,37 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         {
             lastScreenPosition = args.ScreenPosition;
         }
+
+        if (args.Pointers.HasFlag(Pointers.LeftButton))
+        {
+            dragEventArgs = new()
+            {
+                ScreenPosition = args.ScreenPosition,
+                WorldPosition = args.WorldPosition
+            };
+
+            foreach (Element element in elements)
+            {
+                ((IDragDropController)element).DragStarted(dragEventArgs);
+
+                if (dragEventArgs.Element is not null)
+                {
+                    break;
+                }
+            }
+
+            if (dragEventArgs.Element is null)
+            {
+                dragEventArgs = null;
+            }
+        }
     }
 
     public void PointerReleased(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        Element[] elements = [.. editor.Elements.Reverse()];
+
+        foreach (Element element in elements)
         {
             ((IInputController)element).PointerReleased(args);
         }
@@ -60,6 +104,28 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         }
 
         lastScreenPosition = null;
+
+        if (args.Pointers.HasFlag(Pointers.LeftButton) && dragEventArgs is not null)
+        {
+            dragEventArgs.ScreenPosition = args.ScreenPosition;
+            dragEventArgs.WorldPosition = args.WorldPosition;
+
+            foreach (Element element in elements)
+            {
+                ((IDragDropController)element).Drop(dragEventArgs);
+            }
+
+            if (dragEventArgs.Handled)
+            {
+                ((IDragDropController)dragEventArgs.Element!).DragCompleted(dragEventArgs);
+            }
+            else
+            {
+                ((IDragDropController)dragEventArgs.Element!).DragCancelled(dragEventArgs);
+            }
+
+            dragEventArgs = null;
+        }
     }
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
