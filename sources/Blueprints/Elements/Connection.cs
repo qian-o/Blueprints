@@ -29,7 +29,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return new(1, 1);
+        return new(-1, -1);
     }
 
     protected override void OnArrange()

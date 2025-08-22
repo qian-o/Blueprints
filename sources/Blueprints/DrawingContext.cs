@@ -301,6 +301,8 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
                 Style = SKPaintStyle.Stroke,
                 Color = color,
                 StrokeWidth = width,
+                StrokeCap = SKStrokeCap.Round,
+                StrokeJoin = SKStrokeJoin.Round,
                 BlendMode = SKBlendMode.SrcOver
             };
         }
