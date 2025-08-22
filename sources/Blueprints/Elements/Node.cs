@@ -22,7 +22,7 @@ public class Node : Element
         return [.. Inputs.Concat(Outputs).SelectMany(pin => pin.OutgoingConnections)];
     }
 
-    protected override Element[] SubElements(bool includeConnections)
+    protected override Element[] SubElements(bool includeConnections = true)
     {
         List<Element> elements = [];
 

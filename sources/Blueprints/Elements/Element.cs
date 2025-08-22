@@ -134,7 +134,7 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
-    protected abstract Element[] SubElements(bool includeConnections);
+    protected abstract Element[] SubElements(bool includeConnections = true);
 
     protected abstract void OnInitialize();
 
@@ -174,7 +174,7 @@ public abstract class Element : IInputController, IDragDropController
 
     private void Bind(IBlueprintEditor editor, Element? parent)
     {
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             element.Bind(editor, this);
         }
@@ -192,7 +192,7 @@ public abstract class Element : IInputController, IDragDropController
 
     private void Measure(IDrawingContext dc)
     {
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             element.Measure(dc);
         }
@@ -206,7 +206,7 @@ public abstract class Element : IInputController, IDragDropController
 
         OnArrange();
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             element.Arrange();
         }
@@ -227,7 +227,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -249,7 +249,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.IsPointerOver)
             {
@@ -271,7 +271,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -298,7 +298,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -336,7 +336,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -363,7 +363,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -392,7 +392,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -416,7 +416,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.IsDragged)
             {
@@ -438,7 +438,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -460,7 +460,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.HitTest(args.WorldPosition))
             {
@@ -487,7 +487,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.IsDragged)
             {
@@ -511,7 +511,7 @@ public abstract class Element : IInputController, IDragDropController
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
 
-        foreach (Element element in SubElements(true))
+        foreach (Element element in SubElements())
         {
             if (element.IsDragged)
             {

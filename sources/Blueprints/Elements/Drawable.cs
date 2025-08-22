@@ -7,7 +7,7 @@ public abstract class Drawable : Element
         IsHitTestVisible = false;
     }
 
-    protected sealed override Element[] SubElements(bool includeConnections)
+    protected sealed override Element[] SubElements(bool includeConnections = true)
     {
         return [];
     }

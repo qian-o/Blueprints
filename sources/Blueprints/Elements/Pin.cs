@@ -105,7 +105,7 @@ public class Pin : Element
         }
     }
 
-    protected override Element[] SubElements(bool includeConnections)
+    protected override Element[] SubElements(bool includeConnections = true)
     {
         return includeConnections
             ? Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections]

@@ -30,7 +30,7 @@ public class Connection(Pin source, Pin target) : Element
         return cachedPath.Contains(position.X, position.Y);
     }
 
-    protected override Element[] SubElements(bool includeConnections)
+    protected override Element[] SubElements(bool includeConnections = true)
     {
         return [];
     }
