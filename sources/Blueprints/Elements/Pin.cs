@@ -14,6 +14,8 @@ public class Pin : Element
 
     public PinDirection Direction { get; private set; }
 
+    public SKPoint ConnectionPoint { get; private set; }
+
     public int MaxConnections { get; set; }
 
     public IReadOnlyCollection<Connection> Connections => connections;
@@ -130,20 +132,19 @@ public class Pin : Element
 
     protected override void OnArrange()
     {
-        if (Content is not null)
-        {
-            float left = Bounds.Location.X + Theme.PinPadding;
-            float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
+        float left = Bounds.Left + Theme.PinPadding;
+        float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
 
-            switch (Direction)
-            {
-                case PinDirection.Input:
-                    Content.Position = new SKPoint(left + Theme.PinPadding + Theme.PinShapeSize, Bounds.MidY - (Content.Size.Height / 2));
-                    break;
-                case PinDirection.Output:
-                    Content.Position = new SKPoint(right - Theme.PinPadding - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
-                    break;
-            }
+        switch (Direction)
+        {
+            case PinDirection.Input:
+                ConnectionPoint = new SKPoint(left + (Theme.PinShapeSize / 2), Bounds.MidY);
+                Content?.Position = new SKPoint(left + Theme.PinShapeSize + Theme.PinPadding, Bounds.MidY - (Content.Size.Height / 2));
+                break;
+            case PinDirection.Output:
+                ConnectionPoint = new SKPoint(right + (Theme.PinShapeSize / 2), Bounds.MidY);
+                Content?.Position = new SKPoint(right - Theme.PinPadding - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
+                break;
         }
     }
 
@@ -154,7 +155,7 @@ public class Pin : Element
             dc.DrawRectangle(Bounds, 4.0f, Theme.PinHoverColor);
         }
 
-        float left = Bounds.Location.X + Theme.PinPadding;
+        float left = Bounds.Left + Theme.PinPadding;
         float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
 
         SKRect rect = SKRect.Empty;

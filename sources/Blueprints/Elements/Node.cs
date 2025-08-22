@@ -106,8 +106,8 @@ public class Node : Element
 
     protected override void OnArrange()
     {
-        float left = Bounds.Location.X + Theme.CardBorderWidth + Theme.CardPadding;
-        float top = Bounds.Location.Y + Theme.CardBorderWidth + Theme.CardPadding;
+        float left = Bounds.Left + Theme.CardBorderWidth + Theme.CardPadding;
+        float top = Bounds.Top + Theme.CardBorderWidth + Theme.CardPadding;
         float right = Bounds.Right - Theme.CardBorderWidth - Theme.CardPadding;
 
         // Header
