@@ -8,7 +8,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        foreach (var element in editor.Elements.Reverse())
+        foreach (Element element in editor.Elements.Reverse())
         {
             ((IInputController)element).PointerMoved(args);
         }
@@ -31,7 +31,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerPressed(PointerEventArgs args)
     {
-        foreach (var element in editor.Elements.Reverse())
+        foreach (Element element in editor.Elements.Reverse())
         {
             ((IInputController)element).PointerPressed(args);
         }
@@ -49,7 +49,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        foreach (var element in editor.Elements.Reverse())
+        foreach (Element element in editor.Elements.Reverse())
         {
             ((IInputController)element).PointerReleased(args);
         }
@@ -64,7 +64,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
     {
-        foreach (var element in editor.Elements.Reverse())
+        foreach (Element element in editor.Elements.Reverse())
         {
             ((IInputController)element).PointerWheelChanged(args);
         }
