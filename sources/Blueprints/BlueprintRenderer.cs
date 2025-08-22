@@ -24,9 +24,8 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                     element.Layout(editor, dc);
                 }
 
-                foreach (Connection connection in editor.Elements.OfType<Node>().SelectMany(static item => item.Connections()).ToHashSet())
+                foreach (Connection connection in editor.Elements.OfType<Node>().SelectMany(static item => item.Connections()))
                 {
-                    connection.Layout(editor, dc);
                     connection.Render(dc);
                 }
 

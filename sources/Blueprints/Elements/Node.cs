@@ -19,17 +19,10 @@ public class Node : Element
 
     public Connection[] Connections()
     {
-        List<Connection> connections = [];
-
-        foreach (Pin pin in Inputs.Concat(Outputs))
-        {
-            connections.AddRange(pin.Connections);
-        }
-
-        return [.. connections];
+        return [.. Inputs.Concat(Outputs).SelectMany(pin => pin.OutgoingConnections)];
     }
 
-    protected override Element[] SubElements()
+    protected override Element[] SubElements(bool includeConnections)
     {
         List<Element> elements = [];
 

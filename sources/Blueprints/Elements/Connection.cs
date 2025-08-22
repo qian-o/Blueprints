@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public class Connection(Pin source, Pin target) : Element
 {
+    private SKPath? cachedPath;
+
     public Pin Source { get; } = source;
 
     public Pin Target { get; } = target;
@@ -18,7 +20,17 @@ public class Connection(Pin source, Pin target) : Element
         Source.DisconnectFrom(Target);
     }
 
-    protected override Element[] SubElements()
+    public override bool HitTest(SKPoint position)
+    {
+        if (!IsHitTestVisible || cachedPath is null)
+        {
+            return false;
+        }
+
+        return cachedPath.Contains(position.X, position.Y);
+    }
+
+    protected override Element[] SubElements(bool includeConnections)
     {
         return [];
     }
@@ -68,10 +80,12 @@ public class Connection(Pin source, Pin target) : Element
                 break;
         }
 
-        using SKPath path = new();
-        path.MoveTo(sourcePoint);
-        path.CubicTo(control1, control2, targetPoint);
+        cachedPath?.Dispose();
 
-        dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
+        cachedPath = new();
+        cachedPath.MoveTo(sourcePoint);
+        cachedPath.CubicTo(control1, control2, targetPoint);
+
+        dc.DrawPath(cachedPath, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
     }
 }

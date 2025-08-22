@@ -20,6 +20,8 @@ public class Pin : Element
 
     public IReadOnlyCollection<Connection> Connections => connections;
 
+    public IReadOnlyCollection<Connection> OutgoingConnections => [.. connections.Where(item => item.Source == this)];
+
     public bool AllowsMultipleConnections => MaxConnections is 0;
 
     public bool IsConnectionLimitReached => MaxConnections > 1 && connections.Count >= MaxConnections;
@@ -80,6 +82,8 @@ public class Pin : Element
 
         connections.Add(connection);
         other.connections.Add(connection);
+
+        Invalidate(true);
     }
 
     public void DisconnectFrom(Pin other)
@@ -101,8 +105,13 @@ public class Pin : Element
         }
     }
 
-    protected override Element[] SubElements()
+    protected override Element[] SubElements(bool includeConnections)
     {
+        if (includeConnections)
+        {
+            return Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections];
+        }
+
         return Content is not null ? [Content] : [];
     }
 
