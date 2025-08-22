@@ -20,7 +20,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerPressed(PointerEventArgs args)
     {
-        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition));
+        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(item => item.HitTest(args.WorldPosition));
 
         (hitElement as IInputController)?.PointerPressed(args);
 
@@ -42,7 +42,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition));
+        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(item => item.HitTest(args.WorldPosition));
 
         if (hitElement?.IsPointerOver is false)
         {
@@ -102,22 +102,17 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        Element[] reverseElements = [.. editor.Elements.Reverse()];
-
         if (dragedElement is not null && dragEventArgs is not null)
         {
-            foreach (Element element in reverseElements)
+            foreach (Element element in editor.Elements.Reverse().Where(item => item.HitTest(args.WorldPosition)))
             {
-                if (element.HitTest(args.WorldPosition))
+                ((IDragDropController)element).Drop(dragEventArgs);
+
+                if (dragEventArgs.Handled)
                 {
-                    ((IDragDropController)element).Drop(dragEventArgs);
+                    ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
 
-                    if (dragEventArgs.Handled)
-                    {
-                        ((IDragDropController)dragedElement).DragCompleted(dragEventArgs);
-
-                        break;
-                    }
+                    break;
                 }
             }
 
@@ -131,32 +126,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         }
         else
         {
-            foreach (Element element in reverseElements)
+            foreach (Element element in editor.Elements.Reverse().Where(item => item.HitTest(args.WorldPosition)))
             {
-                if (element.HitTest(args.WorldPosition))
-                {
-                    ((IInputController)element).PointerReleased(args);
-
-                    if (args.Handled)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-            }
-
-            lastScreenPosition = null;
-        }
-    }
-
-    public void PointerWheelChanged(PointerWheelEventArgs args)
-    {
-        foreach (Element element in editor.Elements.Reverse())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerWheelChanged(args);
+                ((IInputController)element).PointerReleased(args);
 
                 if (args.Handled)
                 {
@@ -165,6 +137,23 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
                 break;
             }
+
+            lastScreenPosition = null;
+        }
+    }
+
+    public void PointerWheelChanged(PointerWheelEventArgs args)
+    {
+        foreach (Element element in editor.Elements.Reverse().Where(item => item.HitTest(args.WorldPosition)))
+        {
+            ((IInputController)element).PointerWheelChanged(args);
+
+            if (args.Handled)
+            {
+                return;
+            }
+
+            break;
         }
 
         float scale = args.Delta > 0.0f ? 1.1f : 0.9f;
