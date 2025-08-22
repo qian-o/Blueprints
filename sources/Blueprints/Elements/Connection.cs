@@ -22,12 +22,7 @@ public class Connection(Pin source, Pin target) : Element
 
     public override bool HitTest(SKPoint position)
     {
-        if (!IsHitTestVisible || cachedPath is null)
-        {
-            return false;
-        }
-
-        return cachedPath.Contains(position.X, position.Y);
+        return IsHitTestVisible && cachedPath?.Contains(position.X, position.Y) is true;
     }
 
     protected override Element[] SubElements(bool includeConnections = true)
