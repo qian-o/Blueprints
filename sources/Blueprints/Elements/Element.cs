@@ -91,7 +91,7 @@ public abstract class Element : IInputController, IDragDropController
         behaviors.Clear();
     }
 
-    public bool HitTest(SKPoint position)
+    public virtual bool HitTest(SKPoint position)
     {
         return IsHitTestVisible && Bounds.Contains(position);
     }

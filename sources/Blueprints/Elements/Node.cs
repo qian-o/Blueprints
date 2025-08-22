@@ -17,6 +17,18 @@ public class Node : Element
 
     public Pin[] Outputs { get; set => Set(ref field, value, true); } = [];
 
+    public Connection[] Connections()
+    {
+        List<Connection> connections = [];
+
+        foreach (Pin pin in Inputs.Concat(Outputs))
+        {
+            connections.AddRange(pin.Connections);
+        }
+
+        return [.. connections];
+    }
+
     protected override Element[] SubElements()
     {
         List<Element> elements = [];

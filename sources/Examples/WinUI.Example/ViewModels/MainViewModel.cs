@@ -20,6 +20,11 @@ public partial class MainViewModel : ObservableObject
             };
         }
 
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            nodes[i].Outputs[0].ConnectTo(nodes[(i + 1) % nodes.Length].Inputs[0]);
+        }
+
         Elements = nodes;
     }
 
