@@ -221,25 +221,20 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in SubElements())
         {
-            if (element.HitTest(args.WorldPosition))
-            {
-                if (element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerMoved(args);
-
-                    if (args.Handled)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-            }
+            ((IInputController)element).PointerMoved(args);
         }
 
-        OnPointerMoved(args);
+        if (args.Handled)
+        {
+            return;
+        }
 
-        PointerMoved?.Invoke(this, args);
+        if (IsPointerOver = HitTest(args.WorldPosition))
+        {
+            OnPointerMoved(args);
+
+            PointerMoved?.Invoke(this, args);
+        }
     }
 
     void IInputController.PointerPressed(PointerEventArgs args)
@@ -251,22 +246,20 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in SubElements())
         {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerPressed(args);
-
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
-            }
+            ((IInputController)element).PointerPressed(args);
         }
 
-        OnPointerPressed(args);
+        if (args.Handled)
+        {
+            return;
+        }
 
-        PointerPressed?.Invoke(this, args);
+        if (IsPointerOver)
+        {
+            OnPointerPressed(args);
+
+            PointerPressed?.Invoke(this, args);
+        }
     }
 
     void IInputController.PointerReleased(PointerEventArgs args)
@@ -278,22 +271,20 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in SubElements())
         {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerReleased(args);
-
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
-            }
+            ((IInputController)element).PointerReleased(args);
         }
 
-        OnPointerReleased(args);
+        if (args.Handled)
+        {
+            return;
+        }
 
-        PointerReleased?.Invoke(this, args);
+        if (IsPointerOver)
+        {
+            OnPointerReleased(args);
+
+            PointerReleased?.Invoke(this, args);
+        }
     }
 
     void IInputController.PointerWheelChanged(PointerWheelEventArgs args)
@@ -305,22 +296,20 @@ public abstract class Element : IInputController, IDragDropController
 
         foreach (Element element in SubElements())
         {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerWheelChanged(args);
-
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
-            }
+            ((IInputController)element).PointerWheelChanged(args);
         }
 
-        OnPointerWheelChanged(args);
+        if (args.Handled)
+        {
+            return;
+        }
 
-        PointerWheelChanged?.Invoke(this, args);
+        if (IsPointerOver)
+        {
+            OnPointerWheelChanged(args);
+
+            PointerWheelChanged?.Invoke(this, args);
+        }
     }
     #endregion
 
@@ -331,22 +320,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IDragDropController)element).DragStarted(args);
-
-                return;
-            }
-        }
-
-        IsDragged = true;
-
-        OnDragStarted(args);
-
-        DragStarted?.Invoke(this, args);
     }
 
     void IDragDropController.DragDelta(DragEventArgs args)
@@ -355,20 +328,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.IsDragged)
-            {
-                ((IDragDropController)element).DragDelta(args);
-
-                return;
-            }
-        }
-
-        OnDragDelta(args);
-
-        DragDelta?.Invoke(this, args);
     }
 
     void IDragDropController.DragOver(DragEventArgs args)
@@ -377,20 +336,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IDragDropController)element).DragOver(args);
-
-                break;
-            }
-        }
-
-        OnDragOver(args);
-
-        DragOver?.Invoke(this, args);
     }
 
     void IDragDropController.Drop(DragEventArgs args)
@@ -399,25 +344,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IDragDropController)element).Drop(args);
-
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
-            }
-        }
-
-        OnDrop(args);
-
-        Drop?.Invoke(this, args);
     }
 
     void IDragDropController.DragCompleted(DragEventArgs args)
@@ -426,22 +352,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.IsDragged)
-            {
-                ((IDragDropController)element).DragCompleted(args);
-
-                return;
-            }
-        }
-
-        IsDragged = false;
-
-        OnDragCompleted(args);
-
-        DragCompleted?.Invoke(this, args);
     }
 
     void IDragDropController.DragCancelled(DragEventArgs args)
@@ -450,22 +360,6 @@ public abstract class Element : IInputController, IDragDropController
         {
             throw new InvalidOperationException("Editor is not bound to this element.");
         }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.IsDragged)
-            {
-                ((IDragDropController)element).DragCancelled(args);
-
-                return;
-            }
-        }
-
-        IsDragged = false;
-
-        OnDragCancelled(args);
-
-        DragCancelled?.Invoke(this, args);
     }
     #endregion
 }
