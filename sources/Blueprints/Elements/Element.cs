@@ -111,6 +111,11 @@ public abstract class Element : IInputController, IDragDropController
 
     internal void Render(IDrawingContext dc)
     {
+        if (Bounds.IsEmpty)
+        {
+            return;
+        }
+
         OnRender(dc);
 
         foreach (Element element in SubElements())

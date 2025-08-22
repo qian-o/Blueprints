@@ -1,5 +1,6 @@
 ﻿using Blueprints;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace WinUI.Example.ViewModels;
 
@@ -7,11 +8,11 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
-        Node[] nodes = new Node[200];
+        Nodes = new Node[200];
 
-        for (int i = 0; i < nodes.Length; i++)
+        for (int i = 0; i < Nodes.Length; i++)
         {
-            nodes[i] = new()
+            Nodes[i] = new()
             {
                 Header = $"Node {i + 1}",
                 Content = $"This is the content of Node {i + 1}.",
@@ -19,15 +20,17 @@ public partial class MainViewModel : ObservableObject
                 Outputs = [new() { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new() { Content = $"Output {i + 1}B" }]
             };
         }
-
-        for (int i = 0; i < nodes.Length; i++)
-        {
-            nodes[i].Outputs[0].ConnectTo(nodes[(i + 1) % nodes.Length].Inputs[0]);
-        }
-
-        Elements = nodes;
     }
 
     [ObservableProperty]
-    public partial Element[] Elements { get; set; }
+    public partial Node[] Nodes { get; set; }
+
+    [RelayCommand]
+    private void ConnectNodes()
+    {
+        for (int i = 0; i < Nodes.Length; i++)
+        {
+            Nodes[i].Outputs[0].ConnectTo(Nodes[(i + 1) % Nodes.Length].Inputs[0]);
+        }
+    }
 }

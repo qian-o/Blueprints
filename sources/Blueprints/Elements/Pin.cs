@@ -180,7 +180,7 @@ public class Pin : Element
                 break;
             case PinShape.Triangle:
                 {
-                    SKPath path = new();
+                    using SKPath path = new();
                     path.MoveTo(rect.Left, rect.Top);
                     path.LineTo(rect.Left + MathF.Sqrt(MathF.Pow(rect.Width, 2) - MathF.Pow(rect.Width / 2, 2)), rect.MidY);
                     path.LineTo(rect.Left, rect.Bottom);
@@ -191,7 +191,7 @@ public class Pin : Element
                 break;
             case PinShape.FilledTriangle:
                 {
-                    SKPath path = new();
+                    using SKPath path = new();
                     path.MoveTo(rect.Left, rect.Top);
                     path.LineTo(rect.Left + MathF.Sqrt(MathF.Pow(rect.Width, 2) - MathF.Pow(rect.Width / 2, 2)), rect.MidY);
                     path.LineTo(rect.Left, rect.Bottom);
