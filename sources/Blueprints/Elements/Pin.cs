@@ -107,12 +107,9 @@ public class Pin : Element
 
     protected override Element[] SubElements(bool includeConnections)
     {
-        if (includeConnections)
-        {
-            return Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections];
-        }
-
-        return Content is not null ? [Content] : [];
+        return includeConnections
+            ? Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections]
+            : Content is not null ? [Content] : [];
     }
 
     protected override void OnInitialize()
