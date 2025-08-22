@@ -105,7 +105,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
         lastScreenPosition = null;
 
-        if (args.Pointers.HasFlag(Pointers.LeftButton) && dragEventArgs is not null)
+        if (!args.Pointers.HasFlag(Pointers.LeftButton) && dragEventArgs is not null)
         {
             dragEventArgs.ScreenPosition = args.ScreenPosition;
             dragEventArgs.WorldPosition = args.WorldPosition;
