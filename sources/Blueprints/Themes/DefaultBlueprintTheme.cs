@@ -37,6 +37,14 @@ public class DefaultBlueprintTheme : IBlueprintTheme
 
     public float PinPadding { get; } = 6.0f;
 
+    public SKColor ConnectionColor { get; private set; }
+
+    public SKColor ConnectionHoverColor { get; private set; }
+
+    public float ConnectionWidth { get; } = 3.0f;
+
+    public float ConnectionHoverWidth { get; } = 4.0f;
+
     private void ApplyTheme()
     {
         switch (Mode)
@@ -51,6 +59,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBorderWidth = 1.0f;
                 PinColor = new SKColor(100, 100, 100);
                 PinHoverColor = new SKColor(220, 220, 220);
+                ConnectionColor = new SKColor(100, 100, 100);
+                ConnectionHoverColor = new SKColor(50, 50, 50);
                 break;
 
             case ThemeMode.Dark:
@@ -63,6 +73,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBorderWidth = 1.0f;
                 PinColor = new SKColor(150, 150, 150);
                 PinHoverColor = new SKColor(50, 50, 50);
+                ConnectionColor = new SKColor(150, 150, 150);
+                ConnectionHoverColor = new SKColor(200, 200, 200);
                 break;
 
             case ThemeMode.HighContrast:
@@ -75,6 +87,8 @@ public class DefaultBlueprintTheme : IBlueprintTheme
                 CardBorderWidth = 2.0f;
                 PinColor = new SKColor(200, 200, 200);
                 PinHoverColor = new SKColor(80, 80, 80);
+                ConnectionColor = new SKColor(200, 200, 200);
+                ConnectionHoverColor = SKColors.White;
                 break;
         }
     }

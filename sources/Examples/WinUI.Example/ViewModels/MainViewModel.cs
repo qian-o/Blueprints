@@ -30,7 +30,12 @@ public partial class MainViewModel : ObservableObject
     {
         for (int i = 0; i < Nodes.Length; i++)
         {
-            Nodes[i].Outputs[0].ConnectTo(Nodes[(i + 1) % Nodes.Length].Inputs[0]);
+            if (i + 1 == Nodes.Length)
+            {
+                return;
+            }
+
+            Nodes[i].Outputs[0].ConnectTo(Nodes[i + 1].Inputs[0]);
         }
     }
 }

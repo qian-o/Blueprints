@@ -29,12 +29,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        SKPoint sourcePoint = Source.ConnectionPoint;
-        SKPoint targetPoint = Target.ConnectionPoint;
-
-        Position = new(Math.Min(sourcePoint.X, targetPoint.X), Math.Min(sourcePoint.Y, targetPoint.Y));
-
-        return new(Math.Abs(sourcePoint.X - targetPoint.X), Math.Abs(sourcePoint.Y - targetPoint.Y));
+        return new(1, 1);
     }
 
     protected override void OnArrange()
@@ -43,13 +38,15 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override void OnRender(IDrawingContext dc)
     {
-        var sourcePoint = Source.ConnectionPoint;
-        var targetPoint = Target.ConnectionPoint;
+        bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        var controlOffset = Math.Abs(targetPoint.X - sourcePoint.X) * 0.5f;
+        SKPoint sourcePoint = Source.ConnectionPoint;
+        SKPoint targetPoint = Target.ConnectionPoint;
 
-        var control1 = sourcePoint;
-        var control2 = targetPoint;
+        float controlOffset = Math.Abs(targetPoint.X - sourcePoint.X) * 0.5f;
+
+        SKPoint control1 = sourcePoint;
+        SKPoint control2 = targetPoint;
 
         switch (Source.Direction)
         {
@@ -71,20 +68,10 @@ public class Connection(Pin source, Pin target) : Element
                 break;
         }
 
-        using var path = new SKPath();
-
+        using SKPath path = new();
         path.MoveTo(sourcePoint);
         path.CubicTo(control1, control2, targetPoint);
 
-        var strokeColor = Theme.PinColor;
-        var strokeWidth = 2f;
-
-        if (Source.IsPointerOver || Target.IsPointerOver)
-        {
-            strokeColor = Theme.PinHoverColor;
-            strokeWidth = 3f;
-        }
-
-        dc.DrawPath(path, strokeColor, strokeWidth);
+        dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
     }
 }
