@@ -20,23 +20,18 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerPressed(PointerEventArgs args)
     {
-        if (editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition)) is Element element)
+        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition));
+
+        (hitElement as IInputController)?.PointerPressed(args);
+
+        if (args.Handled)
         {
-            ((IInputController)element).PointerPressed(args);
-
-            if (args.Handled)
-            {
-                return;
-            }
-
-            if (args.Pointers.HasFlag(Pointers.LeftButton))
-            {
-                dragedElement = element;
-            }
+            return;
         }
-        else
+
+        if (args.Pointers.HasFlag(Pointers.LeftButton))
         {
-            dragedElement = null;
+            dragedElement = hitElement;
         }
 
         if (args.Pointers.HasFlag(Pointers.RightButton))
@@ -47,18 +42,16 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        Element[] reverseElements = [.. editor.Elements.Reverse()];
+        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition));
 
-        foreach (Element element in reverseElements)
+        if (hitElement?.IsPointerOver is false)
         {
-            if (element.HitTest(args.WorldPosition))
-            {
-                if (!element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerEntered(args);
-                }
-            }
-            else if (element.IsPointerOver)
+            ((IInputController)hitElement).PointerEntered(args);
+        }
+
+        foreach (Element element in editor.Elements.Reverse())
+        {
+            if (element != hitElement && element.IsPointerOver)
             {
                 ((IInputController)element).PointerExited(args);
             }
@@ -83,32 +76,16 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
                 ((IDragDropController)dragedElement).DragDelta(dragEventArgs);
 
-                foreach (Element element in reverseElements)
-                {
-                    if (element.HitTest(args.WorldPosition))
-                    {
-                        ((IDragDropController)element).DragOver(dragEventArgs);
-
-                        break;
-                    }
-                }
+                (hitElement as IDragDropController)?.DragOver(dragEventArgs);
             }
         }
         else
         {
-            foreach (Element element in reverseElements)
+            (hitElement as IInputController)?.PointerMoved(args);
+
+            if (args.Handled)
             {
-                if (element.HitTest(args.WorldPosition) && element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerMoved(args);
-
-                    if (args.Handled)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
+                return;
             }
 
             if (args.Pointers.HasFlag(Pointers.RightButton) && lastScreenPosition is not null)
