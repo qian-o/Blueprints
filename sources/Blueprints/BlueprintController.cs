@@ -63,6 +63,21 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
     {
         Element[] reverseElements = [.. editor.Elements.Reverse()];
 
+        foreach (Element element in reverseElements)
+        {
+            if (element.HitTest(args.WorldPosition))
+            {
+                if (!element.IsPointerOver)
+                {
+                    ((IInputController)element).PointerEntered(args);
+                }
+            }
+            else if (element.IsPointerOver)
+            {
+                ((IInputController)element).PointerExited(args);
+            }
+        }
+
         if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
         {
             if (dragEventArgs is null)
@@ -97,27 +112,16 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
         {
             foreach (Element element in reverseElements)
             {
-                if (element.HitTest(args.WorldPosition))
+                if (element.HitTest(args.WorldPosition) && element.IsPointerOver)
                 {
-                    if (element.IsPointerOver)
-                    {
-                        ((IInputController)element).PointerMoved(args);
+                    ((IInputController)element).PointerMoved(args);
 
-                        if (args.Handled)
-                        {
-                            return;
-                        }
-
-                        break;
-                    }
-                    else
+                    if (args.Handled)
                     {
-                        ((IInputController)element).PointerEntered(args);
+                        return;
                     }
-                }
-                else if (element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerExited(args);
+
+                    break;
                 }
             }
 
