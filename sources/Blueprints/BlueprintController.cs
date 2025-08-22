@@ -8,54 +8,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
     private DragEventArgs? dragEventArgs;
     private SKPoint? lastScreenPosition;
 
-    public void PointerEntered(PointerEventArgs args)
-    {
-        PointerMoved(args);
-    }
-
-    public void PointerExited(PointerEventArgs args)
-    {
-        PointerMoved(args);
-    }
-
-    public void PointerPressed(PointerEventArgs args)
-    {
-        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(item => item.HitTest(args.WorldPosition));
-
-        (hitElement as IInputController)?.PointerPressed(args);
-
-        if (args.Handled)
-        {
-            return;
-        }
-
-        if (args.Pointers.HasFlag(Pointers.LeftButton))
-        {
-            dragedElement = hitElement;
-        }
-
-        if (args.Pointers.HasFlag(Pointers.RightButton))
-        {
-            lastScreenPosition = args.ScreenPosition;
-        }
-    }
-
     public void PointerMoved(PointerEventArgs args)
     {
         Element? hitElement = editor.Elements.Reverse().FirstOrDefault(item => item.HitTest(args.WorldPosition));
-
-        if (hitElement?.IsPointerOver is false)
-        {
-            ((IInputController)hitElement).PointerEntered(args);
-        }
-
-        foreach (Element element in editor.Elements.Reverse())
-        {
-            if (element != hitElement && element.IsPointerOver)
-            {
-                ((IInputController)element).PointerExited(args);
-            }
-        }
 
         if (args.Pointers.HasFlag(Pointers.LeftButton) && dragedElement is not null)
         {
@@ -97,6 +52,28 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
                 editor.Invalidate();
             }
+        }
+    }
+
+    public void PointerPressed(PointerEventArgs args)
+    {
+        Element? hitElement = editor.Elements.Reverse().FirstOrDefault(item => item.HitTest(args.WorldPosition));
+
+        (hitElement as IInputController)?.PointerPressed(args);
+
+        if (args.Handled)
+        {
+            return;
+        }
+
+        if (args.Pointers.HasFlag(Pointers.LeftButton))
+        {
+            dragedElement = hitElement;
+        }
+
+        if (args.Pointers.HasFlag(Pointers.RightButton))
+        {
+            lastScreenPosition = args.ScreenPosition;
         }
     }
 

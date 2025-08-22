@@ -55,13 +55,9 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
 
-        PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
-
-        PointerExited += (_, e) => controller.PointerExited(PointerEventArgs(e.GetCurrentPoint(this)));
+        PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e.GetCurrentPoint(this)));
 
         PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e.GetCurrentPoint(this)));
-
-        PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e.GetCurrentPoint(this)));
 
         PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e.GetCurrentPoint(this)));
 

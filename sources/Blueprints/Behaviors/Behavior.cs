@@ -4,8 +4,6 @@ public abstract class Behavior
 {
     public void Attach(Element element)
     {
-        element.PointerEntered += PointerEntered;
-        element.PointerExited += PointerExited;
         element.PointerPressed += PointerPressed;
         element.PointerMoved += PointerMoved;
         element.PointerReleased += PointerReleased;
@@ -20,8 +18,6 @@ public abstract class Behavior
 
     public void Detach(Element element)
     {
-        element.PointerEntered -= PointerEntered;
-        element.PointerExited -= PointerExited;
         element.PointerPressed -= PointerPressed;
         element.PointerMoved -= PointerMoved;
         element.PointerReleased -= PointerReleased;
@@ -33,10 +29,6 @@ public abstract class Behavior
         element.DragCompleted -= DragCompleted;
         element.DragCancelled -= DragCancelled;
     }
-
-    protected virtual void PointerEntered(object? sender, PointerEventArgs args) { }
-
-    protected virtual void PointerExited(object? sender, PointerEventArgs args) { }
 
     protected virtual void PointerPressed(object? sender, PointerEventArgs args) { }
 

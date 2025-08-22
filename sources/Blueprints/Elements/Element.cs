@@ -31,13 +31,9 @@ public abstract class Element : IInputController, IDragDropController
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
-    public event EventHandler<PointerEventArgs>? PointerEntered;
-
-    public event EventHandler<PointerEventArgs>? PointerExited;
+    public event EventHandler<PointerEventArgs>? PointerMoved;
 
     public event EventHandler<PointerEventArgs>? PointerPressed;
-
-    public event EventHandler<PointerEventArgs>? PointerMoved;
 
     public event EventHandler<PointerEventArgs>? PointerReleased;
 
@@ -145,13 +141,9 @@ public abstract class Element : IInputController, IDragDropController
     protected abstract void OnRender(IDrawingContext dc);
 
     #region InputController event handlers
-    protected virtual void OnPointerEntered(PointerEventArgs args) { }
-
-    protected virtual void OnPointerExited(PointerEventArgs args) { }
+    protected virtual void OnPointerMoved(PointerEventArgs args) { }
 
     protected virtual void OnPointerPressed(PointerEventArgs args) { }
-
-    protected virtual void OnPointerMoved(PointerEventArgs args) { }
 
     protected virtual void OnPointerReleased(PointerEventArgs args) { }
 
@@ -220,7 +212,7 @@ public abstract class Element : IInputController, IDragDropController
     }
 
     #region IInputController implementation
-    void IInputController.PointerEntered(PointerEventArgs args)
+    void IInputController.PointerMoved(PointerEventArgs args)
     {
         if (Editor == null)
         {
@@ -231,37 +223,23 @@ public abstract class Element : IInputController, IDragDropController
         {
             if (element.HitTest(args.WorldPosition))
             {
-                ((IInputController)element).PointerEntered(args);
+                if (element.IsPointerOver)
+                {
+                    ((IInputController)element).PointerMoved(args);
+
+                    if (args.Handled)
+                    {
+                        return;
+                    }
+
+                    break;
+                }
             }
         }
 
-        IsPointerOver = true;
+        OnPointerMoved(args);
 
-        OnPointerEntered(args);
-
-        PointerEntered?.Invoke(this, args);
-    }
-
-    void IInputController.PointerExited(PointerEventArgs args)
-    {
-        if (Editor == null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.IsPointerOver)
-            {
-                ((IInputController)element).PointerExited(args);
-            }
-        }
-
-        IsPointerOver = false;
-
-        OnPointerExited(args);
-
-        PointerExited?.Invoke(this, args);
+        PointerMoved?.Invoke(this, args);
     }
 
     void IInputController.PointerPressed(PointerEventArgs args)
@@ -289,44 +267,6 @@ public abstract class Element : IInputController, IDragDropController
         OnPointerPressed(args);
 
         PointerPressed?.Invoke(this, args);
-    }
-
-    void IInputController.PointerMoved(PointerEventArgs args)
-    {
-        if (Editor == null)
-        {
-            throw new InvalidOperationException("Editor is not bound to this element.");
-        }
-
-        foreach (Element element in SubElements())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                if (element.IsPointerOver)
-                {
-                    ((IInputController)element).PointerMoved(args);
-
-                    if (args.Handled)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-                else
-                {
-                    ((IInputController)element).PointerEntered(args);
-                }
-            }
-            else if (element.IsPointerOver)
-            {
-                ((IInputController)element).PointerExited(args);
-            }
-        }
-
-        OnPointerMoved(args);
-
-        PointerMoved?.Invoke(this, args);
     }
 
     void IInputController.PointerReleased(PointerEventArgs args)
