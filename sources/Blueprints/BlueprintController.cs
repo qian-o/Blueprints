@@ -10,50 +10,36 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerEntered(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
-        {
-            if (element.HitTest(args.WorldPosition))
-            {
-                ((IInputController)element).PointerEntered(args);
-            }
-        }
+        PointerMoved(args);
     }
 
     public void PointerExited(PointerEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
-        {
-            if (element.IsPointerOver)
-            {
-                ((IInputController)element).PointerExited(args);
-            }
-        }
+        PointerMoved(args);
     }
 
     public void PointerPressed(PointerEventArgs args)
     {
-        Element[] reverseElements = [.. editor.Elements.Reverse()];
-
-        foreach (Element element in reverseElements)
+        if (editor.Elements.Reverse().FirstOrDefault(e => e.HitTest(args.WorldPosition)) is Element element)
         {
-            if (element.HitTest(args.WorldPosition))
+            ((IInputController)element).PointerPressed(args);
+
+            if (args.Handled)
             {
-                ((IInputController)element).PointerPressed(args);
+                return;
+            }
 
-                if (args.Handled)
-                {
-                    return;
-                }
-
-                break;
+            if (args.Pointers.HasFlag(Pointers.LeftButton))
+            {
+                dragedElement = element;
             }
         }
-
-        if (args.Pointers.HasFlag(Pointers.LeftButton))
+        else
         {
-            dragedElement = reverseElements.FirstOrDefault(e => e.HitTest(args.WorldPosition));
+            dragedElement = null;
         }
-        else if (args.Pointers.HasFlag(Pointers.RightButton))
+
+        if (args.Pointers.HasFlag(Pointers.RightButton))
         {
             lastScreenPosition = args.ScreenPosition;
         }
