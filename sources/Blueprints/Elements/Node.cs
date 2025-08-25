@@ -45,6 +45,8 @@ public class Node : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
+        const float spacing = 4;
+
         float contentWidth = 0;
         float contentHeight = 0;
 
@@ -57,8 +59,6 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 4;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -78,12 +78,17 @@ public class Node : Element
                 {
                     Pin output = Outputs[i];
 
-                    rowWidth += output.Size.Width + pinSpacing;
+                    rowWidth += output.Size.Width + spacing;
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
                 contentWidth = Math.Max(contentWidth, rowWidth);
-                contentHeight += rowHeight + pinSpacing;
+                contentHeight += rowHeight + spacing;
+            }
+
+            if (rows > 0)
+            {
+                contentHeight -= spacing;
             }
         }
 
@@ -91,7 +96,7 @@ public class Node : Element
         if (Content is not null)
         {
             contentWidth = Math.Max(contentWidth, Content.Size.Width);
-            contentHeight += Content.Size.Height;
+            contentHeight += Theme.CardPadding + Content.Size.Height;
         }
 
         return new((Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentWidth, (Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentHeight);
@@ -99,6 +104,8 @@ public class Node : Element
 
     protected override void OnArrange()
     {
+        const float spacing = 4;
+
         float left = Bounds.Left + Theme.CardBorderWidth + Theme.CardPadding;
         float top = Bounds.Top + Theme.CardBorderWidth + Theme.CardPadding;
         float right = Bounds.Right - Theme.CardBorderWidth - Theme.CardPadding;
@@ -112,8 +119,6 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 4;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -136,12 +141,17 @@ public class Node : Element
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
-                top += rowHeight + pinSpacing;
+                top += rowHeight + spacing;
+            }
+
+            if (rows > 0)
+            {
+                top -= spacing;
             }
         }
 
         // Content
-        Content?.Position = new(left, top);
+        Content?.Position = new(left, Theme.CardPadding + top);
     }
 
     protected override void OnRender(IDrawingContext dc)

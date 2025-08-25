@@ -10,8 +10,6 @@ public class Pin : Element
 
     public Drawable? Content { get; set => Set(ref field, value, true); }
 
-    public SKColor? Color { get; set => Set(ref field, value, false); }
-
     public PinDirection Direction { get; private set; }
 
     public SKPoint ConnectionPoint { get; private set; }
@@ -124,13 +122,13 @@ public class Pin : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
+        const float spacing = 12;
+
         float contentWidth = Theme.PinShapeSize;
         float contentHeight = Theme.PinShapeSize;
 
         if (Content is not null)
         {
-            const float spacing = 12;
-
             contentWidth += Content.Size.Width + spacing;
             contentHeight = Math.Max(contentHeight, Content.Size.Height);
         }
@@ -151,6 +149,7 @@ public class Pin : Element
                 ConnectionPoint = new SKPoint(left + (Theme.PinShapeSize / 2), Bounds.MidY);
                 Content?.Position = new SKPoint(left + Theme.PinShapeSize + spacing, Bounds.MidY - (Content.Size.Height / 2));
                 break;
+
             case PinDirection.Output:
                 ConnectionPoint = new SKPoint(right + (Theme.PinShapeSize / 2), Bounds.MidY);
                 Content?.Position = new SKPoint(right - spacing - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
@@ -175,20 +174,30 @@ public class Pin : Element
             case PinDirection.Input:
                 rect = SKRect.Create(left, Bounds.MidY - (Theme.PinShapeSize / 2), Theme.PinShapeSize, Theme.PinShapeSize);
                 break;
+
             case PinDirection.Output:
                 rect = SKRect.Create(right, Bounds.MidY - (Theme.PinShapeSize / 2), Theme.PinShapeSize, Theme.PinShapeSize);
                 break;
         }
 
+        bool isFilled = Shape is PinShape.FilledCircle or PinShape.FilledSquare or PinShape.FilledTriangle || connections.Count > 0;
+
         switch (Shape)
         {
-            case PinShape.Circle:
-                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
+            case PinShape.Circle or PinShape.FilledCircle:
+                {
+                    if (isFilled)
+                    {
+                        dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Theme.PinColor);
+                    }
+                    else
+                    {
+                        dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Theme.PinColor, Theme.PinShapeStrokeWidth);
+                    }
+                }
                 break;
-            case PinShape.FilledCircle:
-                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor);
-                break;
-            case PinShape.Triangle:
+
+            case PinShape.Triangle or PinShape.FilledTriangle:
                 {
                     using SKPath path = new();
                     path.MoveTo(rect.Left, rect.Top);
@@ -196,25 +205,28 @@ public class Pin : Element
                     path.LineTo(rect.Left, rect.Bottom);
                     path.Close();
 
-                    dc.DrawPath(path, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
+                    if (isFilled)
+                    {
+                        dc.DrawPath(path, Theme.PinColor);
+                    }
+                    else
+                    {
+                        dc.DrawPath(path, Theme.PinColor, Theme.PinShapeStrokeWidth);
+                    }
                 }
                 break;
-            case PinShape.FilledTriangle:
-                {
-                    using SKPath path = new();
-                    path.MoveTo(rect.Left, rect.Top);
-                    path.LineTo(rect.Left + MathF.Sqrt(MathF.Pow(rect.Width, 2) - MathF.Pow(rect.Width / 2, 2)), rect.MidY);
-                    path.LineTo(rect.Left, rect.Bottom);
-                    path.Close();
 
-                    dc.DrawPath(path, Color ?? Theme.PinColor);
+            case PinShape.Square or PinShape.FilledSquare:
+                {
+                    if (isFilled)
+                    {
+                        dc.DrawRectangle(rect, 0.0f, Theme.PinColor);
+                    }
+                    else
+                    {
+                        dc.DrawRectangle(rect, 0.0f, Theme.PinColor, Theme.PinShapeStrokeWidth);
+                    }
                 }
-                break;
-            case PinShape.Square:
-                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
-                break;
-            case PinShape.FilledSquare:
-                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor);
                 break;
         }
     }

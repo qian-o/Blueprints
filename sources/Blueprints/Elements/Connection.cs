@@ -60,6 +60,7 @@ public class Connection(Pin source, Pin target) : Element
             case PinDirection.Input:
                 control1.X -= controlOffset;
                 break;
+
             case PinDirection.Output:
                 control1.X += controlOffset;
                 break;
@@ -70,6 +71,7 @@ public class Connection(Pin source, Pin target) : Element
             case PinDirection.Input:
                 control2.X -= controlOffset;
                 break;
+
             case PinDirection.Output:
                 control2.X += controlOffset;
                 break;
