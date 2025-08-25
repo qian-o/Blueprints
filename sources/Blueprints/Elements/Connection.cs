@@ -47,39 +47,7 @@ public class Connection(Pin source, Pin target) : Element
     {
         bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        SKPoint sourcePoint = Source.ConnectionPoint;
-        SKPoint targetPoint = Target.ConnectionPoint;
-
-        float controlOffset = Math.Abs(targetPoint.X - sourcePoint.X) * 0.5f;
-
-        SKPoint control1 = sourcePoint;
-        SKPoint control2 = targetPoint;
-
-        switch (Source.Direction)
-        {
-            case PinDirection.Input:
-                control1.X -= controlOffset;
-                break;
-
-            case PinDirection.Output:
-                control1.X += controlOffset;
-                break;
-        }
-
-        switch (Target.Direction)
-        {
-            case PinDirection.Input:
-                control2.X -= controlOffset;
-                break;
-
-            case PinDirection.Output:
-                control2.X += controlOffset;
-                break;
-        }
-
-        using SKPath path = new();
-        path.MoveTo(sourcePoint);
-        path.CubicTo(control1, control2, targetPoint);
+        using SKPath path = GeometryHelpers.CreateBezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
 
         dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 
