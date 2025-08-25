@@ -122,7 +122,7 @@ public class Pin : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        const float spacing = 12;
+        const float spacing = 8;
 
         float contentWidth = Theme.PinShapeSize;
         float contentHeight = Theme.PinShapeSize;
@@ -138,7 +138,7 @@ public class Pin : Element
 
     protected override void OnArrange()
     {
-        const float spacing = 12;
+        const float spacing = 8;
 
         float left = Bounds.Left + Theme.PinPadding;
         float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
@@ -186,13 +186,11 @@ public class Pin : Element
         {
             case PinShape.Circle or PinShape.FilledCircle:
                 {
+                    dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Theme.PinColor, Theme.PinShapeStrokeWidth);
+
                     if (isFilled)
                     {
                         dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Theme.PinColor);
-                    }
-                    else
-                    {
-                        dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Theme.PinColor, Theme.PinShapeStrokeWidth);
                     }
                 }
                 break;
@@ -205,26 +203,22 @@ public class Pin : Element
                     path.LineTo(rect.Left, rect.Bottom);
                     path.Close();
 
+                    dc.DrawPath(path, Theme.PinColor, Theme.PinShapeStrokeWidth);
+
                     if (isFilled)
                     {
                         dc.DrawPath(path, Theme.PinColor);
-                    }
-                    else
-                    {
-                        dc.DrawPath(path, Theme.PinColor, Theme.PinShapeStrokeWidth);
                     }
                 }
                 break;
 
             case PinShape.Square or PinShape.FilledSquare:
                 {
+                    dc.DrawRectangle(rect, 0.0f, Theme.PinColor, Theme.PinShapeStrokeWidth);
+
                     if (isFilled)
                     {
                         dc.DrawRectangle(rect, 0.0f, Theme.PinColor);
-                    }
-                    else
-                    {
-                        dc.DrawRectangle(rect, 0.0f, Theme.PinColor, Theme.PinShapeStrokeWidth);
                     }
                 }
                 break;
