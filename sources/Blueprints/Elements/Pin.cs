@@ -224,4 +224,50 @@ public class Pin : Element
                 break;
         }
     }
+
+    protected override void OnDragStarted(DragEventArgs args)
+    {
+        TempConnection connection = new(this, Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
+        {
+            TargetPoint = args.WorldPosition
+        };
+
+        connections.Add(connection);
+
+        args.Data = connection;
+
+        Invalidate(true);
+    }
+
+    protected override void OnDragDelta(DragEventArgs args)
+    {
+        (args.Data as TempConnection)?.TargetPoint = args.WorldPosition;
+    }
+
+    protected override void OnDragOver(DragEventArgs args)
+    {
+        (args.Data as TempConnection)?.TargetPoint = ConnectionPoint;
+    }
+
+    protected override void OnDrop(DragEventArgs args)
+    {
+        if (args.Data is not TempConnection connection)
+        {
+            return;
+        }
+
+        connection.Source.ConnectTo(this);
+
+        args.Handled = true;
+    }
+
+    protected override void OnDragCompleted(DragEventArgs args)
+    {
+        connections.Remove((TempConnection)args.Data!);
+    }
+
+    protected override void OnDragCancelled(DragEventArgs args)
+    {
+        connections.Remove((TempConnection)args.Data!);
+    }
 }

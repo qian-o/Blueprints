@@ -216,7 +216,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -241,7 +241,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -266,7 +266,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -291,7 +291,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -318,7 +318,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -345,7 +345,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         OnDragDelta(args);
@@ -357,7 +357,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -382,7 +382,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         foreach (Element element in SubElements())
@@ -407,7 +407,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         IsDragging = false;
@@ -421,7 +421,7 @@ public abstract class Element : IInputController, IDragDropController
     {
         if (Editor == null)
         {
-            throw new InvalidOperationException("Editor is not bound to this element.");
+            return;
         }
 
         IsDragging = false;
