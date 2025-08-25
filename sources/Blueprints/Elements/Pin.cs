@@ -129,7 +129,9 @@ public class Pin : Element
 
         if (Content is not null)
         {
-            contentWidth += Content.Size.Width + Theme.PinPadding;
+            const float spacing = 12;
+
+            contentWidth += Content.Size.Width + spacing;
             contentHeight = Math.Max(contentHeight, Content.Size.Height);
         }
 
@@ -138,6 +140,8 @@ public class Pin : Element
 
     protected override void OnArrange()
     {
+        const float spacing = 12;
+
         float left = Bounds.Left + Theme.PinPadding;
         float right = Bounds.Right - Theme.PinPadding - Theme.PinShapeSize;
 
@@ -145,11 +149,11 @@ public class Pin : Element
         {
             case PinDirection.Input:
                 ConnectionPoint = new SKPoint(left + (Theme.PinShapeSize / 2), Bounds.MidY);
-                Content?.Position = new SKPoint(left + Theme.PinShapeSize + Theme.PinPadding, Bounds.MidY - (Content.Size.Height / 2));
+                Content?.Position = new SKPoint(left + Theme.PinShapeSize + spacing, Bounds.MidY - (Content.Size.Height / 2));
                 break;
             case PinDirection.Output:
                 ConnectionPoint = new SKPoint(right + (Theme.PinShapeSize / 2), Bounds.MidY);
-                Content?.Position = new SKPoint(right - Theme.PinPadding - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
+                Content?.Position = new SKPoint(right - spacing - Content.Size.Width, Bounds.MidY - (Content.Size.Height / 2));
                 break;
         }
     }
@@ -179,7 +183,7 @@ public class Pin : Element
         switch (Shape)
         {
             case PinShape.Circle:
-                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor, 1.0f);
+                dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
                 break;
             case PinShape.FilledCircle:
                 dc.DrawCircle(new(rect.MidX, rect.MidY), Theme.PinShapeSize / 2, Color ?? Theme.PinColor);
@@ -192,7 +196,7 @@ public class Pin : Element
                     path.LineTo(rect.Left, rect.Bottom);
                     path.Close();
 
-                    dc.DrawPath(path, Color ?? Theme.PinColor, 1.0f);
+                    dc.DrawPath(path, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
                 }
                 break;
             case PinShape.FilledTriangle:
@@ -207,7 +211,7 @@ public class Pin : Element
                 }
                 break;
             case PinShape.Square:
-                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor, 1.0f);
+                dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor, Theme.PinShapeStrokeWidth);
                 break;
             case PinShape.FilledSquare:
                 dc.DrawRectangle(rect, 0.0f, Color ?? Theme.PinColor);

@@ -30,6 +30,8 @@ public interface IBlueprintTheme
 
     float PinShapeSize { get; }
 
+    float PinShapeStrokeWidth { get; }
+
     float PinPadding { get; }
 
     SKColor ConnectionColor { get; }
