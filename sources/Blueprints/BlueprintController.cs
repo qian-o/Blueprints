@@ -38,10 +38,14 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
             ((IDragDropController)dragEventArgs.Element!).DragDelta(dragEventArgs);
 
+            dragEventArgs.Handled = false;
+
             foreach (Element element in elements)
             {
                 ((IDragDropController)element).DragOver(dragEventArgs);
             }
+
+            dragEventArgs.Handled = false;
         }
     }
 
