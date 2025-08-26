@@ -6,6 +6,12 @@ public class Pin : Element
 {
     private readonly HashSet<Connection> connections = [];
 
+    public Pin()
+    {
+        CanDrag = true;
+        CanDrop = true;
+    }
+
     public PinShape Shape { get; set => Set(ref field, value, false); }
 
     public Drawable? Content { get; set => Set(ref field, value, true); }

@@ -6,6 +6,8 @@ public class Node : Element
 {
     public Node()
     {
+        CanDrag = true;
+
         AddBehavior(MoveBehavior.Instance);
     }
 

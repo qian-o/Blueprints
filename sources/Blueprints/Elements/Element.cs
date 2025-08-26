@@ -27,6 +27,10 @@ public abstract class Element : IInputController, IDragDropController
 
     public bool IsPointerOver { get; private set => Set(ref field, value, false); }
 
+    public bool CanDrag { get; set; }
+
+    public bool CanDrop { get; set; }
+
     public bool IsDragging { get; private set => Set(ref field, value, false); }
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
@@ -331,7 +335,7 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsDragging = IsPointerOver)
+        if (CanDrag && (IsDragging = IsPointerOver))
         {
             args.Element = this;
 
@@ -370,7 +374,7 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsPointerOver && !IsDragging)
+        if (IsPointerOver && CanDrop && !IsDragging)
         {
             OnDragOver(args);
 
@@ -395,7 +399,7 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsPointerOver && !IsDragging)
+        if (IsPointerOver && CanDrop && !IsDragging)
         {
             OnDrop(args);
 
