@@ -153,7 +153,7 @@ public class Node : Element
         }
 
         // Content
-        Content?.Position = new(left, Theme.CardPadding + top);
+        Content?.Position = new(Bounds.MidX - (Content.Size.Width / 2), Theme.CardPadding + top);
     }
 
     protected override void OnRender(IDrawingContext dc)
