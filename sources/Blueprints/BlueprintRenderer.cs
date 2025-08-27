@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using System.Diagnostics;
+using SkiaSharp;
 
 namespace Blueprints;
 
@@ -9,6 +10,8 @@ public class BlueprintRenderer(IBlueprintEditor editor)
     public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
@@ -37,6 +40,10 @@ public class BlueprintRenderer(IBlueprintEditor editor)
             dc.Pop();
         }
         dc.Pop();
+
+        stopwatch.Stop();
+
+        Debug.WriteLine($"Render time: {stopwatch.ElapsedMilliseconds} ms");
     }
 
     private void GridLines(SKColor color, float width, float spacing)
