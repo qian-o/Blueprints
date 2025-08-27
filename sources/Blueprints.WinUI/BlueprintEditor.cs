@@ -32,7 +32,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(nameof(Theme),
                                                                                           typeof(IBlueprintTheme),
                                                                                           typeof(BlueprintEditor),
-                                                                                          new PropertyMetadata(new DefaultBlueprintTheme()));
+                                                                                          new PropertyMetadata(DefaultBlueprintTheme.Instance));
 
     public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register(nameof(Elements),
                                                                                              typeof(IEnumerable<Element>),
@@ -152,7 +152,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     string IBlueprintEditor.FontFamily => FontFamily?.Source ?? FontFamily.XamlAutoFontFamily.Source;
 
-    IBlueprintTheme IBlueprintEditor.Theme => Theme ??= new DefaultBlueprintTheme();
+    IBlueprintTheme IBlueprintEditor.Theme => Theme ?? DefaultBlueprintTheme.Instance;
 
     IEnumerable<Element> IBlueprintEditor.Elements => Elements ??= [];
 

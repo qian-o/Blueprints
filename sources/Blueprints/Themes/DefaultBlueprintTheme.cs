@@ -4,6 +4,8 @@ namespace Blueprints;
 
 public class DefaultBlueprintTheme : IBlueprintTheme
 {
+    public static DefaultBlueprintTheme Instance { get; } = new();
+
     public DefaultBlueprintTheme()
     {
         ApplyTheme();

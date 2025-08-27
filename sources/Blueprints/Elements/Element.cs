@@ -33,7 +33,7 @@ public abstract class Element : IInputController, IDragDropController
 
     public bool IsDragging { get; private set => Set(ref field, value, false); }
 
-    public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
+    public IBlueprintTheme Theme => Editor?.Theme ?? DefaultBlueprintTheme.Instance;
 
     public object? Tag { get; set; }
 
