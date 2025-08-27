@@ -35,6 +35,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public IBlueprintTheme Theme => Editor?.Theme ?? throw new InvalidOperationException("Editor is not bound to this element.");
 
+    public object? Tag { get; set; }
+
     public event EventHandler<PointerEventArgs>? PointerMoved;
 
     public event EventHandler<PointerEventArgs>? PointerPressed;

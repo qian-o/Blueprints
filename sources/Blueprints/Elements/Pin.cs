@@ -30,6 +30,8 @@ public class Pin : Element
 
     public bool IsConnectionLimitReached => MaxConnections > 1 && connections.Count >= MaxConnections;
 
+    public event EventHandler<ConnectionValidationEventArgs>? ConnectionValidating;
+
     public bool CanConnectTo(Pin other)
     {
         if (other == this)
@@ -47,7 +49,7 @@ public class Pin : Element
             return false;
         }
 
-        if (IsConnectedTo(other))
+        if (connections.Any(item => item.Connects(this, other)))
         {
             return false;
         }
@@ -57,12 +59,10 @@ public class Pin : Element
             return false;
         }
 
-        return true;
-    }
+        ConnectionValidationEventArgs args = new(this, other);
+        ConnectionValidating?.Invoke(this, args);
 
-    public bool IsConnectedTo(Pin other)
-    {
-        return connections.Any(item => item.Connects(this, other));
+        return !args.Cancel;
     }
 
     public void ConnectTo(Pin other)
