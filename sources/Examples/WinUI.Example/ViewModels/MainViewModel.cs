@@ -1,5 +1,6 @@
 ﻿using Blueprints;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace WinUI.Example.ViewModels;
 
@@ -7,33 +8,34 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
-        Node node1 = new()
-        {
-            Header = "Node 1",
-            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input 1" }, new() { Content = "Input 2" }],
-            Outputs = [new() { Content = "Output 1" }, new() { Content = "Output 2" }],
-            Content = "This is the content of Node 1."
-        };
+        Nodes = new Node[200];
 
-        Node node2 = new()
+        for (int i = 0; i < Nodes.Length; i++)
         {
-            Header = "Node 2",
-            Inputs = [new() { Shape = PinShape.Triangle, Content = "Input A" }],
-            Outputs = [new() { Content = "Output A" }, new() { Content = "Output B" }],
-            Content = "This is the content of Node 2."
-        };
-
-        Node node3 = new()
-        {
-            Header = "Node 3",
-            Inputs = [new() { Content = "Input X" }],
-            Outputs = [new() { Content = "Output X" }, new() { Content = "Output Y" }],
-            Content = "This is the content of Node 3."
-        };
-
-        Elements = [node1, node2, node3];
+            Nodes[i] = new()
+            {
+                Header = $"Node {i + 1}",
+                Content = $"This is the content of Node {i + 1}.",
+                Inputs = [new() { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new() { Content = $"Input {i + 1}B" }],
+                Outputs = [new() { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new() { Content = $"Output {i + 1}B" }]
+            };
+        }
     }
 
     [ObservableProperty]
-    public partial Element[] Elements { get; set; }
+    public partial Node[] Nodes { get; set; }
+
+    [RelayCommand]
+    private void ConnectNodes()
+    {
+        for (int i = 0; i < Nodes.Length; i++)
+        {
+            if (i + 1 == Nodes.Length)
+            {
+                return;
+            }
+
+            Nodes[i].Outputs[0].ConnectTo(Nodes[i + 1].Inputs[0]);
+        }
+    }
 }

@@ -32,47 +32,43 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
     public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(nameof(Theme),
                                                                                           typeof(IBlueprintTheme),
                                                                                           typeof(BlueprintEditor),
-                                                                                          new PropertyMetadata(new DefaultBlueprintTheme()));
+                                                                                          new PropertyMetadata(DefaultBlueprintTheme.Instance));
 
     public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register(nameof(Elements),
                                                                                              typeof(IEnumerable<Element>),
                                                                                              typeof(BlueprintEditor),
                                                                                              new PropertyMetadata(null));
 
-    private bool isRendering;
+    private bool isInvalidateScheduled;
 
     public BlueprintEditor()
     {
-        Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
-
-        ActualThemeChanged += (_, _) =>
-        {
-            Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
-
-            Invalidate();
-        };
+        UpdateTheme();
+        ActualThemeChanged += (_, _) => UpdateTheme();
 
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        PaintSurface += (_, e) =>
-        {
-            isRendering = true;
-            renderer.Render(e.Surface.Canvas, (float)Dpi);
-            isRendering = false;
-        };
+        Loaded += (_, _) => CompositionTarget.Rendering += Rendering;
 
-        PointerEntered += (_, e) => controller.PointerEntered(PointerEventArgs(e.GetCurrentPoint(this)));
+        Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
 
-        PointerExited += (_, e) => controller.PointerExited(PointerEventArgs(e.GetCurrentPoint(this)));
-
-        PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e.GetCurrentPoint(this)));
+        PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
 
         PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e.GetCurrentPoint(this)));
+
+        PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e.GetCurrentPoint(this)));
 
         PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e.GetCurrentPoint(this)));
 
         PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e.GetCurrentPoint(this)));
+
+        void UpdateTheme()
+        {
+            Theme?.Mode = ActualTheme is ElementTheme.Light ? ThemeMode.Light : ThemeMode.Dark;
+
+            Invalidate();
+        }
 
         PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
         {
@@ -156,20 +152,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
     string IBlueprintEditor.FontFamily => FontFamily?.Source ?? FontFamily.XamlAutoFontFamily.Source;
 
-    IBlueprintTheme IBlueprintEditor.Theme => Theme ?? new DefaultBlueprintTheme();
+    IBlueprintTheme IBlueprintEditor.Theme => Theme ?? DefaultBlueprintTheme.Instance;
 
-    IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
+    IEnumerable<Element> IBlueprintEditor.Elements => Elements ??= [];
 
     void IBlueprintEditor.Invalidate()
     {
-        if (isRendering)
-        {
-            return;
-        }
-
-        isRendering = true;
-
-        Invalidate();
+        isInvalidateScheduled = true;
     }
 
     SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
@@ -184,5 +173,15 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         }
 
         return SKTypeface.FromFamilyName(fontFamily, new(weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright));
+    }
+
+    private void Rendering(object? sender, object e)
+    {
+        if (isInvalidateScheduled)
+        {
+            Invalidate();
+
+            isInvalidateScheduled = false;
+        }
     }
 }

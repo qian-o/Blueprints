@@ -4,34 +4,41 @@ namespace Blueprints;
 
 public class Node : Element
 {
-    public Drawable? Header { get; set; }
-
-    public Pin[] Inputs { get; set; } = [];
-
-    public Pin[] Outputs { get; set; } = [];
-
-    public Drawable? Content { get; set; }
-
-    protected override Element[] SubElements()
+    public Node()
     {
-        return [.. Inputs, .. Outputs];
+        CanDrag = true;
+
+        AddBehavior(MoveBehavior.Instance);
     }
 
-    protected override Drawable[] SubDrawables()
+    public Drawable? Header { get; set => Set(ref field, value, true); }
+
+    public Drawable? Content { get; set => Set(ref field, value, true); }
+
+    public Pin[] Inputs { get; set => Set(ref field, value, true); } = [];
+
+    public Pin[] Outputs { get; set => Set(ref field, value, true); } = [];
+
+    public Connection[] Connections()
     {
-        List<Drawable> drawables = [];
+        return [.. Inputs.Concat(Outputs).SelectMany(pin => pin.OutgoingConnections)];
+    }
+
+    protected override Element[] SubElements(bool includeConnections = true)
+    {
+        List<Element> elements = [];
 
         if (Header is not null)
         {
-            drawables.Add(Header);
+            elements.Add(Header);
         }
 
         if (Content is not null)
         {
-            drawables.Add(Content);
+            elements.Add(Content);
         }
 
-        return [.. drawables];
+        return [.. elements, .. Inputs, .. Outputs];
     }
 
     protected override void OnInitialize()
@@ -40,6 +47,8 @@ public class Node : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
+        const float spacing = 4;
+
         float contentWidth = 0;
         float contentHeight = 0;
 
@@ -52,8 +61,6 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 4;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -73,12 +80,17 @@ public class Node : Element
                 {
                     Pin output = Outputs[i];
 
-                    rowWidth += output.Size.Width + pinSpacing;
+                    rowWidth += output.Size.Width + spacing;
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
                 contentWidth = Math.Max(contentWidth, rowWidth);
-                contentHeight += rowHeight + pinSpacing;
+                contentHeight += rowHeight + spacing;
+            }
+
+            if (rows > 0)
+            {
+                contentHeight -= spacing;
             }
         }
 
@@ -86,7 +98,7 @@ public class Node : Element
         if (Content is not null)
         {
             contentWidth = Math.Max(contentWidth, Content.Size.Width);
-            contentHeight += Content.Size.Height;
+            contentHeight += Theme.CardPadding + Content.Size.Height;
         }
 
         return new((Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentWidth, (Theme.CardBorderWidth * 2) + (Theme.CardPadding * 2) + contentHeight);
@@ -94,8 +106,10 @@ public class Node : Element
 
     protected override void OnArrange()
     {
-        float left = Bounds.Location.X + Theme.CardBorderWidth + Theme.CardPadding;
-        float top = Bounds.Location.Y + Theme.CardBorderWidth + Theme.CardPadding;
+        const float spacing = 4;
+
+        float left = Bounds.Left + Theme.CardBorderWidth + Theme.CardPadding;
+        float top = Bounds.Top + Theme.CardBorderWidth + Theme.CardPadding;
         float right = Bounds.Right - Theme.CardBorderWidth - Theme.CardPadding;
 
         // Header
@@ -107,8 +121,6 @@ public class Node : Element
 
         // Pins
         {
-            const float pinSpacing = 4;
-
             int rows = Math.Max(Inputs.Length, Outputs.Length);
 
             for (int i = 0; i < rows; i++)
@@ -131,12 +143,17 @@ public class Node : Element
                     rowHeight = Math.Max(rowHeight, output.Size.Height);
                 }
 
-                top += rowHeight + pinSpacing;
+                top += rowHeight + spacing;
+            }
+
+            if (rows > 0)
+            {
+                top -= spacing;
             }
         }
 
         // Content
-        Content?.Position = new(left, top);
+        Content?.Position = new(Bounds.MidX - (Content.Size.Width / 2), Theme.CardPadding + top);
     }
 
     protected override void OnRender(IDrawingContext dc)

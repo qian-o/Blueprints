@@ -12,7 +12,7 @@
         <PackageVersion Include="SkiaSharp" Version="3.119.0" />
         <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0" />
         <PackageVersion Include="SkiaSharp.Views.WinUI" Version="3.119.0" />
-        <PackageVersion Include="Uno.WinUI" Version="6.1.34" />
+        <PackageVersion Include="Uno.WinUI" Version="6.2.58" />
     </ItemGroup>
 
 </Project>

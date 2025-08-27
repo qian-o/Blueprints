@@ -4,13 +4,17 @@ namespace Blueprints;
 
 public class Text(string text) : Drawable
 {
-    public string? FontFamily { get; set; }
+    public string? FontFamily { get; set => Set(ref field, value, true); }
 
-    public float FontWeight { get; set; } = 400;
+    public float FontWeight { get; set => Set(ref field, value, true); } = 400;
 
-    public float FontSize { get; set; } = 16;
+    public float FontSize { get; set => Set(ref field, value, true); } = 16;
 
-    public SKColor? Color { get; set; }
+    public SKColor? Color { get; set => Set(ref field, value, false); }
+
+    protected override void OnInitialize()
+    {
+    }
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {

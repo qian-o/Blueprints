@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using System.Diagnostics;
+using SkiaSharp;
 
 namespace Blueprints;
 
@@ -9,6 +10,8 @@ public class BlueprintRenderer(IBlueprintEditor editor)
     public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
 
         dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
@@ -21,14 +24,26 @@ public class BlueprintRenderer(IBlueprintEditor editor)
             {
                 foreach (Element element in editor.Elements)
                 {
-                    element.Bind(editor, null);
-                    element.Layout(dc);
+                    element.Layout(editor, dc);
+                }
+
+                foreach (Connection connection in editor.Elements.OfType<Node>().SelectMany(static item => item.Connections()))
+                {
+                    connection.Render(dc);
+                }
+
+                foreach (Element element in editor.Elements)
+                {
                     element.Render(dc);
                 }
             }
             dc.Pop();
         }
         dc.Pop();
+
+        stopwatch.Stop();
+
+        Debug.WriteLine($"Render time: {stopwatch.ElapsedMilliseconds} ms");
     }
 
     private void GridLines(SKColor color, float width, float spacing)
