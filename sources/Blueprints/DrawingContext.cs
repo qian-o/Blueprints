@@ -6,6 +6,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 {
     private readonly Dictionary<TypefaceDescriptor, SKTypeface> typefaceCache = [];
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
+    private readonly Dictionary<TextMetricsDescriptor, SKSize> textMetricsCache = [];
     private readonly Dictionary<FillPaintDescriptor, SKPaint> fillPaintCache = [];
     private readonly Dictionary<StrokePaintDescriptor, SKPaint> strokePaintCache = [];
     private readonly Dictionary<TextPaintDescriptor, SKPaint> textPaintCache = [];
@@ -155,12 +156,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     {
         SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
 
-        string[] lines = text.Split('\n');
-
-        float width = lines.Max(line => font.MeasureText(line, out _));
-        float height = lines.Length * font.GetFontMetrics(out _);
-
-        return new SKSize(width, height);
+        return GetTextMetrics(text, font);
     }
 
     private SKTypeface GetTypeface(string fontFamily, float fontWeight)
@@ -187,6 +183,23 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
         }
 
         return font;
+    }
+
+    private SKSize GetTextMetrics(string text, SKFont font)
+    {
+        TextMetricsDescriptor descriptor = new(text, font);
+
+        if (!textMetricsCache.TryGetValue(descriptor, out SKSize size))
+        {
+            string[] lines = text.Split('\n');
+
+            float width = lines.Max(line => font.MeasureText(line, out _));
+            float height = lines.Length * font.GetFontMetrics(out _);
+
+            textMetricsCache[descriptor] = size = new(width, height);
+        }
+
+        return size;
     }
 
     private SKPaint GetFillPaint(SKColor color)
@@ -252,6 +265,8 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     private record TypefaceDescriptor(string FontFamily, float FontWeight);
 
     private record FontDescriptor(SKTypeface Typeface, float FontSize);
+
+    private record TextMetricsDescriptor(string Text, SKFont Font);
 
     private record FillPaintDescriptor(SKColor Color);
 
