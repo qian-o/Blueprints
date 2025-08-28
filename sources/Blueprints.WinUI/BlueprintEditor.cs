@@ -1,9 +1,11 @@
 ﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using SkiaSharp.Views.Windows;
 using Windows.Storage;
+using Windows.System;
 
 namespace Blueprints.WinUI;
 
@@ -55,13 +57,13 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
 
-        PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e.GetCurrentPoint(this)));
+        PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e));
 
-        PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e.GetCurrentPoint(this)));
+        PointerPressed += (_, e) => controller.PointerPressed(PointerEventArgs(e));
 
-        PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e.GetCurrentPoint(this)));
+        PointerReleased += (_, e) => controller.PointerReleased(PointerEventArgs(e));
 
-        PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e.GetCurrentPoint(this)));
+        PointerWheelChanged += (_, e) => controller.PointerWheelChanged(PointerWheelEventArgs(e));
 
         void UpdateTheme()
         {
@@ -70,8 +72,10 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
             Invalidate();
         }
 
-        PointerEventArgs PointerEventArgs(PointerPoint pointerPoint)
+        PointerEventArgs PointerEventArgs(PointerRoutedEventArgs e)
         {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
             Pointers pointers = Pointers.None;
 
             if (pointerPoint.Properties.IsLeftButtonPressed)
@@ -101,14 +105,49 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
             SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
 
-            return new(screenPosition, screenPosition.ToWorld(this), pointers);
+            return new(screenPosition,
+                       screenPosition.ToWorld(this),
+                       GetKeyModifiers(e.KeyModifiers),
+                       pointers);
         }
 
-        PointerWheelEventArgs PointerWheelEventArgs(PointerPoint pointerPoint)
+        PointerWheelEventArgs PointerWheelEventArgs(PointerRoutedEventArgs e)
         {
+            PointerPoint pointerPoint = e.GetCurrentPoint(this);
+
             SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
 
-            return new(screenPosition, screenPosition.ToWorld(this), pointerPoint.Properties.MouseWheelDelta);
+            return new(screenPosition,
+                       screenPosition.ToWorld(this),
+                       pointerPoint.Properties.MouseWheelDelta,
+                       GetKeyModifiers(e.KeyModifiers));
+        }
+
+        static KeyModifiers GetKeyModifiers(VirtualKeyModifiers keyModifiers)
+        {
+            KeyModifiers result = KeyModifiers.None;
+
+            if (keyModifiers.HasFlag(VirtualKeyModifiers.Control))
+            {
+                result |= KeyModifiers.Control;
+            }
+
+            if (keyModifiers.HasFlag(VirtualKeyModifiers.Menu))
+            {
+                result |= KeyModifiers.Menu;
+            }
+
+            if (keyModifiers.HasFlag(VirtualKeyModifiers.Shift))
+            {
+                result |= KeyModifiers.Shift;
+            }
+
+            if (keyModifiers.HasFlag(VirtualKeyModifiers.Windows))
+            {
+                result |= KeyModifiers.Windows;
+            }
+
+            return result;
         }
     }
 

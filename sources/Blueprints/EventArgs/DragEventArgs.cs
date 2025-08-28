@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public class DragEventArgs
+public class DragEventArgs : EventArgs
 {
     public Element? Element { get; internal set; }
 

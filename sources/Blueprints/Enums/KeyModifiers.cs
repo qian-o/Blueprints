@@ -1,0 +1,15 @@
+﻿namespace Blueprints;
+
+[Flags]
+public enum KeyModifiers
+{
+    None = 0,
+
+    Control = 1 << 0,
+
+    Menu = 1 << 1,
+
+    Shift = 1 << 2,
+
+    Windows = 1 << 3
+}
