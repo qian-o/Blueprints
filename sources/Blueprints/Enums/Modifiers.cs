@@ -1,7 +1,7 @@
 ﻿namespace Blueprints;
 
 [Flags]
-public enum KeyModifiers
+public enum Modifiers
 {
     None = 0,
 

@@ -107,7 +107,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
             return new(screenPosition,
                        screenPosition.ToWorld(this),
-                       GetKeyModifiers(e.KeyModifiers),
+                       GetModifiers(e.KeyModifiers),
                        pointers);
         }
 
@@ -120,31 +120,31 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
             return new(screenPosition,
                        screenPosition.ToWorld(this),
                        pointerPoint.Properties.MouseWheelDelta,
-                       GetKeyModifiers(e.KeyModifiers));
+                       GetModifiers(e.KeyModifiers));
         }
 
-        static KeyModifiers GetKeyModifiers(VirtualKeyModifiers keyModifiers)
+        static Modifiers GetModifiers(VirtualKeyModifiers keyModifiers)
         {
-            KeyModifiers result = KeyModifiers.None;
+            Modifiers result = Modifiers.None;
 
             if (keyModifiers.HasFlag(VirtualKeyModifiers.Control))
             {
-                result |= KeyModifiers.Control;
+                result |= Modifiers.Control;
             }
 
             if (keyModifiers.HasFlag(VirtualKeyModifiers.Menu))
             {
-                result |= KeyModifiers.Menu;
+                result |= Modifiers.Menu;
             }
 
             if (keyModifiers.HasFlag(VirtualKeyModifiers.Shift))
             {
-                result |= KeyModifiers.Shift;
+                result |= Modifiers.Shift;
             }
 
             if (keyModifiers.HasFlag(VirtualKeyModifiers.Windows))
             {
-                result |= KeyModifiers.Windows;
+                result |= Modifiers.Windows;
             }
 
             return result;

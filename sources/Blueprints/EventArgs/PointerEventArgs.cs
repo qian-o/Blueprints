@@ -2,13 +2,13 @@
 
 namespace Blueprints;
 
-public class PointerEventArgs(SKPoint screenPosition, SKPoint worldPosition, KeyModifiers keyModifiers, Pointers pointers) : EventArgs
+public class PointerEventArgs(SKPoint screenPosition, SKPoint worldPosition, Modifiers modifiers, Pointers pointers) : EventArgs
 {
     public SKPoint ScreenPosition { get; } = screenPosition;
 
     public SKPoint WorldPosition { get; } = worldPosition;
 
-    public KeyModifiers KeyModifiers { get; } = keyModifiers;
+    public Modifiers Modifiers { get; } = modifiers;
 
     public Pointers Pointers { get; } = pointers;
 
