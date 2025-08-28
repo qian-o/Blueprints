@@ -10,15 +10,10 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     private readonly Dictionary<StrokePaintDescriptor, SKPaint> strokePaintCache = [];
     private readonly Dictionary<TextPaintDescriptor, SKPaint> textPaintCache = [];
 
-    public SKCanvas? Canvas { get; set; }
+    public SKCanvas Canvas { get; set; } = null!;
 
     public void PushClip(SKRect rect, float radius)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.Save();
 
         if (radius is 0)
@@ -33,83 +28,43 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 
     public void PushClip(SKPath path)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.Save();
         Canvas.ClipPath(path, SKClipOperation.Intersect, true);
     }
 
     public void PushTransform(SKMatrix matrix)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.Save();
         Canvas.Concat(matrix);
     }
 
     public void Pop()
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.Restore();
     }
 
     public void Clear(SKColor color)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.Clear(color);
     }
 
     public void DrawImage(SKImage image, SKRect src, SKRect dest)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawImage(image, src, dest, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
     }
 
     public void DrawPoint(SKPoint point, SKColor color)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawPoint(point, GetFillPaint(color));
     }
 
     public void DrawLine(SKPoint start, SKPoint end, SKColor stroke, float strokeWidth)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawLine(start, end, GetStrokePaint(stroke, strokeWidth));
     }
 
     public void DrawRectangle(SKRect rect, float radius, SKColor fill)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         if (radius is 0)
         {
             Canvas.DrawRect(rect, GetFillPaint(fill));
@@ -122,11 +77,6 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 
     public void DrawRectangle(SKRect rect, float radius, SKColor stroke, float strokeWidth)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         if (radius is 0)
         {
             Canvas.DrawRect(rect, GetStrokePaint(stroke, strokeWidth));
@@ -139,61 +89,31 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 
     public void DrawEllipse(SKRect rect, SKColor fill)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawOval(rect, GetFillPaint(fill));
     }
 
     public void DrawEllipse(SKRect rect, SKColor stroke, float strokeWidth)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawOval(rect, GetStrokePaint(stroke, strokeWidth));
     }
 
     public void DrawCircle(SKPoint center, float radius, SKColor fill)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawCircle(center, radius, GetFillPaint(fill));
     }
 
     public void DrawCircle(SKPoint center, float radius, SKColor stroke, float strokeWidth)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawCircle(center, radius, GetStrokePaint(stroke, strokeWidth));
     }
 
     public void DrawPath(SKPath path, SKColor fill)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawPath(path, GetFillPaint(fill));
     }
 
     public void DrawPath(SKPath path, SKColor stroke, float strokeWidth)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         Canvas.DrawPath(path, GetStrokePaint(stroke, strokeWidth));
     }
 
@@ -214,11 +134,6 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 
     public void DrawText(string text, SKPoint position, string fontFamily, float fontWeight, float fontSize, SKColor color)
     {
-        if (Canvas is null)
-        {
-            throw new InvalidOperationException("Canvas is not set.");
-        }
-
         SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
 
         float lineHeight = font.GetFontMetrics(out _);
