@@ -1,5 +1,4 @@
 ﻿using SkiaSharp;
-using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
@@ -14,9 +13,4 @@ public partial class SKView
 
 
     public event EventHandler<SKCanvas>? Paint;
-
-    protected SKPoint SKPoint(Point point)
-    {
-        return new SKPoint((float)(point.X / Dpi), (float)(point.Y / Dpi));
-    }
 }

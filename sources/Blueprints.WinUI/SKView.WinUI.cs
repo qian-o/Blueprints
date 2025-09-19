@@ -7,6 +7,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.Direct3D12;
 using Silk.NET.DXGI;
 using SkiaSharp;
+using Windows.Foundation;
 using WinRT;
 
 namespace Blueprints.WinUI;
@@ -32,7 +33,7 @@ public unsafe partial class SKView : SwapChainPanel
 
         private ComPtr<IDXGISwapChain3> swapChain;
 
-        public SwapChain(SwapChainPanel swapChainPanel, uint width, uint height)
+        public SwapChain(SwapChainPanel swapChainPanel, uint width, uint height, float scale)
         {
             swapChainPanelNative = swapChainPanel.As<ISwapChainPanelNative>();
 
@@ -51,15 +52,21 @@ public unsafe partial class SKView : SwapChainPanel
 
             factory.CreateSwapChainForComposition(queue, &desc, (ComPtr<IDXGIOutput>)null, ref swapChain);
 
-            swapChainPanelNative.SetSwapChain((nint)swapChain.Handle);
+            Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
+            swapChain.SetMatrixTransform(&matrix);
 
             Width = width;
             Height = height;
+            Scale = scale;
+
+            swapChainPanelNative.SetSwapChain((nint)swapChain.Handle);
         }
 
         public uint Width { get; private set; }
 
         public uint Height { get; private set; }
+
+        public float Scale { get; private set; }
 
         public GRBackendTexture ToGRBackendTexture()
         {
@@ -77,17 +84,21 @@ public unsafe partial class SKView : SwapChainPanel
             return new((int)Width, (int)Height, info);
         }
 
-        public void Resize(uint width, uint height)
+        public void Resize(uint width, uint height, float scale)
         {
-            if (width == Width && height == Height)
+            if (width == Width && height == Height && scale == Scale)
             {
                 return;
             }
 
             swapChain.ResizeBuffers(BufferCount, width, height, Format.FormatB8G8R8A8Unorm, (uint)SwapChainFlag.None);
 
+            Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
+            swapChain.SetMatrixTransform(&matrix);
+
             Width = width;
             Height = height;
+            Scale = scale;
         }
 
         public void Present()
@@ -145,6 +156,11 @@ public unsafe partial class SKView : SwapChainPanel
         DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnRender);
     }
 
+    protected static SKPoint SKPoint(Point point)
+    {
+        return new((float)point.X, (float)point.Y);
+    }
+
     private void OnRender()
     {
         uint width = (uint)(ActualWidth * Dpi);
@@ -155,8 +171,8 @@ public unsafe partial class SKView : SwapChainPanel
             return;
         }
 
-        swapChain ??= new(this, width, height);
-        swapChain.Resize(width, height);
+        swapChain ??= new(this, width, height, (float)(1.0 / Dpi));
+        swapChain.Resize(width, height, (float)(1.0 / Dpi));
 
         using GRBackendTexture texture = swapChain.ToGRBackendTexture();
         using SKSurface surface = SKSurface.Create(context, texture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
