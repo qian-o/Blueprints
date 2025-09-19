@@ -7,11 +7,6 @@ namespace Blueprints.WinUI;
 
 public partial class SKView : SKCanvasElement
 {
-    protected SKPoint SKPoint(Point point)
-    {
-        return new SKPoint((float)(point.X / Dpi), (float)(point.Y / Dpi));
-    }
-
     protected override void RenderOverride(SKCanvas canvas, Size area)
     {
         Paint?.Invoke(this, canvas);

@@ -1,26 +1,110 @@
 ﻿#if WINDOWS
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.Core.Native;
 using Silk.NET.Direct3D12;
 using Silk.NET.DXGI;
 using SkiaSharp;
-using Windows.Foundation;
 using WinRT;
 
 namespace Blueprints.WinUI;
 
-public unsafe partial class SKView : Canvas
+public unsafe partial class SKView : SwapChainPanel
 {
-    [ComImport]
+    [GeneratedComInterface]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("905a0fef-bc53-11df-8c49-001e4fc686da")]
-    private interface IServiceProviderInterop
+    [Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
+    internal partial interface ISwapChainPanelNative
     {
-        IntPtr Buffer { get; }
+        [PreserveSig]
+        int SetSwapChain(nint swapChain);
+
+        ulong Release();
+    }
+
+    private partial class SwapChain : IDisposable
+    {
+        private const int BufferCount = 3;
+
+        private readonly ISwapChainPanelNative swapChainPanelNative;
+
+        private ComPtr<IDXGISwapChain3> swapChain;
+
+        public SwapChain(SwapChainPanel swapChainPanel, uint width, uint height)
+        {
+            swapChainPanelNative = swapChainPanel.As<ISwapChainPanelNative>();
+
+            SwapChainDesc1 desc = new()
+            {
+                Width = width,
+                Height = height,
+                Format = Format.FormatB8G8R8A8Unorm,
+                Stereo = false,
+                SampleDesc = new() { Count = 1, Quality = 0 },
+                BufferUsage = DXGI.UsageRenderTargetOutput | DXGI.UsageBackBuffer,
+                BufferCount = BufferCount,
+                Scaling = Scaling.Stretch,
+                SwapEffect = SwapEffect.FlipDiscard,
+                Flags = (uint)SwapChainFlag.AllowModeSwitch
+            };
+
+            factory.CreateSwapChainForComposition(queue, &desc, (ComPtr<IDXGIOutput>)null, ref swapChain);
+
+            swapChainPanelNative.SetSwapChain((nint)swapChain.Handle);
+
+            Width = width;
+            Height = height;
+        }
+
+        public uint Width { get; private set; }
+
+        public uint Height { get; private set; }
+
+        public GRBackendTexture GRBackendTexture
+        {
+            get
+            {
+                swapChain.GetBuffer(swapChain.GetCurrentBackBufferIndex(), out ComPtr<ID3D12Resource> resource);
+
+                GRD3DTextureResourceInfo info = new()
+                {
+                    Resource = (nint)resource.Handle,
+                    ResourceState = (uint)ResourceStates.Present,
+                    SampleCount = 1,
+                    LevelCount = 1,
+                    Format = (uint)Format.FormatB8G8R8A8Unorm,
+                };
+
+                return new((int)Width, (int)Height, info);
+            }
+        }
+
+        public void Resize(uint width, uint height)
+        {
+            if (width == Width && height == Height)
+            {
+                return;
+            }
+
+            swapChain.ResizeBuffers(BufferCount, width, height, Format.FormatB8G8R8A8Unorm, (uint)SwapChainFlag.None);
+
+            Width = width;
+            Height = height;
+        }
+
+        public void Present()
+        {
+            swapChain.Present(1, 0);
+        }
+
+        public void Dispose()
+        {
+            swapChainPanelNative.Release();
+
+            swapChain.Dispose();
+        }
     }
 
     private static readonly DXGI dxgi = DXGI.GetApi(null);
@@ -39,7 +123,7 @@ public unsafe partial class SKView : Canvas
         factory.EnumAdapterByGpuPreference(0, GpuPreference.HighPerformance, out adapter);
         d3d12.CreateDevice(adapter, D3DFeatureLevel.Level120, out device);
 
-        CommandQueueDesc commandQueueDesc = new()
+        CommandQueueDesc desc = new()
         {
             Type = CommandListType.Direct,
             Priority = (int)CommandQueuePriority.Normal,
@@ -47,7 +131,7 @@ public unsafe partial class SKView : Canvas
             NodeMask = 0
         };
 
-        device.CreateCommandQueue(ref commandQueueDesc, out queue);
+        device.CreateCommandQueue(ref desc, out queue);
 
         context = GRContext.CreateDirect3D(new()
         {
@@ -58,54 +142,33 @@ public unsafe partial class SKView : Canvas
         });
     }
 
-    private WriteableBitmap? bitmap;
-
-    private SKSurface? gpuSurface;
-    private SKSurface? cpuSurface;
+    private SwapChain? swapChain;
 
     public void Invalidate()
     {
         DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnRender);
     }
 
-    protected static SKPoint SKPoint(Point point)
-    {
-        return new SKPoint((float)point.X, (float)point.Y);
-    }
-
     private void OnRender()
     {
-        int width = Math.Max(1, (int)(ActualWidth * Dpi));
-        int height = Math.Max(1, (int)(ActualHeight * Dpi));
-
-        if (bitmap is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height)
-        {
-            bitmap = new(width, height);
-
-            Background = new ImageBrush()
-            {
-                ImageSource = bitmap
-            };
-
-            gpuSurface?.Dispose();
-            cpuSurface?.Dispose();
-
-            SKImageInfo info = new(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
-
-            gpuSurface = SKSurface.Create(context, true, info);
-            cpuSurface = SKSurface.Create(info, bitmap.PixelBuffer.As<IServiceProviderInterop>().Buffer);
-        }
-
-        if (gpuSurface is null || cpuSurface is null)
+        if (ActualWidth is 0 || ActualHeight is 0)
         {
             return;
         }
 
-        Paint?.Invoke(this, gpuSurface.Canvas);
+        uint width = (uint)ActualWidth;
+        uint height = (uint)ActualHeight;
 
-        cpuSurface.Canvas.DrawSurface(gpuSurface, default);
+        swapChain ??= new(this, width, height);
+        swapChain.Resize(width, height);
 
-        bitmap.Invalidate();
+        using SKSurface surface = SKSurface.Create(context, swapChain.GRBackendTexture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+
+        Paint?.Invoke(this, surface.Canvas);
+
+        context.Flush(true, true);
+
+        swapChain.Present();
     }
 }
 #endif
