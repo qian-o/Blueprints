@@ -54,7 +54,7 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 
         Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
 
-        Paint += (_, e) => renderer.Render(e);
+        Paint += (_, e) => renderer.Render(e, (float)Dpi);
 
         PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e));
 

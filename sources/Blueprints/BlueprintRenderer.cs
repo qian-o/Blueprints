@@ -7,33 +7,37 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 {
     private readonly DrawingContext dc = new(editor);
 
-    public void Render(SKCanvas canvas)
+    public void Render(SKCanvas canvas, float dpi)
     {
         dc.Canvas = canvas;
 
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        dc.Clear(editor.Theme.BackgroundColor);
-
-        GridLines(editor.Theme.MinorGridLineColor, 1.0f, 40.0f);
-        GridLines(editor.Theme.MajorGridLineColor, 2.0f, 160.0f);
-
-        dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
+        dc.PushTransform(SKMatrix.CreateScale(dpi, dpi));
         {
-            foreach (Element element in editor.Elements)
-            {
-                element.Layout(editor, dc);
-            }
+            dc.Clear(editor.Theme.BackgroundColor);
 
-            foreach (Connection connection in editor.Elements.OfType<Node>().SelectMany(static item => item.Connections()))
-            {
-                connection.Render(dc);
-            }
+            GridLines(editor.Theme.MinorGridLineColor, 1.0f, 40.0f);
+            GridLines(editor.Theme.MajorGridLineColor, 2.0f, 160.0f);
 
-            foreach (Element element in editor.Elements)
+            dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
             {
-                element.Render(dc);
+                foreach (Element element in editor.Elements)
+                {
+                    element.Layout(editor, dc);
+                }
+
+                foreach (Connection connection in editor.Elements.OfType<Node>().SelectMany(static item => item.Connections()))
+                {
+                    connection.Render(dc);
+                }
+
+                foreach (Element element in editor.Elements)
+                {
+                    element.Render(dc);
+                }
             }
+            dc.Pop();
         }
         dc.Pop();
 

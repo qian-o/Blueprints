@@ -8,6 +8,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.Direct3D12;
 using Silk.NET.DXGI;
 using SkiaSharp;
+using Windows.Foundation;
 using WinRT;
 
 namespace Blueprints.WinUI;
@@ -62,26 +63,26 @@ public unsafe partial class SKView : Canvas
     private SKSurface? gpuSurface;
     private SKSurface? cpuSurface;
 
-    public SKView()
-    {
-        SizeChanged += (_, _) => Invalidate();
-    }
-
     public void Invalidate()
     {
         DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnRender);
     }
 
+    protected static SKPoint SKPoint(Point point)
+    {
+        return new SKPoint((float)point.X, (float)point.Y);
+    }
+
     private void OnRender()
     {
-        int width = Math.Max(1, (int)ActualWidth);
-        int height = Math.Max(1, (int)ActualHeight);
+        int width = Math.Max(1, (int)(ActualWidth * Dpi));
+        int height = Math.Max(1, (int)(ActualHeight * Dpi));
 
         if (bitmap is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height)
         {
             bitmap = new(width, height);
 
-            Background = new ImageBrush
+            Background = new ImageBrush()
             {
                 ImageSource = bitmap
             };
