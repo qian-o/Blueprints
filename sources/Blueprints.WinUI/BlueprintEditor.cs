@@ -3,13 +3,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using SkiaSharp.Views.Windows;
 using Windows.Storage;
 using Windows.System;
 
 namespace Blueprints.WinUI;
 
-public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
+public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 {
     public static readonly DependencyProperty XProperty = DependencyProperty.Register(nameof(X),
                                                                                       typeof(float),
@@ -55,7 +54,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
 
         Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
 
-        PaintSurface += (_, e) => renderer.Render(e.Surface.Canvas, (float)Dpi);
+        Paint += (_, e) => renderer.Render(e);
 
         PointerMoved += (_, e) => controller.PointerMoved(PointerEventArgs(e));
 
@@ -103,7 +102,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
                 pointers |= Pointers.XButton2;
             }
 
-            SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
+            SKPoint screenPosition = SKPoint(pointerPoint.Position);
 
             return new(screenPosition,
                        screenPosition.ToWorld(this),
@@ -115,7 +114,7 @@ public sealed partial class BlueprintEditor : SKXamlCanvas, IBlueprintEditor
         {
             PointerPoint pointerPoint = e.GetCurrentPoint(this);
 
-            SKPoint screenPosition = pointerPoint.Position.ToSKPoint();
+            SKPoint screenPosition = SKPoint(pointerPoint.Position);
 
             return new(screenPosition,
                        screenPosition.ToWorld(this),

@@ -8,15 +8,19 @@
 
     <Choose>
         <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+            <PropertyGroup>
+                <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+            </PropertyGroup>
+
             <ItemGroup>
                 <PackageReference Include="Microsoft.WindowsAppSDK" />
-                <PackageReference Include="SkiaSharp.Views.WinUI" />
+                <PackageReference Include="Silk.NET.Direct3D12" />
             </ItemGroup>
         </When>
         <Otherwise>
             <ItemGroup>
-                <PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
                 <PackageReference Include="Uno.WinUI" />
+                <PackageReference Include="Uno.WinUI.Graphics2DSK" />
             </ItemGroup>
         </Otherwise>
     </Choose>
