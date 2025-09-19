@@ -41,13 +41,12 @@ public unsafe partial class SKView : SwapChainPanel
                 Width = width,
                 Height = height,
                 Format = Format.FormatB8G8R8A8Unorm,
-                Stereo = false,
                 SampleDesc = new() { Count = 1, Quality = 0 },
-                BufferUsage = DXGI.UsageRenderTargetOutput | DXGI.UsageBackBuffer,
+                BufferUsage = DXGI.UsageRenderTargetOutput,
                 BufferCount = BufferCount,
                 Scaling = Scaling.Stretch,
                 SwapEffect = SwapEffect.FlipDiscard,
-                Flags = (uint)SwapChainFlag.AllowModeSwitch
+                Flags = (uint)SwapChainFlag.AllowTearing
             };
 
             factory.CreateSwapChainForComposition(queue, &desc, (ComPtr<IDXGIOutput>)null, ref swapChain);
@@ -62,23 +61,20 @@ public unsafe partial class SKView : SwapChainPanel
 
         public uint Height { get; private set; }
 
-        public GRBackendTexture GRBackendTexture
+        public GRBackendTexture ToGRBackendTexture()
         {
-            get
+            swapChain.GetBuffer(swapChain.GetCurrentBackBufferIndex(), out ComPtr<ID3D12Resource> resource);
+
+            GRD3DTextureResourceInfo info = new()
             {
-                swapChain.GetBuffer(swapChain.GetCurrentBackBufferIndex(), out ComPtr<ID3D12Resource> resource);
+                Resource = (nint)resource.Handle,
+                ResourceState = (uint)ResourceStates.Common,
+                SampleCount = 1,
+                LevelCount = 1,
+                Format = (uint)Format.FormatB8G8R8A8Unorm,
+            };
 
-                GRD3DTextureResourceInfo info = new()
-                {
-                    Resource = (nint)resource.Handle,
-                    ResourceState = (uint)ResourceStates.Present,
-                    SampleCount = 1,
-                    LevelCount = 1,
-                    Format = (uint)Format.FormatB8G8R8A8Unorm,
-                };
-
-                return new((int)Width, (int)Height, info);
-            }
+            return new((int)Width, (int)Height, info);
         }
 
         public void Resize(uint width, uint height)
@@ -101,7 +97,7 @@ public unsafe partial class SKView : SwapChainPanel
 
         public void Dispose()
         {
-            swapChainPanelNative.Release();
+            swapChainPanelNative.SetSwapChain(0);
 
             swapChain.Dispose();
         }
@@ -151,22 +147,23 @@ public unsafe partial class SKView : SwapChainPanel
 
     private void OnRender()
     {
-        if (ActualWidth is 0 || ActualHeight is 0)
+        uint width = (uint)(ActualWidth * Dpi);
+        uint height = (uint)(ActualHeight * Dpi);
+
+        if (width is 0 || height is 0)
         {
             return;
         }
 
-        uint width = (uint)ActualWidth;
-        uint height = (uint)ActualHeight;
-
         swapChain ??= new(this, width, height);
         swapChain.Resize(width, height);
 
-        using SKSurface surface = SKSurface.Create(context, swapChain.GRBackendTexture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+        using GRBackendTexture texture = swapChain.ToGRBackendTexture();
+        using SKSurface surface = SKSurface.Create(context, texture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
 
         Paint?.Invoke(this, surface.Canvas);
 
-        context.Flush(true, true);
+        context.Flush();
 
         swapChain.Present();
     }
