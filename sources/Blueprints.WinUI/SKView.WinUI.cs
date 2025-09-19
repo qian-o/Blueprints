@@ -1,4 +1,5 @@
 ﻿#if WINDOWS
+using System.Runtime.InteropServices;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -7,11 +8,20 @@ using Silk.NET.Core.Native;
 using Silk.NET.Direct3D12;
 using Silk.NET.DXGI;
 using SkiaSharp;
+using WinRT;
 
 namespace Blueprints.WinUI;
 
 public unsafe partial class SKView : Canvas
 {
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("905a0fef-bc53-11df-8c49-001e4fc686da")]
+    private interface IServiceProviderInterop
+    {
+        IntPtr Buffer { get; }
+    }
+
     private static readonly DXGI dxgi = DXGI.GetApi(null);
     private static readonly D3D12 d3d12 = D3D12.GetApi();
 
@@ -48,7 +58,14 @@ public unsafe partial class SKView : Canvas
     }
 
     private WriteableBitmap? bitmap;
-    private SKSurface? surface;
+
+    private SKSurface? gpuSurface;
+    private SKSurface? cpuSurface;
+
+    public SKView()
+    {
+        SizeChanged += (_, _) => Invalidate();
+    }
 
     public void Invalidate()
     {
@@ -60,20 +77,34 @@ public unsafe partial class SKView : Canvas
         int width = Math.Max(1, (int)ActualWidth);
         int height = Math.Max(1, (int)ActualHeight);
 
-        if (bitmap is null || surface is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height)
+        if (bitmap is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height)
         {
-            surface?.Dispose();
-
             bitmap = new(width, height);
-            surface = SKSurface.Create(context, true, new(width, height, SKColorType.Bgra8888, SKAlphaType.Premul));
 
             Background = new ImageBrush
             {
                 ImageSource = bitmap
             };
+
+            gpuSurface?.Dispose();
+            cpuSurface?.Dispose();
+
+            SKImageInfo info = new(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+
+            gpuSurface = SKSurface.Create(context, true, info);
+            cpuSurface = SKSurface.Create(info, bitmap.PixelBuffer.As<IServiceProviderInterop>().Buffer);
         }
 
-        Paint?.Invoke(this, surface!.Canvas);
+        if (gpuSurface is null || cpuSurface is null)
+        {
+            return;
+        }
+
+        Paint?.Invoke(this, gpuSurface.Canvas);
+
+        cpuSurface.Canvas.DrawSurface(gpuSurface, default);
+
+        bitmap.Invalidate();
     }
 }
 #endif
