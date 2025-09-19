@@ -192,7 +192,7 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 
     IBlueprintTheme IBlueprintEditor.Theme => Theme ?? DefaultBlueprintTheme.Instance;
 
-    IEnumerable<Element> IBlueprintEditor.Elements => Elements ??= [];
+    IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
 
     void IBlueprintEditor.Invalidate()
     {
