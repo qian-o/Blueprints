@@ -55,18 +55,18 @@ internal unsafe static class GPU
     public static GRContext GRContext { get; }
 }
 
-[GeneratedComInterface]
-[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-[Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
-internal partial interface ISwapChainPanelNative
-{
-    void SetSwapChain(nint swapChain);
-
-    ulong Release();
-}
-
 internal unsafe partial class SwapChain : IDisposable
 {
+    [GeneratedComInterface]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
+    internal partial interface ISwapChainPanelNative
+    {
+        void SetSwapChain(IDXGISwapChain3* swapChain);
+
+        ulong Release();
+    }
+
     private const int BufferCount = 3;
 
     private readonly ISwapChainPanelNative swapChainPanelNative;
@@ -103,7 +103,7 @@ internal unsafe partial class SwapChain : IDisposable
         Height = height;
         Scale = scale;
 
-        swapChainPanelNative.SetSwapChain((nint)swapChain.Handle);
+        swapChainPanelNative.SetSwapChain(swapChain.Handle);
     }
 
     public uint Width { get; private set; }
@@ -142,7 +142,7 @@ internal unsafe partial class SwapChain : IDisposable
     {
         DestroyFrameBuffers();
 
-        swapChainPanelNative.SetSwapChain(0);
+        swapChainPanelNative.SetSwapChain(null);
 
         swapChain.Dispose();
     }
