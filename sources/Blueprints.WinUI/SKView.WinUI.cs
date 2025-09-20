@@ -18,8 +18,7 @@ public unsafe partial class SKView : SwapChainPanel
     [Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
     internal partial interface ISwapChainPanelNative
     {
-        [PreserveSig]
-        int SetSwapChain(nint swapChain);
+        void SetSwapChain(nint swapChain);
 
         ulong Release();
     }
@@ -168,8 +167,7 @@ public unsafe partial class SKView : SwapChainPanel
         {
             Adapter = (nint)adapter.Handle,
             Device = (nint)device.Handle,
-            Queue = (nint)queue.Handle,
-            ProtectedContext = false
+            Queue = (nint)queue.Handle
         });
     }
 
