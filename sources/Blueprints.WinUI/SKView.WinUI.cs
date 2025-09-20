@@ -30,6 +30,8 @@ public unsafe partial class SKView : SwapChainPanel
         private const int BufferCount = 3;
 
         private readonly ISwapChainPanelNative swapChainPanelNative;
+        private readonly GRBackendTexture[] textures = new GRBackendTexture[BufferCount];
+        private readonly SKSurface[] surfaces = new SKSurface[BufferCount];
 
         private ComPtr<IDXGISwapChain3> swapChain;
 
@@ -55,6 +57,8 @@ public unsafe partial class SKView : SwapChainPanel
             Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
             swapChain.SetMatrixTransform(&matrix);
 
+            CreateFrameBuffers(width, height);
+
             Width = width;
             Height = height;
             Scale = scale;
@@ -68,21 +72,7 @@ public unsafe partial class SKView : SwapChainPanel
 
         public float Scale { get; private set; }
 
-        public GRBackendTexture ToGRBackendTexture()
-        {
-            swapChain.GetBuffer(swapChain.GetCurrentBackBufferIndex(), out ComPtr<ID3D12Resource> resource);
-
-            GRD3DTextureResourceInfo info = new()
-            {
-                Resource = (nint)resource.Handle,
-                ResourceState = (uint)ResourceStates.Common,
-                SampleCount = 1,
-                LevelCount = 1,
-                Format = (uint)Format.FormatB8G8R8A8Unorm,
-            };
-
-            return new((int)Width, (int)Height, info);
-        }
+        public SKSurface CurrentSurface => surfaces[swapChain.GetCurrentBackBufferIndex()];
 
         public void Resize(uint width, uint height, float scale)
         {
@@ -96,6 +86,8 @@ public unsafe partial class SKView : SwapChainPanel
             Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
             swapChain.SetMatrixTransform(&matrix);
 
+            CreateFrameBuffers(width, height);
+
             Width = width;
             Height = height;
             Scale = scale;
@@ -108,9 +100,42 @@ public unsafe partial class SKView : SwapChainPanel
 
         public void Dispose()
         {
+            DestroyFrameBuffers();
+
             swapChainPanelNative.SetSwapChain(0);
 
             swapChain.Dispose();
+        }
+
+        private void CreateFrameBuffers(uint width, uint height)
+        {
+            DestroyFrameBuffers();
+
+            for (uint i = 0; i < BufferCount; i++)
+            {
+                swapChain.GetBuffer(i, out ComPtr<ID3D12Resource> resource);
+
+                GRD3DTextureResourceInfo info = new()
+                {
+                    Resource = (nint)resource.Handle,
+                    ResourceState = (uint)ResourceStates.Common,
+                    SampleCount = 1,
+                    LevelCount = 1,
+                    Format = (uint)Format.FormatB8G8R8A8Unorm,
+                };
+
+                textures[i] = new((int)width, (int)height, info);
+                surfaces[i] = SKSurface.Create(context, textures[i], GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+            }
+        }
+
+        private void DestroyFrameBuffers()
+        {
+            for (int i = 0; i < BufferCount; i++)
+            {
+                textures[i]?.Dispose();
+                surfaces[i]?.Dispose();
+            }
         }
     }
 
@@ -153,7 +178,7 @@ public unsafe partial class SKView : SwapChainPanel
 
     public void Invalidate()
     {
-        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnRender);
+        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnInvalidate);
     }
 
     protected static SKPoint SKPoint(Point point)
@@ -161,7 +186,7 @@ public unsafe partial class SKView : SwapChainPanel
         return new((float)point.X, (float)point.Y);
     }
 
-    private void OnRender()
+    private void OnInvalidate()
     {
         uint width = (uint)(ActualWidth * Dpi);
         uint height = (uint)(ActualHeight * Dpi);
@@ -174,14 +199,18 @@ public unsafe partial class SKView : SwapChainPanel
         swapChain ??= new(this, width, height, (float)(1.0 / Dpi));
         swapChain.Resize(width, height, (float)(1.0 / Dpi));
 
-        using GRBackendTexture texture = swapChain.ToGRBackendTexture();
-        using SKSurface surface = SKSurface.Create(context, texture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
-
-        Paint?.Invoke(this, surface.Canvas);
+        Paint?.Invoke(this, swapChain.CurrentSurface.Canvas);
 
         context.Flush();
+        context.PurgeUnusedResources(2000);
 
         swapChain.Present();
+    }
+
+    partial void UnloadedPartial()
+    {
+        swapChain?.Dispose();
+        swapChain = null;
     }
 }
 #endif
