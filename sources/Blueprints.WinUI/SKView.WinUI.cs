@@ -11,7 +11,7 @@ using WinRT;
 
 namespace Blueprints.WinUI;
 
-internal unsafe static class GPU
+internal static unsafe class GPU
 {
     public static ComPtr<IDXGIFactory6> Factory;
 
