@@ -13,7 +13,7 @@ internal class TempConnection(Pin pin, PinDirection targetDirection) : Connectio
 
     protected override void OnRender(IDrawingContext dc)
     {
-        using SKPath path = GeometryHelpers.CreateBezierPath(Source.ConnectionPoint, TargetPoint, Source.Direction, targetDirection);
+        SKPath path = GeometryHelpers.BezierPath(Source.ConnectionPoint, TargetPoint, Source.Direction, targetDirection);
 
         dc.DrawPath(path, Theme.ConnectionColor, Theme.ConnectionWidth);
     }

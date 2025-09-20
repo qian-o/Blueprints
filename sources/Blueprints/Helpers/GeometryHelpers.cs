@@ -4,39 +4,49 @@ namespace Blueprints;
 
 public static class GeometryHelpers
 {
-    public static SKPath CreateBezierPath(SKPoint sourcePoint, SKPoint targetPoint, PinDirection sourceDirection, PinDirection targetDirection)
+    private static readonly Dictionary<BezierPathDescriptor, SKPath> bezierPathCache = [];
+
+    public static SKPath BezierPath(SKPoint sourcePoint, SKPoint targetPoint, PinDirection sourceDirection, PinDirection targetDirection)
     {
-        float controlOffset = Math.Abs(targetPoint.X - sourcePoint.X) * 0.5f;
+        BezierPathDescriptor descriptor = new(sourcePoint, targetPoint, sourceDirection, targetDirection);
 
-        SKPoint control1 = sourcePoint;
-        SKPoint control2 = targetPoint;
-
-        switch (sourceDirection)
+        if (!bezierPathCache.TryGetValue(descriptor, out SKPath? path))
         {
-            case PinDirection.Input:
-                control1.X -= controlOffset;
-                break;
+            float controlOffset = Math.Abs(targetPoint.X - sourcePoint.X) * 0.5f;
 
-            case PinDirection.Output:
-                control1.X += controlOffset;
-                break;
+            SKPoint control1 = sourcePoint;
+            SKPoint control2 = targetPoint;
+
+            switch (sourceDirection)
+            {
+                case PinDirection.Input:
+                    control1.X -= controlOffset;
+                    break;
+
+                case PinDirection.Output:
+                    control1.X += controlOffset;
+                    break;
+            }
+
+            switch (targetDirection)
+            {
+                case PinDirection.Input:
+                    control2.X -= controlOffset;
+                    break;
+
+                case PinDirection.Output:
+                    control2.X += controlOffset;
+                    break;
+            }
+
+            bezierPathCache[descriptor] = path = new();
+
+            path.MoveTo(sourcePoint);
+            path.CubicTo(control1, control2, targetPoint);
         }
-
-        switch (targetDirection)
-        {
-            case PinDirection.Input:
-                control2.X -= controlOffset;
-                break;
-
-            case PinDirection.Output:
-                control2.X += controlOffset;
-                break;
-        }
-
-        SKPath path = new();
-        path.MoveTo(sourcePoint);
-        path.CubicTo(control1, control2, targetPoint);
 
         return path;
     }
+
+    private record BezierPathDescriptor(SKPoint SourcePoint, SKPoint TargetPoint, PinDirection SourceDirection, PinDirection TargetDirection);
 }
