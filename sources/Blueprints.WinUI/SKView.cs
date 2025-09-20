@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using SkiaSharp;
+using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
@@ -16,6 +17,11 @@ public partial class SKView
 
 
     public event EventHandler<SKCanvas>? Paint;
+
+    protected static SKPoint SKPoint(Point point)
+    {
+        return new((float)point.X, (float)point.Y);
+    }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {

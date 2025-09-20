@@ -7,7 +7,6 @@ using Silk.NET.Core.Native;
 using Silk.NET.Direct3D12;
 using Silk.NET.DXGI;
 using SkiaSharp;
-using Windows.Foundation;
 using WinRT;
 
 namespace Blueprints.WinUI;
@@ -179,11 +178,6 @@ public unsafe partial class SKView : SwapChainPanel
     public void Invalidate()
     {
         DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnInvalidate);
-    }
-
-    protected static SKPoint SKPoint(Point point)
-    {
-        return new((float)point.X, (float)point.Y);
     }
 
     private void OnInvalidate()
