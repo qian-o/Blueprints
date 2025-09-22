@@ -15,7 +15,7 @@ public class MoveBehavior : Behavior
             return;
         }
 
-        element.Editor?.Cursor = Cursor.ResizeAll;
+        element.Editor?.SetCursor(Cursor.ResizeAll);
     }
 
     protected override void PointerExited(object? sender, PointerEventArgs e)
@@ -25,7 +25,7 @@ public class MoveBehavior : Behavior
             return;
         }
 
-        element.Editor?.Cursor = Cursor.Arrow;
+        element.Editor?.SetCursor(Cursor.Arrow);
     }
 
     protected override void DragStarted(object? sender, DragEventArgs args)

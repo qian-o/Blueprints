@@ -12,8 +12,6 @@ public interface IBlueprintEditor
 
     float Zoom { get; set; }
 
-    Cursor Cursor { get; set; }
-
     string FontFamily { get; }
 
     IBlueprintTheme Theme { get; }
@@ -21,6 +19,8 @@ public interface IBlueprintEditor
     IEnumerable<Element> Elements { get; }
 
     void Invalidate();
+
+    void SetCursor(Cursor cursor);
 
     SKTypeface ResolveTypeface(string fontFamily, SKFontStyleWeight weight);
 }

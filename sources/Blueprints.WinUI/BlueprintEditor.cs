@@ -39,11 +39,6 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0f));
 
-    public static readonly DependencyProperty CursorProperty = DependencyProperty.Register(nameof(Cursor),
-                                                                                           typeof(Cursor),
-                                                                                           typeof(BlueprintEditor),
-                                                                                           new PropertyMetadata(Cursor.Arrow, (a, b) => ((BlueprintEditor)a).ProtectedCursor = cursorMapping[(Cursor)b.NewValue]));
-
     public static readonly DependencyProperty FontFamilyProperty = DependencyProperty.Register(nameof(FontFamily),
                                                                                                typeof(FontFamily),
                                                                                                typeof(BlueprintEditor),
@@ -189,12 +184,6 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
         set => SetValue(ZoomProperty, value);
     }
 
-    public Cursor Cursor
-    {
-        get => (Cursor)GetValue(CursorProperty);
-        set => SetValue(CursorProperty, value);
-    }
-
     public FontFamily? FontFamily
     {
         get => (FontFamily?)GetValue(FontFamilyProperty);
@@ -222,6 +211,11 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
     void IBlueprintEditor.Invalidate()
     {
         isInvalidateScheduled = true;
+    }
+
+    void IBlueprintEditor.SetCursor(Cursor cursor)
+    {
+        ProtectedCursor = cursorMapping[cursor];
     }
 
     SKTypeface IBlueprintEditor.ResolveTypeface(string fontFamily, SKFontStyleWeight weight)
