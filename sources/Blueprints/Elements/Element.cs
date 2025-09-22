@@ -27,6 +27,8 @@ public abstract class Element : IInputController, IDragDropController
 
     public bool IsPointerOver { get; private set => Set(ref field, value, false); }
 
+    public Cursor Cursor { get; set; } = Cursor.Arrow;
+
     public bool CanDrag { get; set; }
 
     public bool CanDrop { get; set; }
@@ -128,6 +130,24 @@ public abstract class Element : IInputController, IDragDropController
         {
             element.Render(dc);
         }
+    }
+
+    internal Element? FindPointerOverElement()
+    {
+        foreach (Element element in SubElements())
+        {
+            if (element.FindPointerOverElement() is Element pointerOverElement)
+            {
+                return pointerOverElement;
+            }
+        }
+
+        if (IsPointerOver)
+        {
+            return this;
+        }
+
+        return null;
     }
 
     protected void Set<T>(ref T field, T value, bool updateLayout)
@@ -264,6 +284,8 @@ public abstract class Element : IInputController, IDragDropController
 
         if (isHit)
         {
+            args.HoveredElement ??= this;
+
             OnPointerMoved(args);
 
             PointerMoved?.Invoke(this, args);

@@ -13,4 +13,6 @@ public class PointerEventArgs(SKPoint screenPosition, SKPoint worldPosition, Mod
     public Pointers Pointers { get; } = pointers;
 
     public bool Handled { get; set; }
+
+    internal Element? HoveredElement { get; set; }
 }

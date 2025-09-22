@@ -16,6 +16,8 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             ((IInputController)element).PointerMoved(args);
         }
 
+        editor.Cursor = (args.HoveredElement?.Cursor) ?? Cursor.Arrow;
+
         if (args.Handled)
         {
             return;
