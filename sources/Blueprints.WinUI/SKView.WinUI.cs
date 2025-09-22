@@ -11,6 +11,16 @@ using WinRT;
 
 namespace Blueprints.WinUI;
 
+[GeneratedComInterface]
+[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+[Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
+internal unsafe partial interface ISwapChainPanelNative
+{
+    void SetSwapChain(IDXGISwapChain3* swapChain);
+
+    ulong Release();
+}
+
 internal static unsafe class GPU
 {
     public static ComPtr<IDXGIFactory6> Factory;
@@ -57,16 +67,6 @@ internal static unsafe class GPU
 
 internal unsafe partial class SwapChain : IDisposable
 {
-    [GeneratedComInterface]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
-    internal partial interface ISwapChainPanelNative
-    {
-        void SetSwapChain(IDXGISwapChain3* swapChain);
-
-        ulong Release();
-    }
-
     private const int BufferCount = 3;
 
     private readonly ISwapChainPanelNative swapChainPanelNative;
