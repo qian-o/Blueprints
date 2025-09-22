@@ -14,12 +14,13 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
     private static readonly Dictionary<Cursor, InputCursor> cursorMapping = new()
     {
         [Cursor.Arrow] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.Arrow, 0)),
+        [Cursor.Cross] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.Cross, 0)),
         [Cursor.TextInput] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.IBeam, 0)),
-        [Cursor.ResizeAll] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeAll, 0)),
-        [Cursor.ResizeNS] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthSouth, 0)),
-        [Cursor.ResizeWE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeWestEast, 0)),
-        [Cursor.ResizeNESW] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthwestSoutheast, 0)),
-        [Cursor.ResizeNWSE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNortheastSouthwest, 0)),
+        [Cursor.SizeAll] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeAll, 0)),
+        [Cursor.SizeNS] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthSouth, 0)),
+        [Cursor.SizeWE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeWestEast, 0)),
+        [Cursor.SizeNESW] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthwestSoutheast, 0)),
+        [Cursor.SizeNWSE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNortheastSouthwest, 0)),
         [Cursor.Hand] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.Hand, 0)),
         [Cursor.NotAllowed] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.UniversalNo, 0))
     };

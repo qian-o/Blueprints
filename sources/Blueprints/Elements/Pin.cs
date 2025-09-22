@@ -8,6 +8,7 @@ public class Pin : Element
 
     public Pin()
     {
+        Cursor = Cursor.Cross;
         CanDrag = true;
         CanDrop = true;
     }

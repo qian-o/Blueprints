@@ -4,17 +4,19 @@ public enum Cursor
 {
     Arrow,
 
+    Cross,
+
     TextInput,
 
-    ResizeAll,
+    SizeAll,
 
-    ResizeNS,
+    SizeNS,
 
-    ResizeWE,
+    SizeWE,
 
-    ResizeNESW,
+    SizeNESW,
 
-    ResizeNWSE,
+    SizeNWSE,
 
     Hand,
 

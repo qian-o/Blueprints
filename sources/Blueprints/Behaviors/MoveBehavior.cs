@@ -15,7 +15,7 @@ public class MoveBehavior : Behavior
             return;
         }
 
-        element.Cursor = Cursor.ResizeAll;
+        element.Cursor = Cursor.SizeAll;
     }
 
     protected override void PointerExited(object? sender, PointerEventArgs e)
