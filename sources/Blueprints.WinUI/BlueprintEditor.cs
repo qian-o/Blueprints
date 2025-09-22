@@ -5,11 +5,25 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Windows.Storage;
 using Windows.System;
+using Windows.UI.Core;
 
 namespace Blueprints.WinUI;
 
 public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 {
+    private static readonly Dictionary<Cursor, InputCursor> cursorMapping = new()
+    {
+        [Cursor.Arrow] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.Arrow, 0)),
+        [Cursor.TextInput] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.IBeam, 0)),
+        [Cursor.ResizeAll] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeAll, 0)),
+        [Cursor.ResizeNS] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthSouth, 0)),
+        [Cursor.ResizeWE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeWestEast, 0)),
+        [Cursor.ResizeNESW] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNorthwestSoutheast, 0)),
+        [Cursor.ResizeNWSE] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.SizeNortheastSouthwest, 0)),
+        [Cursor.Hand] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.Hand, 0)),
+        [Cursor.NotAllowed] = InputCursor.CreateFromCoreCursor(new(CoreCursorType.UniversalNo, 0))
+    };
+
     public static readonly DependencyProperty XProperty = DependencyProperty.Register(nameof(X),
                                                                                       typeof(float),
                                                                                       typeof(BlueprintEditor),
@@ -24,6 +38,11 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
                                                                                          typeof(float),
                                                                                          typeof(BlueprintEditor),
                                                                                          new PropertyMetadata(1.0f));
+
+    public static readonly DependencyProperty CursorProperty = DependencyProperty.Register(nameof(Cursor),
+                                                                                           typeof(Cursor),
+                                                                                           typeof(BlueprintEditor),
+                                                                                           new PropertyMetadata(Cursor.Arrow, (a, b) => ((BlueprintEditor)a).ProtectedCursor = cursorMapping[(Cursor)b.NewValue]));
 
     public static readonly DependencyProperty FontFamilyProperty = DependencyProperty.Register(nameof(FontFamily),
                                                                                                typeof(FontFamily),
@@ -168,6 +187,12 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
     {
         get => (float)GetValue(ZoomProperty);
         set => SetValue(ZoomProperty, value);
+    }
+
+    public Cursor Cursor
+    {
+        get => (Cursor)GetValue(CursorProperty);
+        set => SetValue(CursorProperty, value);
     }
 
     public FontFamily? FontFamily

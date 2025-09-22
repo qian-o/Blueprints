@@ -12,6 +12,8 @@ public interface IBlueprintEditor
 
     float Zoom { get; set; }
 
+    Cursor Cursor { get; set; }
+
     string FontFamily { get; }
 
     IBlueprintTheme Theme { get; }
