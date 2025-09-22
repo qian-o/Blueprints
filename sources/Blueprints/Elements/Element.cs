@@ -142,12 +142,7 @@ public abstract class Element : IInputController, IDragDropController
             }
         }
 
-        if (IsPointerOver)
-        {
-            return this;
-        }
-
-        return null;
+        return IsPointerOver ? this : null;
     }
 
     protected void Set<T>(ref T field, T value, bool updateLayout)

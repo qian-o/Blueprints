@@ -16,7 +16,7 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             ((IInputController)element).PointerMoved(args);
         }
 
-        editor.Cursor = (args.HoveredElement?.Cursor) ?? Cursor.Arrow;
+        editor.Cursor = lastScreenPosition is null && dragEventArgs is null && args.HoveredElement is not null ? args.HoveredElement.Cursor : Cursor.Arrow;
 
         if (args.Handled)
         {
