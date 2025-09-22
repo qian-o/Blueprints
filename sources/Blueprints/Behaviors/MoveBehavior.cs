@@ -8,6 +8,26 @@ public class MoveBehavior : Behavior
 
     private readonly Dictionary<Element, SKPoint> lastWorldPositions = [];
 
+    protected override void PointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is not Element element)
+        {
+            return;
+        }
+
+        element.Editor?.Cursor = Cursor.ResizeAll;
+    }
+
+    protected override void PointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is not Element element)
+        {
+            return;
+        }
+
+        element.Editor?.Cursor = Cursor.Arrow;
+    }
+
     protected override void DragStarted(object? sender, DragEventArgs args)
     {
         if (sender is not Element element)

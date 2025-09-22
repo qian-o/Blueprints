@@ -37,6 +37,10 @@ public abstract class Element : IInputController, IDragDropController
 
     public object? Tag { get; set; }
 
+    public event EventHandler<PointerEventArgs>? PointerEntered;
+
+    public event EventHandler<PointerEventArgs>? PointerExited;
+
     public event EventHandler<PointerEventArgs>? PointerMoved;
 
     public event EventHandler<PointerEventArgs>? PointerPressed;
@@ -147,6 +151,10 @@ public abstract class Element : IInputController, IDragDropController
     protected abstract void OnRender(IDrawingContext dc);
 
     #region InputController event handlers
+    protected virtual void OnPointerEntered(PointerEventArgs args) { }
+
+    protected virtual void OnPointerExited(PointerEventArgs args) { }
+
     protected virtual void OnPointerMoved(PointerEventArgs args) { }
 
     protected virtual void OnPointerPressed(PointerEventArgs args) { }
@@ -235,7 +243,26 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsPointerOver = HitTest(args.WorldPosition))
+        bool isHit = HitTest(args.WorldPosition);
+
+        if (isHit && !IsPointerOver)
+        {
+            IsPointerOver = true;
+
+            OnPointerEntered(args);
+
+            PointerEntered?.Invoke(this, args);
+        }
+        else if (!isHit && IsPointerOver)
+        {
+            IsPointerOver = false;
+
+            OnPointerExited(args);
+
+            PointerExited?.Invoke(this, args);
+        }
+
+        if (isHit)
         {
             OnPointerMoved(args);
 
