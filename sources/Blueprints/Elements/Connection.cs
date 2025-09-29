@@ -54,4 +54,12 @@ public class Connection(Pin source, Pin target) : Element
         fillPath?.Dispose();
         fillPath = dc.GetFillPath(path, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
     }
+
+    protected override void OnPointerPressed(PointerEventArgs args)
+    {
+        if (args.Modifiers is Modifiers.Menu)
+        {
+            Disconnect();
+        }
+    }
 }

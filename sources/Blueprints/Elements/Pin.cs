@@ -100,6 +100,8 @@ public class Pin : Element
             connections.Remove(connection);
             other.connections.Remove(connection);
         }
+
+        Invalidate(true);
     }
 
     public void DisconnectAll()
@@ -108,6 +110,8 @@ public class Pin : Element
         {
             connection.Disconnect();
         }
+
+        Invalidate(true);
     }
 
     protected override Element[] SubElements(bool includeConnections = true)
@@ -229,6 +233,14 @@ public class Pin : Element
                     }
                 }
                 break;
+        }
+    }
+
+    protected override void OnPointerPressed(PointerEventArgs args)
+    {
+        if (args.Modifiers is Modifiers.Menu)
+        {
+            DisconnectAll();
         }
     }
 
