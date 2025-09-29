@@ -6,6 +6,8 @@ public class Pin : Element
 {
     private readonly HashSet<Connection> connections = [];
 
+    private TemporaryConnection? temporaryConnection;
+
     public Pin()
     {
         Cursor = Cursor.Cross;
@@ -191,7 +193,7 @@ public class Pin : Element
                 break;
         }
 
-        bool isFilled = Shape is PinShape.FilledCircle or PinShape.FilledSquare or PinShape.FilledTriangle || connections.Count > 0;
+        bool isFilled = Shape is PinShape.FilledCircle or PinShape.FilledSquare or PinShape.FilledTriangle || connections.Any(static item => item is not TemporaryConnection);
 
         switch (Shape)
         {
@@ -238,55 +240,84 @@ public class Pin : Element
 
     protected override void OnPointerPressed(PointerEventArgs args)
     {
-        if (args.Modifiers is Modifiers.Menu)
+        if (args.Pointers is Pointers.LeftButton && args.Modifiers is Modifiers.Control or Modifiers.Menu)
         {
+            if (args.Modifiers is Modifiers.Control)
+            {
+                Pin[] pins = [.. connections.Select(item => item.Source == this ? item.Target : item.Source)];
+
+                if (pins.Length is 0)
+                {
+                    return;
+                }
+
+                temporaryConnection = new(this, pins, Direction)
+                {
+                    Point = args.WorldPosition
+                };
+            }
+
             DisconnectAll();
         }
     }
 
     protected override void OnDragStarted(DragEventArgs args)
     {
-        TempConnection connection = new(this, Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
+        temporaryConnection ??= new(this, [], Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
         {
-            TargetPoint = args.WorldPosition
+            Point = args.WorldPosition
         };
 
-        connections.Add(connection);
+        connections.Add(temporaryConnection);
 
-        args.Data = connection;
+        args.Data = temporaryConnection;
 
         Invalidate(true);
     }
 
     protected override void OnDragDelta(DragEventArgs args)
     {
-        (args.Data as TempConnection)?.TargetPoint = args.WorldPosition;
+        (args.Data as TemporaryConnection)?.Point = args.WorldPosition;
     }
 
     protected override void OnDragOver(DragEventArgs args)
     {
-        (args.Data as TempConnection)?.TargetPoint = ConnectionPoint;
+        (args.Data as TemporaryConnection)?.Point = ConnectionPoint;
     }
 
     protected override void OnDrop(DragEventArgs args)
     {
-        if (args.Data is not TempConnection connection)
+        if (args.Data is not TemporaryConnection connection)
         {
             return;
         }
 
-        connection.Source.ConnectTo(this);
+        if (connection.Pins.Length is 0)
+        {
+            connection.Source.ConnectTo(this);
+        }
+        else
+        {
+            foreach (Pin pin in connection.Pins)
+            {
+                pin.ConnectTo(this);
+            }
+        }
 
         args.Handled = true;
     }
 
     protected override void OnDragCompleted(DragEventArgs args)
     {
-        connections.Remove((TempConnection)args.Data!);
+        connections.Remove((TemporaryConnection)args.Data!);
+
+        temporaryConnection = null;
     }
 
     protected override void OnDragCancelled(DragEventArgs args)
     {
-        connections.Remove((TempConnection)args.Data!);
+        connections.Remove((TemporaryConnection)args.Data!);
+
+        temporaryConnection = null;
     }
 }
