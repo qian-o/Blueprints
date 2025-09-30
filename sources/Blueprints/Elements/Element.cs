@@ -445,7 +445,7 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsPointerOver && CanDrop && !IsDragging)
+        if (IsPointerOver && CanDrop)
         {
             OnDrop(args);
 

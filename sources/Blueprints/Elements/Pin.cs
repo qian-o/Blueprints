@@ -261,6 +261,11 @@ public class Pin : Element
         }
     }
 
+    protected override void OnPointerReleased(PointerEventArgs args)
+    {
+        temporaryConnection = null;
+    }
+
     protected override void OnDragStarted(DragEventArgs args)
     {
         temporaryConnection ??= new(this, [], Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
