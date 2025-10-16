@@ -11,7 +11,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     private readonly Dictionary<StrokePaintDescriptor, SKPaint> strokePaintCache = [];
     private readonly Dictionary<TextPaintDescriptor, SKPaint> textPaintCache = [];
 
-    public SKCanvas Canvas { get; set; } = null!;
+    internal SKCanvas Canvas { get; set; } = null!;
 
     public void PushClip(SKRect rect, float radius)
     {
