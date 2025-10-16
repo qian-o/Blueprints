@@ -36,7 +36,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return new(-1, -1);
+        return fillPath is null ? SKSize.Empty : fillPath.Bounds.Size;
     }
 
     protected override void OnArrange()
