@@ -25,9 +25,9 @@ public class Connection(Pin source, Pin target) : Element
         return IsHitTestVisible && fillPath?.Contains(position.X, position.Y) is true;
     }
 
-    protected override Element[] SubElements(bool includeConnections = true)
+    protected override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        return [];
+        yield break;
     }
 
     protected override void OnInitialize()

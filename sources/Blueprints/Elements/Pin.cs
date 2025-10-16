@@ -116,11 +116,20 @@ public class Pin : Element
         Invalidate(true);
     }
 
-    protected override Element[] SubElements(bool includeConnections = true)
+    protected override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        return includeConnections
-            ? Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections]
-            : Content is not null ? [Content] : [];
+        if (Content is not null)
+        {
+            yield return Content;
+        }
+
+        if (includeConnections)
+        {
+            foreach (Connection connection in OutgoingConnections)
+            {
+                yield return connection;
+            }
+        }
     }
 
     protected override void OnInitialize()

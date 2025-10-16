@@ -150,7 +150,7 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
-    protected abstract Element[] SubElements(bool includeConnections = true);
+    protected abstract IEnumerable<Element> SubElements(bool includeConnections = true);
 
     protected abstract void OnInitialize();
 

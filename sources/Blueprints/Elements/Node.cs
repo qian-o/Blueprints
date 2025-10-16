@@ -24,21 +24,27 @@ public class Node : Element
         return [.. Inputs.Concat(Outputs).SelectMany(pin => pin.OutgoingConnections)];
     }
 
-    protected override Element[] SubElements(bool includeConnections = true)
+    protected override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        List<Element> elements = [];
-
         if (Header is not null)
         {
-            elements.Add(Header);
+            yield return Header;
         }
 
         if (Content is not null)
         {
-            elements.Add(Content);
+            yield return Content;
         }
 
-        return [.. elements, .. Inputs, .. Outputs];
+        foreach (Pin input in Inputs)
+        {
+            yield return input;
+        }
+
+        foreach (Pin output in Outputs)
+        {
+            yield return output;
+        }
     }
 
     protected override void OnInitialize()
