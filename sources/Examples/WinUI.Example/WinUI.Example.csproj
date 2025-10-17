@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>$(TargetFrameworks);$(StandardTargetFramework)-windows10.0.19041.0</TargetFrameworks>
+        <TargetFramework>$(StandardTargetFramework)</TargetFramework>
         <UnoSingleProject>true</UnoSingleProject>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
@@ -14,5 +14,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Blueprints.WinUI\Blueprints.WinUI.csproj" />
     </ItemGroup>
+
+    <Import Project="..\Example\Example.projitems" Label="Shared" />
 
 </Project>

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace WinUI.Example.ViewModels;
+namespace Example.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {

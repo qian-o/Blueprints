@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>$(TargetFrameworks);$(StandardTargetFramework)-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks>$(StandardTargetFramework);$(StandardTargetFramework)-windows10.0.19041.0</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 

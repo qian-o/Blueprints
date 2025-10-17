@@ -1,4 +1,4 @@
-﻿using WinUI.Example.Views;
+﻿using Example.Views;
 
 namespace WinUI.Example;
 

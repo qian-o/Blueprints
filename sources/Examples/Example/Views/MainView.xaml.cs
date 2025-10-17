@@ -1,6 +1,6 @@
-﻿using WinUI.Example.ViewModels;
+﻿using Example.ViewModels;
 
-namespace WinUI.Example.Views;
+namespace Example.Views;
 
 public sealed partial class MainView : Page
 {
