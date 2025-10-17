@@ -64,13 +64,17 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 
     public BlueprintEditor()
     {
-        UpdateTheme();
         ActualThemeChanged += (_, _) => UpdateTheme();
 
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
-        Loaded += (_, _) => CompositionTarget.Rendering += Rendering;
+        Loaded += (_, _) =>
+        {
+            UpdateTheme();
+
+            CompositionTarget.Rendering += Rendering;
+        };
 
         Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
 
