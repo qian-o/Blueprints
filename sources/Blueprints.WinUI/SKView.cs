@@ -23,7 +23,7 @@ public partial class SKView : Canvas
     }
 #else
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ApplyActionOnRawBufferPtr")]
-    static extern void ApplyActionOnRawBufferPtr(Buffer buffer, Action<nint> action);
+    private static extern void ApplyActionOnRawBufferPtr(Buffer buffer, Action<nint> action);
 #endif
 
     private WriteableBitmap? bitmap;
