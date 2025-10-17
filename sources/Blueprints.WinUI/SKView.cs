@@ -22,7 +22,7 @@ public partial class SKView : Canvas
         nint Buffer { get; }
     }
 #else
-    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ApplyActionOnRawBufferPtr")]
+    [UnsafeAccessor(UnsafeAccessorKind.Method)]
     private static extern void ApplyActionOnRawBufferPtr(Buffer buffer, Action<nint> action);
 #endif
 
