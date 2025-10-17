@@ -99,7 +99,7 @@ internal unsafe partial class SwapChain : IDisposable
         }
     }
 
-    private const int BufferCount = 4;
+    private const int BufferCount = 3;
 
     private readonly ISwapChainPanelNative swapChainPanelNative;
     private readonly Texture[] textures = new Texture[BufferCount];
