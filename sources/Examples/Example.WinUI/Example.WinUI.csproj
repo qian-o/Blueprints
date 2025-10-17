@@ -7,8 +7,13 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <EnableMsixTooling>true</EnableMsixTooling>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\Blueprints.WinUI\Blueprints.WinUI.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
         <PackageReference Include="Microsoft.WindowsAppSDK" />
     </ItemGroup>

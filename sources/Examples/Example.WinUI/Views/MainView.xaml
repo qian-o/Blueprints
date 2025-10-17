@@ -1,0 +1,19 @@
+﻿<Page x:Class="Example.WinUI.Views.MainView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:bp="using:Blueprints.WinUI">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0"
+                Command="{x:Bind ViewModel.ConnectNodesCommand}"
+                Content="Connect Nodes" />
+
+        <bp:BlueprintEditor Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Elements="{x:Bind ViewModel.Nodes}" />
+    </Grid>
+</Page>

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Example.WinUI.Views;
+using Microsoft.UI.Xaml;
 
 namespace Example.WinUI;
 
@@ -11,6 +12,6 @@ public partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        new Window().Activate();
+        new Window() { Content = new MainView() }.Activate();
     }
 }
