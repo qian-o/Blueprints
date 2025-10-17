@@ -25,9 +25,9 @@ public class Connection(Pin source, Pin target) : Element
         return IsHitTestVisible && fillPath?.Contains(position.X, position.Y) is true;
     }
 
-    protected override Element[] SubElements(bool includeConnections = true)
+    protected override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        return [];
+        yield break;
     }
 
     protected override void OnInitialize()
@@ -36,7 +36,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return new(-1, -1);
+        return fillPath is null ? SKSize.Empty : fillPath.Bounds.Size;
     }
 
     protected override void OnArrange()
@@ -47,7 +47,7 @@ public class Connection(Pin source, Pin target) : Element
     {
         bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        SKPath path = GeometryHelpers.BezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
+        SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
 
         dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 

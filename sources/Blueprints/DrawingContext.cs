@@ -7,11 +7,12 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     private readonly Dictionary<TypefaceDescriptor, SKTypeface> typefaceCache = [];
     private readonly Dictionary<FontDescriptor, SKFont> fontCache = [];
     private readonly Dictionary<TextMetricsDescriptor, SKSize> textMetricsCache = [];
+    private readonly Dictionary<TextBlobDescriptor, SKTextBlob> textBlobCache = [];
     private readonly Dictionary<FillPaintDescriptor, SKPaint> fillPaintCache = [];
     private readonly Dictionary<StrokePaintDescriptor, SKPaint> strokePaintCache = [];
     private readonly Dictionary<TextPaintDescriptor, SKPaint> textPaintCache = [];
 
-    public SKCanvas Canvas { get; set; } = null!;
+    internal SKCanvas Canvas { get; set; } = null!;
 
     public void PushClip(SKRect rect, float radius)
     {
@@ -136,17 +137,17 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     public void DrawText(string text, SKPoint position, string fontFamily, float fontWeight, float fontSize, SKColor color)
     {
         SKFont font = GetFont(GetTypeface(fontFamily, fontWeight), fontSize);
+        SKPaint paint = GetTextPaint(color);
 
         float lineHeight = font.GetFontMetrics(out _);
 
         float deltaY = 0;
         foreach (string line in text.Split('\n'))
         {
-            Canvas.DrawText(line,
-                            position.X,
-                            position.Y + fontSize + deltaY,
-                            GetFont(GetTypeface(fontFamily, fontWeight), fontSize),
-                            GetTextPaint(color));
+            if (!string.IsNullOrEmpty(line))
+            {
+                Canvas.DrawText(GetTextBlob(line, font), position.X, position.Y + fontSize + deltaY, paint);
+            }
 
             deltaY += lineHeight;
         }
@@ -200,6 +201,18 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
         }
 
         return size;
+    }
+
+    private SKTextBlob GetTextBlob(string text, SKFont font)
+    {
+        TextBlobDescriptor descriptor = new(text, font);
+
+        if (!textBlobCache.TryGetValue(descriptor, out SKTextBlob? blob))
+        {
+            textBlobCache[descriptor] = blob = SKTextBlob.Create(text, font)!;
+        }
+
+        return blob;
     }
 
     private SKPaint GetFillPaint(SKColor color)
@@ -267,6 +280,8 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
     private record FontDescriptor(SKTypeface Typeface, float FontSize);
 
     private record TextMetricsDescriptor(string Text, SKFont Font);
+
+    private record TextBlobDescriptor(string Text, SKFont Font);
 
     private record FillPaintDescriptor(SKColor Color);
 

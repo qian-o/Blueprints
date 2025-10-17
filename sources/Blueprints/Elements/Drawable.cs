@@ -7,9 +7,9 @@ public abstract class Drawable : Element
         IsHitTestVisible = false;
     }
 
-    protected sealed override Element[] SubElements(bool includeConnections = true)
+    protected sealed override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        return [];
+        yield break;
     }
 
     protected sealed override void OnArrange()

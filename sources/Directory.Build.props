@@ -1,15 +1,19 @@
 ﻿<Project>
 
     <PropertyGroup>
+        <!-- Target & Compatibility -->
+        <StandardTargetFramework>net9.0</StandardTargetFramework>
+        <LangVersion>preview</LangVersion>
+        <IsAotCompatible>true</IsAotCompatible>
+
+        <!-- Code Style & Language Features -->
+        <NoWarn>IDE0130</NoWarn>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-
-        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ItemGroup>
         <PackageReference Include="Roslynator.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

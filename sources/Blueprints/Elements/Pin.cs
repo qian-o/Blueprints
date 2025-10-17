@@ -6,6 +6,8 @@ public class Pin : Element
 {
     private readonly HashSet<Connection> connections = [];
 
+    private PreviewConnection? previewConnection;
+
     public Pin()
     {
         Cursor = Cursor.Cross;
@@ -114,11 +116,20 @@ public class Pin : Element
         Invalidate(true);
     }
 
-    protected override Element[] SubElements(bool includeConnections = true)
+    protected override IEnumerable<Element> SubElements(bool includeConnections = true)
     {
-        return includeConnections
-            ? Content is not null ? [Content, .. OutgoingConnections] : [.. OutgoingConnections]
-            : Content is not null ? [Content] : [];
+        if (Content is not null)
+        {
+            yield return Content;
+        }
+
+        if (includeConnections)
+        {
+            foreach (Connection connection in OutgoingConnections)
+            {
+                yield return connection;
+            }
+        }
     }
 
     protected override void OnInitialize()
@@ -191,7 +202,8 @@ public class Pin : Element
                 break;
         }
 
-        bool isFilled = Shape is PinShape.FilledCircle or PinShape.FilledSquare or PinShape.FilledTriangle || connections.Count > 0;
+        bool isFilled = Shape is PinShape.FilledCircle or PinShape.FilledSquare or PinShape.FilledTriangle
+                        || connections.Any(static item => item is not PreviewConnection);
 
         switch (Shape)
         {
@@ -238,55 +250,89 @@ public class Pin : Element
 
     protected override void OnPointerPressed(PointerEventArgs args)
     {
-        if (args.Modifiers is Modifiers.Menu)
+        if (args.Pointers is Pointers.LeftButton && args.Modifiers is Modifiers.Control or Modifiers.Menu)
         {
+            if (args.Modifiers is Modifiers.Control)
+            {
+                Pin[] pins = [.. connections.Select(item => item.Source == this ? item.Target : item.Source)];
+
+                if (pins.Length is 0)
+                {
+                    return;
+                }
+
+                previewConnection = new(this, pins, Direction)
+                {
+                    PreviewPoint = args.WorldPosition
+                };
+            }
+
             DisconnectAll();
         }
     }
 
+    protected override void OnPointerReleased(PointerEventArgs args)
+    {
+        previewConnection = null;
+    }
+
     protected override void OnDragStarted(DragEventArgs args)
     {
-        TempConnection connection = new(this, Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
+        previewConnection ??= new(this, [], Direction is PinDirection.Input ? PinDirection.Output : PinDirection.Input)
         {
-            TargetPoint = args.WorldPosition
+            PreviewPoint = args.WorldPosition
         };
 
-        connections.Add(connection);
+        connections.Add(previewConnection);
 
-        args.Data = connection;
+        args.Data = previewConnection;
 
         Invalidate(true);
     }
 
     protected override void OnDragDelta(DragEventArgs args)
     {
-        (args.Data as TempConnection)?.TargetPoint = args.WorldPosition;
+        (args.Data as PreviewConnection)?.PreviewPoint = args.WorldPosition;
     }
 
     protected override void OnDragOver(DragEventArgs args)
     {
-        (args.Data as TempConnection)?.TargetPoint = ConnectionPoint;
+        (args.Data as PreviewConnection)?.PreviewPoint = ConnectionPoint;
     }
 
     protected override void OnDrop(DragEventArgs args)
     {
-        if (args.Data is not TempConnection connection)
+        if (args.Data is not PreviewConnection connection)
         {
             return;
         }
 
-        connection.Source.ConnectTo(this);
+        if (connection.SourcePins.Length is 0)
+        {
+            connection.Source.ConnectTo(this);
+        }
+        else
+        {
+            foreach (Pin pin in connection.SourcePins)
+            {
+                pin.ConnectTo(this);
+            }
+        }
 
         args.Handled = true;
     }
 
     protected override void OnDragCompleted(DragEventArgs args)
     {
-        connections.Remove((TempConnection)args.Data!);
+        connections.Remove((PreviewConnection)args.Data!);
+
+        previewConnection = null;
     }
 
     protected override void OnDragCancelled(DragEventArgs args)
     {
-        connections.Remove((TempConnection)args.Data!);
+        connections.Remove((PreviewConnection)args.Data!);
+
+        previewConnection = null;
     }
 }

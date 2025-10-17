@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net9.0-windows10.0.19041.0;net9.0</TargetFrameworks>
-        <IsAotCompatible>true</IsAotCompatible>
-        <NoWarn>IDE0130</NoWarn>
+        <TargetFrameworks>$(TargetFrameworks);$(StandardTargetFramework)-windows10.0.19041.0</TargetFrameworks>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Blueprints\Blueprints.csproj" />
+    </ItemGroup>
 
     <Choose>
         <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-            <PropertyGroup>
-                <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-            </PropertyGroup>
-
             <ItemGroup>
                 <PackageReference Include="Microsoft.WindowsAppSDK" />
                 <PackageReference Include="Silk.NET.Direct3D12" />
@@ -25,8 +24,6 @@
         </Otherwise>
     </Choose>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Blueprints\Blueprints.csproj" />
-    </ItemGroup>
+    <Import Project="..\Release.Package.props" />
 
 </Project>

@@ -67,11 +67,42 @@ internal static unsafe class GPU
 
 internal unsafe partial class SwapChain : IDisposable
 {
-    private const int BufferCount = 3;
+    private partial class Texture : IDisposable
+    {
+        public Texture(uint width, uint height, ComPtr<ID3D12Resource> resource)
+        {
+            GRD3DTextureResourceInfo info = new()
+            {
+                Resource = (nint)resource.Handle,
+                ResourceState = (uint)ResourceStates.Common,
+                SampleCount = 1,
+                LevelCount = 1,
+                Format = (uint)Format.FormatB8G8R8A8Unorm
+            };
+
+            Resource = resource;
+            BackendTexture = new((int)width, (int)height, info);
+            Surface = SKSurface.Create(GPU.GRContext, BackendTexture, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+        }
+
+        public ComPtr<ID3D12Resource> Resource { get; }
+
+        public GRBackendTexture BackendTexture { get; }
+
+        public SKSurface Surface { get; }
+
+        public void Dispose()
+        {
+            Surface.Dispose();
+            BackendTexture.Dispose();
+            Resource.Dispose();
+        }
+    }
+
+    private const int BufferCount = 4;
 
     private readonly ISwapChainPanelNative swapChainPanelNative;
-    private readonly GRBackendTexture[] textures = new GRBackendTexture[BufferCount];
-    private readonly SKSurface[] surfaces = new SKSurface[BufferCount];
+    private readonly Texture[] textures = new Texture[BufferCount];
 
     private ComPtr<IDXGISwapChain3> swapChain;
 
@@ -79,10 +110,63 @@ internal unsafe partial class SwapChain : IDisposable
     {
         swapChainPanelNative = swapChainPanel.As<ISwapChainPanelNative>();
 
+        Width = width;
+        Height = height;
+        Scale = scale;
+
+        CreateSwapChain();
+    }
+
+    public uint Width { get; private set; }
+
+    public uint Height { get; private set; }
+
+    public float Scale { get; private set; }
+
+    public SKSurface CurrentSurface => textures[swapChain.GetCurrentBackBufferIndex()].Surface;
+
+    public void Resize(uint width, uint height, float scale)
+    {
+        if (width == Width && height == Height && scale == Scale)
+        {
+            return;
+        }
+
+        Width = width;
+        Height = height;
+        Scale = scale;
+
+        CreateSwapChain();
+    }
+
+    public void Present()
+    {
+        swapChain.Present(1, 0);
+    }
+
+    public void Dispose()
+    {
+        foreach (Texture texture in textures)
+        {
+            texture?.Dispose();
+        }
+
+        swapChain.Dispose();
+    }
+
+    private void CreateSwapChain()
+    {
+        foreach (Texture texture in textures)
+        {
+            texture?.Dispose();
+        }
+
+        swapChain.Dispose();
+
         SwapChainDesc1 desc = new()
         {
-            Width = width,
-            Height = height,
+            Width = Width,
+            Height = Height,
             Format = Format.FormatB8G8R8A8Unorm,
             SampleDesc = new() { Count = 1, Quality = 0 },
             BufferUsage = DXGI.UsageRenderTargetOutput,
@@ -94,88 +178,17 @@ internal unsafe partial class SwapChain : IDisposable
 
         GPU.Factory.CreateSwapChainForComposition(GPU.Queue, &desc, (ComPtr<IDXGIOutput>)null, ref swapChain);
 
-        Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
+        Matrix3X2F matrix = new() { DXGI11 = Scale, DXGI22 = Scale };
         swapChain.SetMatrixTransform(&matrix);
-
-        CreateFrameBuffers(width, height);
-
-        Width = width;
-        Height = height;
-        Scale = scale;
-
-        swapChainPanelNative.SetSwapChain(swapChain.Handle);
-    }
-
-    public uint Width { get; private set; }
-
-    public uint Height { get; private set; }
-
-    public float Scale { get; private set; }
-
-    public SKSurface CurrentSurface => surfaces[swapChain.GetCurrentBackBufferIndex()];
-
-    public void Resize(uint width, uint height, float scale)
-    {
-        if (width == Width && height == Height && scale == Scale)
-        {
-            return;
-        }
-
-        swapChain.ResizeBuffers(BufferCount, width, height, Format.FormatB8G8R8A8Unorm, (uint)SwapChainFlag.None);
-
-        Matrix3X2F matrix = new() { DXGI11 = scale, DXGI22 = scale };
-        swapChain.SetMatrixTransform(&matrix);
-
-        CreateFrameBuffers(width, height);
-
-        Width = width;
-        Height = height;
-        Scale = scale;
-    }
-
-    public void Present()
-    {
-        swapChain.Present(1, 0);
-    }
-
-    public void Dispose()
-    {
-        DestroyFrameBuffers();
-
-        swapChainPanelNative.SetSwapChain(null);
-
-        swapChain.Dispose();
-    }
-
-    private void CreateFrameBuffers(uint width, uint height)
-    {
-        DestroyFrameBuffers();
 
         for (uint i = 0; i < BufferCount; i++)
         {
             swapChain.GetBuffer(i, out ComPtr<ID3D12Resource> resource);
 
-            GRD3DTextureResourceInfo info = new()
-            {
-                Resource = (nint)resource.Handle,
-                ResourceState = (uint)ResourceStates.Common,
-                SampleCount = 1,
-                LevelCount = 1,
-                Format = (uint)Format.FormatB8G8R8A8Unorm,
-            };
-
-            textures[i] = new((int)width, (int)height, info);
-            surfaces[i] = SKSurface.Create(GPU.GRContext, textures[i], GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+            textures[i] = new(Width, Height, resource);
         }
-    }
 
-    private void DestroyFrameBuffers()
-    {
-        for (int i = 0; i < BufferCount; i++)
-        {
-            textures[i]?.Dispose();
-            surfaces[i]?.Dispose();
-        }
+        swapChainPanelNative.SetSwapChain(swapChain.Handle);
     }
 }
 

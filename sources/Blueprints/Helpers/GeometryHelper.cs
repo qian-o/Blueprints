@@ -2,7 +2,7 @@
 
 namespace Blueprints;
 
-public static class GeometryHelpers
+public static class GeometryHelper
 {
     private static readonly Dictionary<BezierPathDescriptor, SKPath> bezierPathCache = [];
 

@@ -119,11 +119,6 @@ public abstract class Element : IInputController, IDragDropController
 
     internal void Render(IDrawingContext dc)
     {
-        if (Bounds.IsEmpty)
-        {
-            return;
-        }
-
         OnRender(dc);
 
         foreach (Element element in SubElements(false))
@@ -155,7 +150,7 @@ public abstract class Element : IInputController, IDragDropController
         }
     }
 
-    protected abstract Element[] SubElements(bool includeConnections = true);
+    protected abstract IEnumerable<Element> SubElements(bool includeConnections = true);
 
     protected abstract void OnInitialize();
 
@@ -445,7 +440,7 @@ public abstract class Element : IInputController, IDragDropController
             return;
         }
 
-        if (IsPointerOver && CanDrop && !IsDragging)
+        if (IsPointerOver && CanDrop)
         {
             OnDrop(args);
 
