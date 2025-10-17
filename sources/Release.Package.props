@@ -7,18 +7,15 @@
         <Version>0.0.1</Version>
         <Authors>qian-o</Authors>
         <Copyright>Copyright (c) 2025 qian-o</Copyright>
-        <Description></Description>
 
         <!-- Repository Information -->
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/qian-o/Blueprints.git</RepositoryUrl>
 
         <!-- Package Content -->
-        <PackageIcon></PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>C#;SkiaSharp;Blueprints;Game Development;Game Engine;Graphics;</PackageTags>
-        <PackageReleaseNotes></PackageReleaseNotes>
 
         <!-- Debug Symbols & Source Link -->
         <IncludeSymbols>true</IncludeSymbols>
