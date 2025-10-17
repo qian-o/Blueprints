@@ -55,10 +55,10 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
                                                                                           typeof(BlueprintEditor),
                                                                                           new PropertyMetadata(DefaultBlueprintTheme.Instance));
 
-    public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register(nameof(Elements),
-                                                                                             typeof(IEnumerable<Element>),
-                                                                                             typeof(BlueprintEditor),
-                                                                                             new PropertyMetadata(null));
+    public static readonly DependencyProperty NodesProperty = DependencyProperty.Register(nameof(Nodes),
+                                                                                          typeof(IEnumerable<Node>),
+                                                                                          typeof(BlueprintEditor),
+                                                                                          new PropertyMetadata(null));
 
     private bool isInvalidateScheduled;
 
@@ -212,17 +212,17 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
         set => SetValue(ThemeProperty, value);
     }
 
-    public IEnumerable<Element>? Elements
+    public IEnumerable<Node>? Nodes
     {
-        get => (IEnumerable<Element>)GetValue(ElementsProperty);
-        set => SetValue(ElementsProperty, value);
+        get => (IEnumerable<Node>)GetValue(NodesProperty);
+        set => SetValue(NodesProperty, value);
     }
 
     string IBlueprintEditor.FontFamily => FontFamily?.Source ?? FontFamily.XamlAutoFontFamily.Source;
 
     IBlueprintTheme IBlueprintEditor.Theme => Theme ?? DefaultBlueprintTheme.Instance;
 
-    IEnumerable<Element> IBlueprintEditor.Elements => Elements ?? [];
+    IEnumerable<Node> IBlueprintEditor.Nodes => Nodes ?? [];
 
     void IBlueprintEditor.Invalidate()
     {

@@ -18,7 +18,7 @@ public interface IBlueprintEditor
 
     IBlueprintTheme Theme { get; }
 
-    IEnumerable<Element> Elements { get; }
+    IEnumerable<Node> Nodes { get; }
 
     void Invalidate();
 

@@ -9,11 +9,11 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerMoved(PointerEventArgs args)
     {
-        Element[] elements = [.. editor.Elements.Reverse()];
+        Node[] nodes = [.. editor.Nodes.Reverse()];
 
-        foreach (Element element in elements)
+        foreach (Node node in nodes)
         {
-            ((IInputController)element).PointerMoved(args);
+            ((IInputController)node).PointerMoved(args);
         }
 
         editor.Cursor = lastScreenPosition is null && dragEventArgs is null && args.HoveredElement is not null ? args.HoveredElement.Cursor : Cursor.Arrow;
@@ -42,9 +42,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
             dragEventArgs.Handled = false;
 
-            foreach (Element element in elements)
+            foreach (Node node in nodes)
             {
-                ((IDragDropController)element).DragOver(dragEventArgs);
+                ((IDragDropController)node).DragOver(dragEventArgs);
             }
 
             dragEventArgs.Handled = false;
@@ -53,11 +53,11 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerPressed(PointerEventArgs args)
     {
-        Element[] elements = [.. editor.Elements.Reverse()];
+        Node[] nodes = [.. editor.Nodes.Reverse()];
 
-        foreach (Element element in elements)
+        foreach (Node node in nodes)
         {
-            ((IInputController)element).PointerPressed(args);
+            ((IInputController)node).PointerPressed(args);
         }
 
         if (args.Handled)
@@ -78,9 +78,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
                 WorldPosition = args.WorldPosition
             };
 
-            foreach (Element element in elements)
+            foreach (Node node in nodes)
             {
-                ((IDragDropController)element).DragStarted(dragEventArgs);
+                ((IDragDropController)node).DragStarted(dragEventArgs);
 
                 if (dragEventArgs.Element is not null)
                 {
@@ -97,11 +97,11 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerReleased(PointerEventArgs args)
     {
-        Element[] elements = [.. editor.Elements.Reverse()];
+        Node[] nodes = [.. editor.Nodes.Reverse()];
 
-        foreach (Element element in elements)
+        foreach (Node node in nodes)
         {
-            ((IInputController)element).PointerReleased(args);
+            ((IInputController)node).PointerReleased(args);
         }
 
         if (args.Handled)
@@ -116,9 +116,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
             dragEventArgs.ScreenPosition = args.ScreenPosition;
             dragEventArgs.WorldPosition = args.WorldPosition;
 
-            foreach (Element element in elements)
+            foreach (Node node in nodes)
             {
-                ((IDragDropController)element).Drop(dragEventArgs);
+                ((IDragDropController)node).Drop(dragEventArgs);
             }
 
             if (dragEventArgs.Handled)
@@ -136,9 +136,9 @@ public class BlueprintController(IBlueprintEditor editor) : IInputController
 
     public void PointerWheelChanged(PointerWheelEventArgs args)
     {
-        foreach (Element element in editor.Elements.Reverse())
+        foreach (Node node in editor.Nodes.Reverse())
         {
-            ((IInputController)element).PointerWheelChanged(args);
+            ((IInputController)node).PointerWheelChanged(args);
         }
 
         if (args.Handled)

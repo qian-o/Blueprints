@@ -22,44 +22,37 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
             dc.PushTransform(SKMatrix.CreateScale(editor.Zoom, editor.Zoom).PostConcat(SKMatrix.CreateTranslation(editor.X, editor.Y)));
             {
-                foreach (Element element in editor.Elements)
-                {
-                    element.Layout(editor, dc);
-                }
+                Node[] nodes = [.. editor.Nodes];
 
                 SKRect viewBounds = SKRect.Create(editor.Extent).ToWorld(editor);
 
-                Element[] elements = [.. editor.Elements];
+                List<SKRect> occluders = new(capacity: Math.Min(nodes.Length, 256));
+                List<Node> visibles = new(capacity: Math.Min(nodes.Length, 256));
 
-                List<SKRect> occluders = new(capacity: Math.Min(elements.Length, 256));
-                List<Element> visibles = new(capacity: Math.Min(elements.Length, 256));
-
-                for (int i = elements.Length - 1; i >= 0; i--)
+                for (int i = nodes.Length - 1; i >= 0; i--)
                 {
-                    Element element = elements[i];
+                    Node node = nodes[i];
+                    node.Layout(editor, dc);
 
-                    if (!element.Bounds.IntersectsWith(viewBounds))
+                    if (!node.Bounds.IntersectsWith(viewBounds))
                     {
                         continue;
                     }
 
-                    if (IsFullyCovered(element.Bounds, occluders))
+                    if (IsFullyCovered(node.Bounds, occluders))
                     {
                         continue;
                     }
 
-                    occluders.Add(element.Bounds);
-                    visibles.Add(element);
+                    occluders.Add(node.Bounds);
+                    visibles.Add(node);
                 }
 
                 for (int i = visibles.Count - 1; i >= 0; i--)
                 {
-                    if (visibles[i] is Node node)
+                    foreach (Connection connection in visibles[i].Connections())
                     {
-                        foreach (Connection connection in node.Connections())
-                        {
-                            connection.Render(dc);
-                        }
+                        connection.Render(dc);
                     }
                 }
 

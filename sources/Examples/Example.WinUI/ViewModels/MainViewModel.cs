@@ -25,12 +25,12 @@ public partial class MainViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    public partial IEnumerable<Element> Nodes { get; set; }
+    public partial IEnumerable<Node> Nodes { get; set; }
 
     [RelayCommand]
     private void ConnectNodes()
     {
-        Node[] nodes = [.. Nodes.OfType<Node>()];
+        Node[] nodes = [.. Nodes];
 
         for (int i = 0; i < nodes.Length; i++)
         {
