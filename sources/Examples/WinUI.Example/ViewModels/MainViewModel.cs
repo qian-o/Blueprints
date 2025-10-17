@@ -8,11 +8,11 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
-        Nodes = new Node[200];
+        Node[] nodes = new Node[200];
 
-        for (int i = 0; i < Nodes.Length; i++)
+        for (int i = 0; i < nodes.Length; i++)
         {
-            Nodes[i] = new()
+            nodes[i] = new()
             {
                 Header = $"Node {i + 1}",
                 Content = $"This is the content of Node {i + 1}.",
@@ -20,22 +20,26 @@ public partial class MainViewModel : ObservableObject
                 Outputs = [new() { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new() { Content = $"Output {i + 1}B" }]
             };
         }
+
+        Nodes = nodes;
     }
 
     [ObservableProperty]
-    public partial Node[] Nodes { get; set; }
+    public partial IEnumerable<Element> Nodes { get; set; }
 
     [RelayCommand]
     private void ConnectNodes()
     {
-        for (int i = 0; i < Nodes.Length; i++)
+        Node[] nodes = [.. Nodes.OfType<Node>()];
+
+        for (int i = 0; i < nodes.Length; i++)
         {
-            if (i + 1 == Nodes.Length)
+            if (i + 1 == nodes.Length)
             {
                 return;
             }
 
-            Nodes[i].Outputs[0].ConnectTo(Nodes[i + 1].Inputs[0]);
+            nodes[i].Outputs[0].ConnectTo(nodes[i + 1].Inputs[0]);
         }
     }
 }
