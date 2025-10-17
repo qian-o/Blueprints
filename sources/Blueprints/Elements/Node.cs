@@ -19,9 +19,15 @@ public class Node : Element
 
     public Pin[] Outputs { get; set => Set(ref field, value, true); } = [];
 
-    public Connection[] Connections()
+    public IEnumerable<Connection> Connections()
     {
-        return [.. Inputs.Concat(Outputs).SelectMany(pin => pin.OutgoingConnections)];
+        foreach (Pin pin in Inputs.Concat(Outputs))
+        {
+            foreach (Connection connection in pin.OutgoingConnections)
+            {
+                yield return connection;
+            }
+        }
     }
 
     protected override IEnumerable<Element> SubElements(bool includeConnections = true)

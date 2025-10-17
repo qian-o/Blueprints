@@ -16,8 +16,8 @@ public partial class MainViewModel : ObservableObject
             {
                 Header = $"Node {i + 1}",
                 Content = $"This is the content of Node {i + 1}.",
-                Inputs = [new() { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new() { Content = $"Input {i + 1}B" }],
-                Outputs = [new() { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new() { Content = $"Output {i + 1}B" }]
+                Inputs = [new(ConnectionValidating) { Shape = PinShape.Triangle, Content = $"Input {i + 1}A" }, new(ConnectionValidating) { Content = $"Input {i + 1}B" }],
+                Outputs = [new(ConnectionValidating) { Shape = PinShape.Triangle, Content = $"Output {i + 1}A" }, new(ConnectionValidating) { Content = $"Output {i + 1}B" }]
             };
         }
 
@@ -40,6 +40,14 @@ public partial class MainViewModel : ObservableObject
             }
 
             nodes[i].Outputs[0].ConnectTo(nodes[i + 1].Inputs[0]);
+        }
+    }
+
+    private void ConnectionValidating(object? sender, ConnectionValidationEventArgs e)
+    {
+        if (e.Source.Shape != e.Target.Shape)
+        {
+            e.Cancel = true;
         }
     }
 }

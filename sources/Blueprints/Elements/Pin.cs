@@ -15,6 +15,11 @@ public class Pin : Element
         CanDrop = true;
     }
 
+    public Pin(EventHandler<ConnectionValidationEventArgs> connectionValidating) : this()
+    {
+        ConnectionValidating += connectionValidating;
+    }
+
     public PinShape Shape { get; set => Set(ref field, value, false); }
 
     public Drawable? Content { get; set => Set(ref field, value, true); }
@@ -25,9 +30,9 @@ public class Pin : Element
 
     public int MaxConnections { get; set; }
 
-    public IReadOnlyCollection<Connection> Connections => connections;
+    public IEnumerable<Connection> Connections => connections;
 
-    public IReadOnlyCollection<Connection> OutgoingConnections => [.. connections.Where(item => item.Source == this)];
+    public IEnumerable<Connection> OutgoingConnections => connections.Where(item => item.Source == this);
 
     public bool AllowsMultipleConnections => MaxConnections is 0;
 

@@ -64,8 +64,6 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 
     public BlueprintEditor()
     {
-        ActualThemeChanged += (_, _) => UpdateTheme();
-
         BlueprintRenderer renderer = new(this);
         BlueprintController controller = new(this);
 
@@ -77,6 +75,8 @@ public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
         };
 
         Unloaded += (_, _) => CompositionTarget.Rendering -= Rendering;
+
+        ActualThemeChanged += (_, _) => UpdateTheme();
 
         Paint += (_, e) => renderer.Render(e, (float)Dpi);
 
