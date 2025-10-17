@@ -1,8 +1,4 @@
 <Solution>
-  <Folder Name="/Examples/">
-    <Project Path="sources/Examples/Example/Example.shproj" Id="731c476b-033f-4c2b-aa50-2e1044891bd1" />
-    <Project Path="sources/Examples/WinUI.Example/WinUI.Example.csproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="sources/Directory.Build.props" />
     <File Path="sources/Directory.Packages.props" />
