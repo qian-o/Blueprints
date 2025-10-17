@@ -1,4 +1,7 @@
-﻿<Solution>
+<Solution>
+  <Folder Name="/Examples/">
+    <Project Path="sources/Examples/Example.WinUI/Example.WinUI.csproj" Id="88175ba8-fa16-4358-8099-cb80894414da" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="sources/Directory.Build.props" />
     <File Path="sources/Directory.Packages.props" />
