@@ -1,5 +1,4 @@
 ﻿using Example.Uno.Views;
-using Microsoft.UI.Xaml;
 
 namespace Example.Uno;
 

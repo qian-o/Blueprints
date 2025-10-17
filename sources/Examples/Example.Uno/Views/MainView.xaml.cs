@@ -1,5 +1,4 @@
 ﻿using Example.Uno.ViewModels;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Example.Uno.Views;
 
