@@ -32,8 +32,15 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                     connection.Render(dc);
                 }
 
+                SKRect rect = SKRect.Create(editor.Extent).ToWorld(editor);
+
                 foreach (Element element in editor.Elements)
                 {
+                    if (!element.Bounds.IntersectsWith(rect))
+                    {
+                        continue;
+                    }
+
                     element.Render(dc);
                 }
             }

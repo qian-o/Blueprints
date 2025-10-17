@@ -47,7 +47,7 @@ public class Connection(Pin source, Pin target) : Element
     {
         bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        SKPath path = GeometryHelpers.BezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
+        SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
 
         dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 
