@@ -1,0 +1,18 @@
+﻿<Project Sdk="Uno.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>$(StandardTargetFramework)-desktop</TargetFramework>
+        <UnoSingleProject>true</UnoSingleProject>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Blueprints.WinUI\Blueprints.WinUI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
+    </ItemGroup>
+
+</Project>

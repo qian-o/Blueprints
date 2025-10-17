@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Examples/">
+    <Project Path="sources/Examples/Example.Uno/Example.Uno.csproj" Id="361c80e8-4587-4fac-a7f9-2b1d64e4cd0a" />
     <Project Path="sources/Examples/Example.WinUI/Example.WinUI.csproj" Id="88175ba8-fa16-4358-8099-cb80894414da" />
   </Folder>
   <Folder Name="/Solution Items/">
