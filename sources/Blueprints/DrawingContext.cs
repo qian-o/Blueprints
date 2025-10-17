@@ -226,8 +226,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
                 IsAntialias = true,
                 IsDither = true,
                 Style = SKPaintStyle.Fill,
-                Color = color,
-                BlendMode = SKBlendMode.SrcOver
+                Color = color
             };
         }
 
@@ -248,8 +247,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
                 Color = color,
                 StrokeWidth = width,
                 StrokeCap = SKStrokeCap.Round,
-                StrokeJoin = SKStrokeJoin.Round,
-                BlendMode = SKBlendMode.SrcOver
+                StrokeJoin = SKStrokeJoin.Round
             };
         }
 
@@ -267,8 +265,7 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
                 IsAntialias = true,
                 IsDither = true,
                 Style = SKPaintStyle.Fill,
-                Color = color,
-                BlendMode = SKBlendMode.SrcOver
+                Color = color
             };
         }
 
