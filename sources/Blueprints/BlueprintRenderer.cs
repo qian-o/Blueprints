@@ -32,16 +32,47 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                     connection.Render(dc);
                 }
 
-                SKRect rect = SKRect.Create(editor.Extent).ToWorld(editor);
+                SKRect viewBounds = SKRect.Create(editor.Extent).ToWorld(editor);
 
-                foreach (Element element in editor.Elements)
+                Element[] elements = [.. editor.Elements];
+
+                List<SKRect> occluders = new(capacity: Math.Min(elements.Length, 256));
+                List<Element> visibles = new(capacity: Math.Min(elements.Length, 256));
+
+                for (int i = elements.Length - 1; i >= 0; i--)
                 {
-                    if (!element.Bounds.IntersectsWith(rect))
+                    Element element = elements[i];
+
+                    if (!element.Bounds.IntersectsWith(viewBounds))
                     {
                         continue;
                     }
 
-                    element.Render(dc);
+                    if (IsFullyCovered(element.Bounds, occluders))
+                    {
+                        continue;
+                    }
+
+                    occluders.Add(element.Bounds);
+                    visibles.Add(element);
+                }
+
+                for (int i = visibles.Count - 1; i >= 0; i--)
+                {
+                    visibles[i].Render(dc);
+                }
+
+                static bool IsFullyCovered(SKRect targetBounds, List<SKRect> occluders)
+                {
+                    for (int i = 0; i < occluders.Count; i++)
+                    {
+                        if (occluders[i].Contains(targetBounds))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
             }
             dc.Pop();
