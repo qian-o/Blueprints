@@ -40,7 +40,7 @@ public partial class SKView : Canvas
 
     public void Invalidate()
     {
-        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnInvalidate);
+        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.High, OnInvalidate);
     }
 
     protected static SKPoint SKPoint(Point point)
