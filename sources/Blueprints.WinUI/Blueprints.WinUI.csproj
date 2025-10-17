@@ -5,6 +5,10 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Blueprints\Blueprints.csproj" />
+    </ItemGroup>
+
     <Choose>
         <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
             <ItemGroup>
@@ -20,8 +24,6 @@
         </Otherwise>
     </Choose>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Blueprints\Blueprints.csproj" />
-    </ItemGroup>
+    <Import Project="..\Release.Package.props" />
 
 </Project>

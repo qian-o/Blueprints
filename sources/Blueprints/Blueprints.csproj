@@ -9,4 +9,6 @@
         <PackageReference Include="SkiaSharp" />
     </ItemGroup>
 
+    <Import Project="..\Release.Package.props" />
+
 </Project>

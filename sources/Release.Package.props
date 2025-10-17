@@ -11,13 +11,13 @@
 
         <!-- Repository Information -->
         <RepositoryType>Git</RepositoryType>
-        <RepositoryUrl>https://github.com/qian-o/Zenith.NET.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/qian-o/Blueprints.git</RepositoryUrl>
 
         <!-- Package Content -->
         <PackageIcon></PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageTags>C#;DirectX12;Metal;Vulkan;ImGui;Skia;Slang;Avalonia;Maui;Uno;WinUI;WPF;GPU;Computer Graphics;Cross Platform</PackageTags>
+        <PackageTags>C#;SkiaSharp;Blueprints;Game Development;Game Engine;Graphics;</PackageTags>
         <PackageReleaseNotes></PackageReleaseNotes>
 
         <!-- Debug Symbols & Source Link -->
