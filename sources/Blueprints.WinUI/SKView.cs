@@ -1,15 +1,22 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using SkiaSharp;
 using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
-public partial class SKView
+public partial class SKView : Canvas
 {
+    private WriteableBitmap? bitmap;
+    private nint pixels;
+    private SKSurface? surface;
+
     public SKView()
     {
-        Loaded += OnLoaded;
-        Unloaded += OnUnloaded;
         SizeChanged += (_, _) => Invalidate();
     }
 
@@ -18,24 +25,43 @@ public partial class SKView
 
     public event EventHandler<SKCanvas>? Paint;
 
+    public void Invalidate()
+    {
+        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Normal, OnInvalidate);
+    }
+
     protected static SKPoint SKPoint(Point point)
     {
         return new((float)point.X, (float)point.Y);
     }
 
-    private void OnLoaded(object sender, RoutedEventArgs e)
+    private unsafe void OnInvalidate()
     {
-        LoadedPartial();
+        int width = (int)(ActualWidth * Dpi);
+        int height = (int)(ActualHeight * Dpi);
 
-        Invalidate();
+        if (width is 0 || height is 0)
+        {
+            return;
+        }
+
+        if (bitmap is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height || surface is null)
+        {
+            Background = new ImageBrush() { ImageSource = bitmap = new(width, height) };
+
+            if (pixels is not 0)
+            {
+                NativeMemory.Free((void*)pixels);
+            }
+
+            pixels = (nint)NativeMemory.Alloc((uint)(width * height * 4));
+
+            surface?.Dispose();
+            surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul), pixels);
+        }
+
+        Paint?.Invoke(this, surface.Canvas);
+
+        bitmap.PixelBuffer.AsStream().Write(new ReadOnlySpan<byte>((void*)pixels, width * height * 4));
     }
-
-    private void OnUnloaded(object sender, RoutedEventArgs e)
-    {
-        UnloadedPartial();
-    }
-
-    partial void LoadedPartial();
-
-    partial void UnloadedPartial();
 }

@@ -9,10 +9,8 @@
         <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6584" />
         <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.251003001" />
         <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
-        <PackageVersion Include="Silk.NET.Direct3D12" Version="2.22.0" />
         <PackageVersion Include="SkiaSharp" Version="3.119.1" />
         <PackageVersion Include="Uno.WinUI" Version="6.3.62" />
-        <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.3.62" />
     </ItemGroup>
 
 </Project>

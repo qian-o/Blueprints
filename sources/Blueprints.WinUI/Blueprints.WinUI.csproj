@@ -13,13 +13,11 @@
         <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
             <ItemGroup>
                 <PackageReference Include="Microsoft.WindowsAppSDK" />
-                <PackageReference Include="Silk.NET.Direct3D12" />
             </ItemGroup>
         </When>
         <Otherwise>
             <ItemGroup>
                 <PackageReference Include="Uno.WinUI" />
-                <PackageReference Include="Uno.WinUI.Graphics2DSK" />
             </ItemGroup>
         </Otherwise>
     </Choose>
