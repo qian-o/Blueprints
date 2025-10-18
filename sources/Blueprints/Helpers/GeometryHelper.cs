@@ -5,11 +5,14 @@ namespace Blueprints;
 public static class GeometryHelper
 {
     private static readonly Dictionary<BezierPathDescriptor, SKPath> bezierPathCache = [];
-    private static readonly Dictionary<FillPathDescriptor, SKPath> fillPathCache = [];
 
-    public static SKPath BezierPath(SKPoint sourcePoint, SKPoint targetPoint, PinDirection sourceDirection, PinDirection targetDirection)
+    public static SKPath BezierPath(SKPoint sourcePoint,
+                                    SKPoint targetPoint,
+                                    PinDirection sourceDirection,
+                                    PinDirection targetDirection,
+                                    float strokeWidth)
     {
-        BezierPathDescriptor descriptor = new(sourcePoint, targetPoint, sourceDirection, targetDirection);
+        BezierPathDescriptor descriptor = new(sourcePoint, targetPoint, sourceDirection, targetDirection, strokeWidth);
 
         if (!bezierPathCache.TryGetValue(descriptor, out SKPath? path))
         {
@@ -40,21 +43,10 @@ public static class GeometryHelper
                     break;
             }
 
-            bezierPathCache[descriptor] = path = new();
+            using SKPath strokePath = new();
+            strokePath.MoveTo(sourcePoint);
+            strokePath.CubicTo(control1, control2, targetPoint);
 
-            path.MoveTo(sourcePoint);
-            path.CubicTo(control1, control2, targetPoint);
-        }
-
-        return path;
-    }
-
-    public static SKPath FillPath(SKPath path, float strokeWidth)
-    {
-        FillPathDescriptor descriptor = new(path.ToSvgPathData(), strokeWidth);
-
-        if (!fillPathCache.TryGetValue(descriptor, out SKPath? fillPath))
-        {
             using SKPaint paint = new()
             {
                 IsAntialias = true,
@@ -66,13 +58,15 @@ public static class GeometryHelper
                 StrokeJoin = SKStrokeJoin.Round
             };
 
-            fillPathCache[descriptor] = fillPath = paint.GetFillPath(path);
+            bezierPathCache[descriptor] = path = paint.GetFillPath(strokePath);
         }
 
-        return fillPath;
+        return path;
     }
 
-    private record BezierPathDescriptor(SKPoint SourcePoint, SKPoint TargetPoint, PinDirection SourceDirection, PinDirection TargetDirection);
-
-    private record FillPathDescriptor(string PathData, float StrokeWidth);
+    private record BezierPathDescriptor(SKPoint SourcePoint,
+                                        SKPoint TargetPoint,
+                                        PinDirection SourceDirection,
+                                        PinDirection TargetDirection,
+                                        float StrokeWidth);
 }

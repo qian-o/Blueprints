@@ -17,17 +17,25 @@ internal class PreviewConnection(Pin sourcePin, Pin[] sourcePins, PinDirection t
     {
         if (SourcePins.Length is 0)
         {
-            SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint, PreviewPoint, Source.Direction, targetDirection);
+            SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint,
+                                                    PreviewPoint,
+                                                    Source.Direction,
+                                                    targetDirection,
+                                                    Theme.ConnectionWidth);
 
-            dc.DrawPath(path, Theme.ConnectionColor, Theme.ConnectionWidth);
+            dc.DrawPath(path, Theme.ConnectionColor);
         }
         else
         {
             foreach (Pin pin in SourcePins)
             {
-                SKPath path = GeometryHelper.BezierPath(pin.ConnectionPoint, PreviewPoint, pin.Direction, targetDirection);
+                SKPath path = GeometryHelper.BezierPath(pin.ConnectionPoint,
+                                                        PreviewPoint,
+                                                        pin.Direction,
+                                                        targetDirection,
+                                                        Theme.ConnectionWidth);
 
-                dc.DrawPath(path, Theme.ConnectionColor, Theme.ConnectionWidth);
+                dc.DrawPath(path, Theme.ConnectionColor);
             }
         }
     }

@@ -4,7 +4,7 @@ namespace Blueprints;
 
 public class Connection(Pin source, Pin target) : Element
 {
-    private SKPath? fillPath;
+    private SKPath? path;
 
     public Pin Source { get; } = source;
 
@@ -22,7 +22,7 @@ public class Connection(Pin source, Pin target) : Element
 
     public override bool HitTest(SKPoint position)
     {
-        return IsHitTestVisible && fillPath?.Contains(position.X, position.Y) is true;
+        return IsHitTestVisible && path?.Contains(position.X, position.Y) is true;
     }
 
     protected override IEnumerable<Element> SubElements(bool includeConnections = true)
@@ -36,7 +36,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return fillPath is null ? SKSize.Empty : fillPath.Bounds.Size;
+        return path is null ? SKSize.Empty : path.Bounds.Size;
     }
 
     protected override void OnArrange()
@@ -47,11 +47,13 @@ public class Connection(Pin source, Pin target) : Element
     {
         bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint, Target.ConnectionPoint, Source.Direction, Target.Direction);
+        path = GeometryHelper.BezierPath(Source.ConnectionPoint,
+                                         Target.ConnectionPoint,
+                                         Source.Direction,
+                                         Target.Direction,
+                                         isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 
-        dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
-
-        fillPath = GeometryHelper.FillPath(path, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
+        dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor);
     }
 
     protected override void OnPointerPressed(PointerEventArgs args)
