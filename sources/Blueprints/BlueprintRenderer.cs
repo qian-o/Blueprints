@@ -92,14 +92,20 @@ public class BlueprintRenderer(IBlueprintEditor editor)
         width *= editor.Zoom;
         spacing *= editor.Zoom;
 
+        using SKPath path = new();
+
         for (float x = editor.X % spacing; x < extent.Width; x += spacing)
         {
-            dc.DrawLine(new(x, 0), new(x, extent.Height), color, width);
+            path.MoveTo(x, 0);
+            path.LineTo(x, extent.Height);
         }
 
         for (float y = editor.Y % spacing; y < extent.Height; y += spacing)
         {
-            dc.DrawLine(new(0, y), new(extent.Width, y), color, width);
+            path.MoveTo(0, y);
+            path.LineTo(extent.Width, y);
         }
+
+        dc.DrawPath(path, color, width);
     }
 }
