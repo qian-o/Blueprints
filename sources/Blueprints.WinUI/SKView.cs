@@ -27,7 +27,7 @@ public partial class SKView : Canvas
 
     public void Invalidate()
     {
-        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.High, OnInvalidate);
+        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.High, DoInvalidate);
     }
 
     protected static SKPoint SKPoint(Point point)
@@ -35,7 +35,7 @@ public partial class SKView : Canvas
         return new((float)point.X, (float)point.Y);
     }
 
-    private unsafe void OnInvalidate()
+    private unsafe void DoInvalidate()
     {
         int width = (int)(ActualWidth * Dpi);
         int height = (int)(ActualHeight * Dpi);
