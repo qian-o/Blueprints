@@ -54,8 +54,7 @@ public class Connection(Pin source, Pin target) : Element
 
         dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 
-        fillPath?.Dispose();
-        fillPath = dc.GetFillPath(path, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
+        fillPath = GeometryHelper.FillPath(path, isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
     }
 
     protected override void OnPointerPressed(PointerEventArgs args)

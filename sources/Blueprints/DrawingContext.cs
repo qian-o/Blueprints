@@ -119,11 +119,6 @@ internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
         Canvas.DrawPath(path, GetStrokePaint(stroke, strokeWidth));
     }
 
-    public SKPath GetFillPath(SKPath path, float strokeWidth)
-    {
-        return GetStrokePaint(SKColors.Black, strokeWidth).GetFillPath(path);
-    }
-
     public void DrawText(string text, SKPoint position, float fontWeight, float fontSize, SKColor color)
     {
         DrawText(text, position, editor.FontFamily, fontWeight, fontSize, color);

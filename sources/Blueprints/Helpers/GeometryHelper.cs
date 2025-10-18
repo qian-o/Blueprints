@@ -5,6 +5,7 @@ namespace Blueprints;
 public static class GeometryHelper
 {
     private static readonly Dictionary<BezierPathDescriptor, SKPath> bezierPathCache = [];
+    private static readonly Dictionary<FillPathDescriptor, SKPath> fillPathCache = [];
 
     public static SKPath BezierPath(SKPoint sourcePoint, SKPoint targetPoint, PinDirection sourceDirection, PinDirection targetDirection)
     {
@@ -48,5 +49,30 @@ public static class GeometryHelper
         return path;
     }
 
+    public static SKPath FillPath(SKPath path, float strokeWidth)
+    {
+        FillPathDescriptor descriptor = new(path.ToSvgPathData(), strokeWidth);
+
+        if (!fillPathCache.TryGetValue(descriptor, out SKPath? fillPath))
+        {
+            using SKPaint paint = new()
+            {
+                IsAntialias = true,
+                IsDither = true,
+                Color = SKColors.Black,
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = strokeWidth,
+                StrokeCap = SKStrokeCap.Round,
+                StrokeJoin = SKStrokeJoin.Round
+            };
+
+            fillPathCache[descriptor] = fillPath = paint.GetFillPath(path);
+        }
+
+        return fillPath;
+    }
+
     private record BezierPathDescriptor(SKPoint SourcePoint, SKPoint TargetPoint, PinDirection SourceDirection, PinDirection TargetDirection);
+
+    private record FillPathDescriptor(string PathData, float StrokeWidth);
 }
