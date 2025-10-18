@@ -4,8 +4,6 @@ namespace Blueprints;
 
 public class Connection(Pin source, Pin target) : Element
 {
-    private SKPath? path;
-
     public Pin Source { get; } = source;
 
     public Pin Target { get; } = target;
@@ -22,7 +20,20 @@ public class Connection(Pin source, Pin target) : Element
 
     public override bool HitTest(SKPoint position)
     {
-        return IsHitTestVisible && path?.Contains(position.X, position.Y) is true;
+        if (IsHitTestVisible)
+        {
+            bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
+
+            SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint,
+                                                    Target.ConnectionPoint,
+                                                    Source.Direction,
+                                                    Target.Direction,
+                                                    isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
+
+            return path.Contains(position.X, position.Y);
+        }
+
+        return false;
     }
 
     protected override IEnumerable<Element> SubElements(bool includeConnections = true)
@@ -36,7 +47,7 @@ public class Connection(Pin source, Pin target) : Element
 
     protected override SKSize OnMeasure(IDrawingContext dc)
     {
-        return path is null ? SKSize.Empty : path.Bounds.Size;
+        return new(-1, -1);
     }
 
     protected override void OnArrange()
@@ -47,11 +58,11 @@ public class Connection(Pin source, Pin target) : Element
     {
         bool isHovered = Source.IsPointerOver || Target.IsPointerOver || IsPointerOver;
 
-        path = GeometryHelper.BezierPath(Source.ConnectionPoint,
-                                         Target.ConnectionPoint,
-                                         Source.Direction,
-                                         Target.Direction,
-                                         isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
+        SKPath path = GeometryHelper.BezierPath(Source.ConnectionPoint,
+                                                Target.ConnectionPoint,
+                                                Source.Direction,
+                                                Target.Direction,
+                                                isHovered ? Theme.ConnectionHoverWidth : Theme.ConnectionWidth);
 
         dc.DrawPath(path, isHovered ? Theme.ConnectionHoverColor : Theme.ConnectionColor);
     }
