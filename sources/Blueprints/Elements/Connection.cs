@@ -1,13 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Blueprints;
 
 public class Connection(Pin source, Pin target) : Element
 {
     private SKPath? fillPath;
-
-    public int Id { get; } = ComputeId(source, target);
 
     public Pin Source { get; } = source;
 
@@ -63,18 +60,5 @@ public class Connection(Pin source, Pin target) : Element
         {
             Disconnect();
         }
-    }
-
-    private static int ComputeId(Pin a, Pin b)
-    {
-        int ha = RuntimeHelpers.GetHashCode(a);
-        int hb = RuntimeHelpers.GetHashCode(b);
-
-        if (ha > hb)
-        {
-            (ha, hb) = (hb, ha);
-        }
-
-        return HashCode.Combine(ha, hb);
     }
 }

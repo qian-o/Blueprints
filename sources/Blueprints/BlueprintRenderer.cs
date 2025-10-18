@@ -34,6 +34,11 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                     Node node = nodes[i];
                     node.Layout(editor, dc);
 
+                    foreach (Connection connection in node.Connections())
+                    {
+                        connection.Render(dc);
+                    }
+
                     if (!node.Bounds.IntersectsWith(viewBounds))
                     {
                         continue;
@@ -46,11 +51,6 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
                     occluders.Add(node.Bounds);
                     visibles.Add(node);
-                }
-
-                foreach (Connection connection in visibles.SelectMany(static item => item.Connections()).DistinctBy(static item => item.Id))
-                {
-                    connection.Render(dc);
                 }
 
                 for (int i = visibles.Count - 1; i >= 0; i--)
