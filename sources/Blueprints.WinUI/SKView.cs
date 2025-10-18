@@ -1,22 +1,15 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+﻿using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Windows.Foundation;
 
 namespace Blueprints.WinUI;
 
-public partial class SKView : Canvas
+public partial class SKView
 {
-    private WriteableBitmap? bitmap;
-    private nint pixels;
-    private SKSurface? surface;
-
     public SKView()
     {
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
         SizeChanged += (_, _) => Invalidate();
     }
 
@@ -25,41 +18,24 @@ public partial class SKView : Canvas
 
     public event EventHandler<SKCanvas>? Paint;
 
-    public void Invalidate()
-    {
-        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.High, DoInvalidate);
-    }
-
     protected static SKPoint SKPoint(Point point)
     {
         return new((float)point.X, (float)point.Y);
     }
 
-    private unsafe void DoInvalidate()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        int width = (int)(ActualWidth * Dpi);
-        int height = (int)(ActualHeight * Dpi);
+        LoadedPartial();
 
-        if (width is 0 || height is 0)
-        {
-            return;
-        }
-
-        if (bitmap is null || bitmap.PixelWidth != width || bitmap.PixelHeight != height || pixels is 0 || surface is null)
-        {
-            Background = new ImageBrush() { ImageSource = bitmap = new(width, height) };
-
-            NativeMemory.Free((void*)pixels);
-            pixels = (nint)NativeMemory.Alloc((nuint)(width * height * 4));
-
-            surface?.Dispose();
-            surface = SKSurface.Create(new(width, height, SKColorType.Bgra8888, SKAlphaType.Premul), pixels);
-        }
-
-        Paint?.Invoke(this, surface.Canvas);
-
-        bitmap.PixelBuffer.AsStream().Write(new ReadOnlySpan<byte>((void*)pixels, width * height * 4));
-
-        bitmap.Invalidate();
+        Invalidate();
     }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        UnloadedPartial();
+    }
+
+    partial void LoadedPartial();
+
+    partial void UnloadedPartial();
 }
