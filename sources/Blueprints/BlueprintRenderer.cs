@@ -48,12 +48,9 @@ public class BlueprintRenderer(IBlueprintEditor editor)
                     visibles.Add(node);
                 }
 
-                for (int i = visibles.Count - 1; i >= 0; i--)
+                foreach (Connection connection in visibles.SelectMany(static item => item.Connections()).DistinctBy(static item => item.Id))
                 {
-                    foreach (Connection connection in visibles[i].Connections())
-                    {
-                        connection.Render(dc);
-                    }
+                    connection.Render(dc);
                 }
 
                 for (int i = visibles.Count - 1; i >= 0; i--)

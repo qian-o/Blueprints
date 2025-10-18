@@ -23,7 +23,7 @@ public class Node : Element
     {
         foreach (Pin pin in Inputs.Concat(Outputs))
         {
-            foreach (Connection connection in pin.OutgoingConnections)
+            foreach (Connection connection in pin.Connections)
             {
                 yield return connection;
             }
