@@ -15,7 +15,7 @@
         <!-- Package Content -->
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageTags>C#;SkiaSharp;Blueprints;Game Development;Game Engine;Graphics;</PackageTags>
+        <PackageTags>C#;SkiaSharp;Blueprints;Game Development;Game Engine;Graphics</PackageTags>
 
         <!-- Debug Symbols & Source Link -->
         <IncludeSymbols>true</IncludeSymbols>
