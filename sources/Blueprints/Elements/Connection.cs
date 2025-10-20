@@ -18,6 +18,15 @@ public class Connection(Pin source, Pin target) : Element
         Source.DisconnectFrom(Target);
     }
 
+    public virtual int ConnectionHash()
+    {
+        return HashCode.Combine(Source.ConnectionPoint,
+                                Target.ConnectionPoint,
+                                Source.Direction,
+                                Target.Direction,
+                                Theme.ConnectionWidth);
+    }
+
     public override bool HitTest(SKPoint position)
     {
         if (IsHitTestVisible)

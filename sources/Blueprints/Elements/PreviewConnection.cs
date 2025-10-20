@@ -8,6 +8,33 @@ internal class PreviewConnection(Pin sourcePin, Pin[] sourcePins, PinDirection t
 
     public SKPoint PreviewPoint { get; set => Set(ref field, value, false); }
 
+    public override int ConnectionHash()
+    {
+        if (SourcePins.Length is 0)
+        {
+            return HashCode.Combine(Source.ConnectionPoint,
+                                    PreviewPoint,
+                                    Source.Direction,
+                                    targetDirection,
+                                    Theme.ConnectionWidth);
+        }
+        else
+        {
+            HashCode hashCode = new();
+
+            foreach (Pin pin in SourcePins)
+            {
+                hashCode.Add(HashCode.Combine(pin.ConnectionPoint,
+                                              PreviewPoint,
+                                              pin.Direction,
+                                              targetDirection,
+                                              Theme.ConnectionWidth));
+            }
+
+            return hashCode.ToHashCode();
+        }
+    }
+
     public override bool HitTest(SKPoint position)
     {
         return false;
