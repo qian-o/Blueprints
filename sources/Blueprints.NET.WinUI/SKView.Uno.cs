@@ -3,7 +3,7 @@ using SkiaSharp;
 using Uno.WinUI.Graphics2DSK;
 using Windows.Foundation;
 
-namespace Blueprints.WinUI;
+namespace Blueprints.NET.WinUI;
 
 public partial class SKView : SKCanvasElement
 {

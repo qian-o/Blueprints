@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Blueprints;
+namespace Blueprints.NET;
 
 internal class DrawingContext(IBlueprintEditor editor) : IDrawingContext
 {

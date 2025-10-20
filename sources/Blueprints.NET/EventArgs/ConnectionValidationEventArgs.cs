@@ -1,4 +1,4 @@
-﻿namespace Blueprints;
+﻿namespace Blueprints.NET;
 
 public class ConnectionValidationEventArgs(Pin source, Pin target) : EventArgs
 {

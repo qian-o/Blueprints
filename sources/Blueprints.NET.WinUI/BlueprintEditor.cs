@@ -7,7 +7,7 @@ using Windows.Storage;
 using Windows.System;
 using Windows.UI.Core;
 
-namespace Blueprints.WinUI;
+namespace Blueprints.NET.WinUI;
 
 public sealed partial class BlueprintEditor : SKView, IBlueprintEditor
 {

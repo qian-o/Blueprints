@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Blueprints;
+namespace Blueprints.NET;
 
 internal class PreviewConnection(Pin sourcePin, Pin[] sourcePins, PinDirection targetDirection) : Connection(sourcePin, sourcePin)
 {

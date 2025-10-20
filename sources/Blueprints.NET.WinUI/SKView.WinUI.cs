@@ -9,7 +9,7 @@ using Silk.NET.DXGI;
 using SkiaSharp;
 using WinRT;
 
-namespace Blueprints.WinUI;
+namespace Blueprints.NET.WinUI;
 
 [GeneratedComInterface]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

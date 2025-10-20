@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Blueprints;
+namespace Blueprints.NET;
 
 public abstract class Element : IInputController, IDragDropController
 {

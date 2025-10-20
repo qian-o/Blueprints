@@ -1,4 +1,4 @@
-﻿using Blueprints;
+﻿using Blueprints.NET;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

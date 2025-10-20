@@ -1,7 +1,7 @@
 ﻿<Page x:Class="Example.Uno.Views.MainView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:bp="using:Blueprints.WinUI">
+      xmlns:bp="using:Blueprints.NET.WinUI">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

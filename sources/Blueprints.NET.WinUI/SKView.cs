@@ -2,7 +2,7 @@
 using SkiaSharp;
 using Windows.Foundation;
 
-namespace Blueprints.WinUI;
+namespace Blueprints.NET.WinUI;
 
 public partial class SKView
 {

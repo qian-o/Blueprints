@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Blueprints;
+namespace Blueprints.NET;
 
 public class PointerWheelEventArgs(SKPoint screenPosition, SKPoint worldPosition, float delta, Modifiers modifiers) : PointerEventArgs(screenPosition, worldPosition, modifiers, Pointers.None)
 {

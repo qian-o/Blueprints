@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using SkiaSharp;
 
-namespace Blueprints;
+namespace Blueprints.NET;
 
 public class BlueprintRenderer(IBlueprintEditor editor)
 {

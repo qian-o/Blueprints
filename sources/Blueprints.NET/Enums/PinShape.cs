@@ -1,4 +1,4 @@
-﻿namespace Blueprints;
+﻿namespace Blueprints.NET;
 
 public enum PinShape
 {
