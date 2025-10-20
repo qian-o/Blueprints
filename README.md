@@ -31,7 +31,8 @@ This repo includes example projects you can run directly:
 
 ## Screenshot
 
-![Blueprints Screenshot](docs/images/blueprints_screenshot.png)
+![image](https://raw.githubusercontent.com/qian-o/Blueprints/master/images/1.png)
+![image](https://raw.githubusercontent.com/qian-o/Blueprints/master/images/2.png)
 
 ## Notes
 This project is in an early development stage. The public API is subject to change. Issues and pull requests are welcome.
