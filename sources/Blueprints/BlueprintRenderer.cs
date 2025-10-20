@@ -24,11 +24,6 @@ public class BlueprintRenderer(IBlueprintEditor editor)
             {
                 Node[] nodes = [.. editor.Nodes];
 
-                foreach (Connection connection in nodes.SelectMany(static item => item.Connections()).DistinctBy(static item => item.ConnectionHash()))
-                {
-                    connection.Render(dc);
-                }
-
                 SKRect viewBounds = SKRect.Create(editor.Extent).ToWorld(editor);
 
                 List<SKRect> occluders = new(capacity: Math.Min(nodes.Length, 256));
@@ -51,6 +46,11 @@ public class BlueprintRenderer(IBlueprintEditor editor)
 
                     occluders.Add(node.Bounds);
                     visibles.Add(node);
+                }
+
+                foreach (Connection connection in nodes.SelectMany(static item => item.Connections()).DistinctBy(static item => item.ConnectionHash()))
+                {
+                    connection.Render(dc);
                 }
 
                 for (int i = visibles.Count - 1; i >= 0; i--)
