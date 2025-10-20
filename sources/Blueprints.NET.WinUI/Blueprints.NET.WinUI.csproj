@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Blueprints\Blueprints.csproj" />
+        <ProjectReference Include="..\Blueprints.NET\Blueprints.NET.csproj" />
     </ItemGroup>
 
     <Choose>

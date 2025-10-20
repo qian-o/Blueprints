@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Blueprints.WinUI\Blueprints.WinUI.csproj" />
+        <ProjectReference Include="..\..\Blueprints.NET.WinUI\Blueprints.NET.WinUI.csproj" />
     </ItemGroup>
 
     <ItemGroup>
