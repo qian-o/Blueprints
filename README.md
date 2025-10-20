@@ -12,7 +12,7 @@ It provides a high‑performance, zoomable canvas with nodes, pins, and connecti
 - Drag‑and‑drop connection preview (pending connections)
 - Hit testing and interaction events
 - Rendering optimization via simple occlusion culling
-- Theming support (Default, Fluent, Cupertino) with Light/Dark modes
+- Theming support: Default theme with Light/Dark modes (Fluent and Cupertino planned)
 - Works with WinUI 3 and Uno Platform
 
 ## Platforms and Rendering Backends
