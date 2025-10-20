@@ -4,6 +4,13 @@ Cross‑platform, SkiaSharp‑powered blueprint/node editor control for .NET.
 
 It provides a high‑performance, zoomable canvas with nodes, pins, and connections, suitable for graph editors, visual scripting, and data‑flow UIs.
 
+## Release Status
+
+| NuGet Package | Version |
+| :-----------: | :------ |
+| Blueprints.NET       | [![NuGet Version](https://img.shields.io/nuget/v/Blueprints.NET)](https://nuget.org/packages/Blueprints.NET) |
+| Blueprints.NET.WinUI | [![NuGet Version](https://img.shields.io/nuget/v/Blueprints.NET.WinUI)](https://nuget.org/packages/Blueprints.NET.WinUI) |
+
 ## Features
 
 - SkiaSharp rendering with high‑DPI support
