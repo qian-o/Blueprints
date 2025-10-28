@@ -6,7 +6,7 @@
 
     <ItemGroup>
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6584" />
+        <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
         <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.251003001" />
         <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
         <PackageVersion Include="Silk.NET.Direct3D12" Version="2.22.0" />
